@@ -33,6 +33,7 @@ BrAPIRequest <- function(conn, method, call, ..., query=list(), body=list(), pag
         encode = "json"
     )
     content = content(resp)
+    warn_for_status(resp)
 
     # Get Pagination Info
     currentPage = "?"
@@ -41,7 +42,7 @@ BrAPIRequest <- function(conn, method, call, ..., query=list(), body=list(), pag
         currentPage = content$metadata$pagination$currentPage
         totalPages = content$metadata$pagination$totalPages
     }
-    
+
     # Print Response Info
     cat(
         sprintf("Response [%s]", resp$url),
@@ -50,7 +51,6 @@ BrAPIRequest <- function(conn, method, call, ..., query=list(), body=list(), pag
         sprintf("  Pagination: page %s of %s [pageSize = %s]", currentPage, totalPages, pageSize),
         sep = "\n"
     )
-    warn_for_status(resp)
     
     # Check for error message in the metadata
     if ( "metadata" %in% names(content) && "status" %in% names(content$metadata) ) {
@@ -60,12 +60,69 @@ BrAPIRequest <- function(conn, method, call, ..., query=list(), body=list(), pag
             }
         }
     }
-    
-    # Parse the content
-    return(list(
-        response = resp,
-        status = http_status(resp),
-        content = content
-    ))
+
+
+    if ( page == "all" ) {
+
+        # Vectors to hold data
+        responses = list()
+        statuses = list()
+        contents = list()
+        metadata = list()
+        data = list()
+        combined_data = c()
+
+        # Add data from first page
+        responses[["page0"]] = resp
+        statuses[["page0"]] = http_status(resp)
+        contents[["page0"]] = content
+        metadata[["page0"]] = content$metadata
+        data[["page0"]] = content$result$data
+        combined_data = content$result$data
+
+        # Make a new request for each page
+        for ( nextPage in c(1:(totalPages-1)) ) {
+            query$page = nextPage
+            nextPageResp = BrAPIRequest(
+                conn=conn,
+                method=method,
+                call=call,
+                query=query,
+                body=body,
+                page=nextPage,
+                pageSize=pageSize,
+                token=token
+            )
+            key = paste0("page", nextPage)
+            responses[[key]] = nextPageResp$response
+            statuses[[key]] = nextPageResp$status
+            contents[[key]] = nextPageResp$content
+            metadata[[key]] = nextPageResp$content$metadata
+            data[[key]] = nextPageResp$content$result$data
+            combined_data = c(combined_data, nextPageResp$content$result$data)
+        }
+
+        return(list(
+            response = responses,
+            status = statuses,
+            content = contents,
+            metadata = metadata,
+            data = data,
+            combined_data = combined_data
+        ))
+
+    }
+
+    else {
+
+        return(list(
+            response = resp,
+            status = http_status(resp),
+            content = content,
+            metadata = content$metadata,
+            data = content$result$data
+        ))
+
+    }
 
 }
