@@ -9,3 +9,7 @@ listBrAPIConnections()
 \description{
 List the known BrAPI connections that can be used in \code{getBrAPIConnection(name)}.
 }
+\examples{
+listBrAPIConnections()
+
+}

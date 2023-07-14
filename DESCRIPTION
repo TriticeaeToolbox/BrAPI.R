@@ -1,5 +1,5 @@
 Package: BrAPI
-Version: 0.1
+Version: 0.2
 Date: 2023-07-12
 Title: BrAPI
 Description: Simple wrapper functions for httr that make it easier to make manual HTTP calls to a BrAPI server
