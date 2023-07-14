@@ -4,7 +4,7 @@ Date: 2023-07-12
 Title: BrAPI
 Description: Simple wrapper functions for httr that make it easier to make manual HTTP calls to a BrAPI server
 Authors@R: 
-    person("Waring", "David", , "djw64@cornell.edu", role = c("aut", "cre"),
+    person("David", "Waring", , "djw64@cornell.edu", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-9971-9776"))
 License: MIT + file LICENSE
 Encoding: UTF-8
@@ -13,3 +13,8 @@ Imports:
     httr
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
+Collate: 
+    'Connection.R'
+    'Request.R'
+    'utils.R'
+    'known_connections.R'
