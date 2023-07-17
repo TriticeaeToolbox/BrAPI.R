@@ -7,15 +7,15 @@ It does not have any knowledge of the currently supported BrAPI endpoints.  You'
 
 ```R
 # Get a BrAPI Connection
-> wheat <- getBrAPIConnection("T3/Wheat")
+wheat <- getBrAPIConnection("T3/Wheat")
 
 # Get Studies associated with the Cornell breeding program
-> resp <- wheat$get("/studies", query=list(programName="Cornell University"), pageSize=1000)
-> studies <- resp$data
+resp <- wheat$get("/studies", query=list(programName="Cornell University"), pageSize=1000)
+studies <- resp$data
  
 # Get all Germplasm stored in the database
-> resp <- wheat$get("/germplasm", page="all", pageSize=5000)
-> germplasm <- resp$combined_data
+resp <- wheat$get("/germplasm", page="all", pageSize=5000)
+germplasm <- resp$combined_data
 ```
 
 ## Installation
@@ -44,27 +44,28 @@ The [BrAPIConnection Class](https://triticeaetoolbox.github.io/BrAPI.R/reference
 There are some known pre-configured BrAPI connections included with this package.  To see the list of known BrAPI connections, use the [listBrAPIConnections() function](https://triticeaetoolbox.github.io/BrAPI.R/reference/listBrAPIConnections.html):
 
 ```R
-> listBrAPIConnections()
-Known BrAPI Connections:
- T3/Wheat = wheat.triticeaetoolbox.org [v2]
- T3/Wheat Sandbox = wheat-sandbox.triticeaetoolbox.org [v2]
- T3/Oat = oat.triticeaetoolbox.org [v2]
- T3/Oat Sandbox = oat-sandbox.triticeaetoolbox.org [v2]
- T3/Barley = barley.triticeaetoolbox.org [v2]
- T3/Barley Sandbox = barley-sandbox.triticeaetoolbox.org [v2]
- Cassavabase = cassavabase.org [v2]
+listBrAPIConnections()
+# PRINTS:
+# Known BrAPI Connections:
+#  T3/Wheat = wheat.triticeaetoolbox.org [v2]
+#  T3/Wheat Sandbox = wheat-sandbox.triticeaetoolbox.org [v2]
+#  T3/Oat = oat.triticeaetoolbox.org [v2]
+#  T3/Oat Sandbox = oat-sandbox.triticeaetoolbox.org [v2]
+#  T3/Barley = barley.triticeaetoolbox.org [v2]
+#  T3/Barley Sandbox = barley-sandbox.triticeaetoolbox.org [v2]
+#  Cassavabase = cassavabase.org [v2]
 ```
 
 To use a known BrAPI connection, reference it by name in the [getBrAPIConnection() function](https://triticeaetoolbox.github.io/BrAPI.R/reference/getBrAPIConnection.html):
 ```R
-> wheat <- getBrAPIConnection("T3/Wheat")
+wheat <- getBrAPIConnection("T3/Wheat")
 ```
 
 To manually create a BrAPI connection, you'll need to specify the host of the BrAPI server (and optionally set the protocol, path, and/or version) in the [createBrAPIConnection() function](https://triticeaetoolbox.github.io/BrAPI.R/reference/createBrAPIConnection.html):
 
 ```R
-> kelp <- createBrAPIConnection("sugarkelpbase.org")
-> kelpv1 <- createBrAPIConnection("sugarkelpbase.org", version="v1")
+kelp <- createBrAPIConnection("sugarkelpbase.org")
+kelpv1 <- createBrAPIConnection("sugarkelpbase.org", version="v1")
 ```
 
 ## Making HTTP Requests
@@ -82,9 +83,9 @@ Each of the request functions (`get`, `post`, `put`) can take the following para
 - `call` - The BrAPI endpoint to make the request to
 - `query` - (optional) A named list of query parameters
 - `body` - (optional) A named list or vector of body parameters (this will be automatically converted to JSON)
-- `page` - the index of the page of results to return
+- `page` - (optional) the index of the page of results to return (DEFAULT: 0)
   - When `page="all"`, all of the available pages will be fetched sequentially and the response properties of all of the individual pages along with the combined data from all of the pages will be returned
-- `pageSize` - the maximum size of the page of results to return
+- `pageSize` - (optional) the maximum size of the page of results to return (DEFAULT: 10)
 
 ### Response Format
 
@@ -111,22 +112,22 @@ For a multi-page request (when `page="all"`):
 
 ```R
 # GET Request
-> wheat <- getBrAPIConnection("T3/Wheat")
-> resp <- wheat$get("/studies", query=list(programName="Cornell University"))
+wheat <- getBrAPIConnection("T3/Wheat")
+resp <- wheat$get("/studies", query=list(programName="Cornell University"))
 
 # POST Request
-> sandbox <- BrAPIConnection$new("wheat-sandbox.triticeaetoolbox.org")
-> d1 <- list(observationUnitDbId="ou1", observationVariableDbId="ov1", value=50)
-> d2 <- list(observationUnitDbId="ou2", observationVariableDbId="ov1", value=40)
-> data <- list(d1, d2)
-> resp <- sandbox$post("/token", query=list(username="testing", password="testing123"))
-> resp <- sandbox$post("/observations", body=data, token=resp$content$access_token)
+sandbox <- BrAPIConnection$new("wheat-sandbox.triticeaetoolbox.org")
+d1 <- list(observationUnitDbId="ou1", observationVariableDbId="ov1", value=50)
+d2 <- list(observationUnitDbId="ou2", observationVariableDbId="ov1", value=40)
+data <- list(d1, d2)
+resp <- sandbox$post("/token", query=list(username="testing", password="testing123"))
+resp <- sandbox$post("/observations", body=data, token=resp$content$access_token)
 
 # PUT Request
-> sandbox <- BrAPIConnection$new("wheat-sandbox.triticeaetoolbox.org")
-> d1 <- list(observationDbId = "ob1", observationUnitDbId="ou1", observationVariableDbId="ov1", value=60)
-> d2 <- list(observationDbId = "ob2", observationUnitDbId="ou2", observationVariableDbId="ov1", value=70)
-> data <- list(d1, d2)
-> resp <- sandbox$post("/token", query=list(username="testing", password="testing123"))
-> resp <- sandbox$put("/observations", body=data, token=resp$content$access_token)
+sandbox <- BrAPIConnection$new("wheat-sandbox.triticeaetoolbox.org")
+d1 <- list(observationDbId = "ob1", observationUnitDbId="ou1", observationVariableDbId="ov1", value=60)
+d2 <- list(observationDbId = "ob2", observationUnitDbId="ou2", observationVariableDbId="ov1", value=70)
+data <- list(d1, d2)
+resp <- sandbox$post("/token", query=list(username="testing", password="testing123"))
+resp <- sandbox$put("/observations", body=data, token=resp$content$access_token)
 ```
