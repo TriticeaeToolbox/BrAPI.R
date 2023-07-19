@@ -96,4 +96,20 @@ for ( observation in observations ) {
     value = as.numeric(observation$value)
   ))
 }
-```
+
+# data:
+# A tibble: 1,759 × 5
+   plot_id plot_name                               accession_name trait_name                                                            value
+     <dbl> <chr>                                   <chr>          <chr>                                                                 <dbl>
+ 1 1039253 YldQtl-Val_2014_ClayCenter_CT213_2127   CT213          Bacterial leaf streak severity - 0-9 percentage scale|CO_321:0501004    5  
+ 2 1039253 YldQtl-Val_2014_ClayCenter_CT213_2127   CT213          Grain yield - kg/ha|CO_321:0001218                                   3410  
+ 3 1039253 YldQtl-Val_2014_ClayCenter_CT213_2127   CT213          Plant height - cm|CO_321:0001301                                       82  
+ 4 1039253 YldQtl-Val_2014_ClayCenter_CT213_2127   CT213          Grain protein content -  %|CO_321:0001205                              15.2
+ 5 1039254 YldQtl-Val_2014_ClayCenter_NE13593_2297 NE13593        Bacterial leaf streak severity - 0-9 percentage scale|CO_321:0501004    2  
+ 6 1039254 YldQtl-Val_2014_ClayCenter_NE13593_2297 NE13593        Grain yield - kg/ha|CO_321:0001218                                   3416  
+ 7 1039254 YldQtl-Val_2014_ClayCenter_NE13593_2297 NE13593        Plant height - cm|CO_321:0001301                                       90  
+ 8 1039254 YldQtl-Val_2014_ClayCenter_NE13593_2297 NE13593        Grain protein content -  %|CO_321:0001205                              16.4
+ 9 1039255 YldQtl-Val_2014_ClayCenter_HW_98_2360   HW_98          Bacterial leaf streak severity - 0-9 percentage scale|CO_321:0501004    2  
+10 1039255 YldQtl-Val_2014_ClayCenter_HW_98_2360   HW_98          Grain yield - kg/ha|CO_321:0001218                                   2993  
+# ℹ 1,749 more rows
+# ℹ Use `print(n = ...)` to see more rows
