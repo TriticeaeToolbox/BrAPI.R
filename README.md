@@ -131,3 +131,7 @@ data <- list(d1, d2)
 resp <- sandbox$post("/token", query=list(username="testing", password="testing123"))
 resp <- sandbox$put("/observations", body=data, token=resp$content$access_token)
 ```
+
+## Tutorial
+
+A more in-depth tutorial using data from T3/Wheat can be found in the TUTORIAL.md file.
