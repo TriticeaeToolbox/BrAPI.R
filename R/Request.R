@@ -15,12 +15,12 @@ library(httr)
 # @param call The BrAPI endpoint to request
 # @param query A named list of query parameters
 # @param body A named list or vector of a POST request's body
-# @param page The page of results to return (Default: 0). When set to 'all', 
+# @param page The page of results to return (Default: 0). When set to 'all', returns all pages
 # @param pageSize The size of a page of results to return (Default: 10)
 # @param token An Authorization Token to be added as an Authorization Header
 # 
 # @return A named list containing the Response properties
-BrAPIRequest <- function(method, base, call, ..., query=list(), body=list(), page=0, pageSize=10, token=NULL) {
+BrAPIRequest <- function(method, base, call, ..., query=list(), body=list(), page=0, pageSize=10, token=NULL, verbose=TRUE) {
 
   # Check for required arguments
   if ( !hasArg(method) ) stop("The HTTP method is required!")
@@ -64,14 +64,16 @@ BrAPIRequest <- function(method, base, call, ..., query=list(), body=list(), pag
     totalPages = content$metadata$pagination$totalPages
   }
 
-  # Print Response Info
-  cat(
-    sprintf("Response [%s] <%s>", method, resp$url),
-    sprintf("  %s", httr::http_status(resp)$message),
-    sprintf("  Content Type: %s", httr::http_type(resp)),
-    sprintf("  Pagination: page %s of %s [pageSize = %s]", currentPage, totalPages, pageSize),
-    sep = "\n"
-  )
+  #Print Response Info
+  if ( verbose ) {
+    cat(
+      sprintf("Response [%s] <%s>", method, resp$url),
+      sprintf("  %s", httr::http_status(resp)$message),
+      sprintf("  Content Type: %s", httr::http_type(resp)),
+      sprintf("  Pagination: page %s of %s [pageSize = %s]", currentPage, totalPages, pageSize),
+      sep = "\n"
+    )
+  }
 
   # Check for error message in the metadata
   if ( "metadata" %in% names(content) && "status" %in% names(content$metadata) ) {
