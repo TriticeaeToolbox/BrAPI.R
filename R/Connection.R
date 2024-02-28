@@ -90,6 +90,7 @@ BrAPIConnection <- R6::R6Class("BrAPIConnection",
     #' @param page (optional) The index of the page of results (use 'all' to get all pages) (Default: 0)
     #' @param pageSize (optional) The max size of the result pages (Default: 10)
     #' @param token (optional) An Authorization token to add to the request
+    #' @param verbose (optional) Set to true to include additional output to the console about the Response
     #' @param ... (optional) Additional arguments passed to `httr`
     #' @return A named list of Response properties
     get = function(call, ...) {
@@ -103,6 +104,7 @@ BrAPIConnection <- R6::R6Class("BrAPIConnection",
     #' @param page (optional) The index of the page of results (use 'all' to get all pages) (Default: 0)
     #' @param pageSize (optional) The max size of the result pages (Default: 10)
     #' @param token (optional) An Authorization token to add to the request
+    #' @param verbose (optional) Set to true to include additional output to the console about the Response
     #' @param ... (optional) Additional arguments passed to `httr`
     #' @return A named list of Response properties
     post = function(call, ...) {
@@ -116,6 +118,7 @@ BrAPIConnection <- R6::R6Class("BrAPIConnection",
     #' @param page (optional) The index of the page of results (use 'all' to get all pages) (Default: 0)
     #' @param pageSize (optional) The max size of the result pages (Default: 10)
     #' @param token (optional) An Authorization token to add to the request
+    #' @param verbose (optional) Set to true to include additional output to the console about the Response
     #' @param ... (optional) Additional arguments passed to `httr`
     #' @return A named list of Response properties
     put = function(call, ...) {

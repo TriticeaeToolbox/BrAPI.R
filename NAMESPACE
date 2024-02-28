@@ -3,4 +3,5 @@
 export(BrAPIConnection)
 export(createBrAPIConnection)
 export(getBrAPIConnection)
+export(getBrAPIConnections)
 export(listBrAPIConnections)

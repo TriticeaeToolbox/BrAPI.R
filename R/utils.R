@@ -76,6 +76,23 @@ getBrAPIConnection <- function(name=NULL) {
 
 
 
+#' Get all Known BrAPI Connections
+#'
+#' Return a list of all known BrAPI Connections
+#'
+#' @examples
+#' connections <- getBrAPIConnections()
+#'
+#' @return list(BrAPIConnection) 
+#'
+#' @export
+#' @include known_connections.R
+getBrAPIConnections <- function() {
+  return(KNOWN_BRAPI_CONNECTIONS)
+}
+
+
+
 #' List Known BrAPI Connections
 #'
 #' List the known BrAPI connections that can be used in `getBrAPIConnection(name)`.

@@ -135,6 +135,8 @@ Make a GET request
 \item{\code{pageSize}}{(optional) The max size of the result pages (Default: 10)}
 
 \item{\code{token}}{(optional) An Authorization token to add to the request}
+
+\item{\code{verbose}}{(optional) Set to true to include additional output to the console about the Response}
 }
 \if{html}{\out{</div>}}
 }
@@ -167,6 +169,8 @@ Make a POST request
 \item{\code{pageSize}}{(optional) The max size of the result pages (Default: 10)}
 
 \item{\code{token}}{(optional) An Authorization token to add to the request}
+
+\item{\code{verbose}}{(optional) Set to true to include additional output to the console about the Response}
 }
 \if{html}{\out{</div>}}
 }
@@ -199,6 +203,8 @@ Make a PUT request
 \item{\code{pageSize}}{(optional) The max size of the result pages (Default: 10)}
 
 \item{\code{token}}{(optional) An Authorization token to add to the request}
+
+\item{\code{verbose}}{(optional) Set to true to include additional output to the console about the Response}
 }
 \if{html}{\out{</div>}}
 }

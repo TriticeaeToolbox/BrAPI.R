@@ -7,6 +7,9 @@
     <loc>/LICENSE-text.html</loc>
   </url>
   <url>
+    <loc>/TUTORIAL.html</loc>
+  </url>
+  <url>
     <loc>/authors.html</loc>
   </url>
   <url>
@@ -26,6 +29,9 @@
   </url>
   <url>
     <loc>/reference/getBrAPIConnection.html</loc>
+  </url>
+  <url>
+    <loc>/reference/getBrAPIConnections.html</loc>
   </url>
   <url>
     <loc>/reference/index.html</loc>

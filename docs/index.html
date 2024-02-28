@@ -55,16 +55,17 @@
 </h1></div>
 <p>This R package contains a simple R6 Class for interacting with a BrAPI server. It holds all of the information needed to connect to a server (such as the hostname) and has helper functions for making an HTTP requests to the BrAPI server.</p>
 <p>It does not have any knowledge of the currently supported BrAPI endpoints. You’ll need to refer to the <a href="https://brapi.org/specification" class="external-link">BrAPI specification</a> to know which endpoints to use and how the response will be formatted.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a><span class="co"># Get a BrAPI Connection</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true"></a><span class="op">&gt;</span><span class="st"> </span>wheat &lt;-<span class="st"> </span><span class="kw">getBrAPIConnection</span>(<span class="st">"T3/Wheat"</span>)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true"></a><span class="co"># Get Studies associated with the Cornell breeding program</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true"></a><span class="op">&gt;</span><span class="st"> </span>resp &lt;-<span class="st"> </span>wheat<span class="op">$</span><span class="kw">get</span>(<span class="st">"/studies"</span>, <span class="dt">query=</span><span class="kw">list</span>(<span class="dt">programName=</span><span class="st">"Cornell University"</span>), <span class="dt">pageSize=</span><span class="dv">1000</span>)</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true"></a><span class="op">&gt;</span><span class="st"> </span>studies &lt;-<span class="st"> </span>resp<span class="op">$</span>data</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true"></a> </span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true"></a><span class="co"># Get all Germplasm stored in the database</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true"></a><span class="op">&gt;</span><span class="st"> </span>resp &lt;-<span class="st"> </span>wheat<span class="op">$</span><span class="kw">get</span>(<span class="st">"/germplasm"</span>, <span class="dt">page=</span><span class="st">"all"</span>, <span class="dt">pageSize=</span><span class="dv">5000</span>)</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true"></a><span class="op">&gt;</span><span class="st"> </span>germplasm &lt;-<span class="st"> </span>resp<span class="op">$</span>combined_data</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Get a BrAPI Connection</span></span>
+<span><span class="va">wheat</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/getBrAPIConnection.html">getBrAPIConnection</a></span><span class="op">(</span><span class="st">"T3/Wheat"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Get Studies associated with the Cornell breeding program</span></span>
+<span><span class="va">resp</span> <span class="op">&lt;-</span> <span class="va">wheat</span><span class="op">$</span><span class="fu">get</span><span class="op">(</span><span class="st">"/studies"</span>, query<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>programName<span class="op">=</span><span class="st">"Cornell University"</span><span class="op">)</span>, pageSize<span class="op">=</span><span class="fl">1000</span><span class="op">)</span></span>
+<span><span class="va">studies</span> <span class="op">&lt;-</span> <span class="va">resp</span><span class="op">$</span><span class="va">data</span></span>
+<span> </span>
+<span><span class="co"># Get all Germplasm stored in the database</span></span>
+<span><span class="va">resp</span> <span class="op">&lt;-</span> <span class="va">wheat</span><span class="op">$</span><span class="fu">get</span><span class="op">(</span><span class="st">"/germplasm"</span>, page<span class="op">=</span><span class="st">"all"</span>, pageSize<span class="op">=</span><span class="fl">5000</span><span class="op">)</span></span>
+<span><span class="va">germplasm</span> <span class="op">&lt;-</span> <span class="va">resp</span><span class="op">$</span><span class="va">combined_data</span></span></code></pre></div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
@@ -88,20 +89,24 @@
 </h2>
 <p>The <a href="https://triticeaetoolbox.github.io/BrAPI.R/reference/BrAPIConnection.html" class="external-link">BrAPIConnection Class</a> contains information about the BrAPI server and has helper functions for making HTTP requests.</p>
 <p>There are some known pre-configured BrAPI connections included with this package. To see the list of known BrAPI connections, use the <a href="https://triticeaetoolbox.github.io/BrAPI.R/reference/listBrAPIConnections.html" class="external-link">listBrAPIConnections() function</a>:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true"></a><span class="op">&gt;</span><span class="st"> </span><span class="kw">listBrAPIConnections</span>()</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true"></a>Known BrAPI Connections<span class="op">:</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true"></a><span class="st"> </span>T3<span class="op">/</span>Wheat =<span class="st"> </span>wheat.triticeaetoolbox.org [v2]</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true"></a> T3<span class="op">/</span>Wheat Sandbox =<span class="st"> </span>wheat<span class="op">-</span>sandbox.triticeaetoolbox.org [v2]</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true"></a> T3<span class="op">/</span>Oat =<span class="st"> </span>oat.triticeaetoolbox.org [v2]</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true"></a> T3<span class="op">/</span>Oat Sandbox =<span class="st"> </span>oat<span class="op">-</span>sandbox.triticeaetoolbox.org [v2]</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true"></a> T3<span class="op">/</span>Barley =<span class="st"> </span>barley.triticeaetoolbox.org [v2]</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true"></a> T3<span class="op">/</span>Barley Sandbox =<span class="st"> </span>barley<span class="op">-</span>sandbox.triticeaetoolbox.org [v2]</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true"></a> Cassavabase =<span class="st"> </span>cassavabase.org [v2]</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/listBrAPIConnections.html">listBrAPIConnections</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co"># PRINTS:</span></span>
+<span><span class="co"># Known BrAPI Connections:</span></span>
+<span><span class="co">#  T3/Wheat = wheat.triticeaetoolbox.org [v2]</span></span>
+<span><span class="co">#  T3/Wheat Sandbox = wheat-sandbox.triticeaetoolbox.org [v2]</span></span>
+<span><span class="co">#  T3/Oat = oat.triticeaetoolbox.org [v2]</span></span>
+<span><span class="co">#  T3/Oat Sandbox = oat-sandbox.triticeaetoolbox.org [v2]</span></span>
+<span><span class="co">#  T3/Barley = barley.triticeaetoolbox.org [v2]</span></span>
+<span><span class="co">#  T3/Barley Sandbox = barley-sandbox.triticeaetoolbox.org [v2]</span></span>
+<span><span class="co">#  Cassavabase = cassavabase.org [v2]</span></span></code></pre></div>
 <p>To use a known BrAPI connection, reference it by name in the <a href="https://triticeaetoolbox.github.io/BrAPI.R/reference/getBrAPIConnection.html" class="external-link">getBrAPIConnection() function</a>:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true"></a><span class="op">&gt;</span><span class="st"> </span>wheat &lt;-<span class="st"> </span><span class="kw">getBrAPIConnection</span>(<span class="st">"T3/Wheat"</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">wheat</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/getBrAPIConnection.html">getBrAPIConnection</a></span><span class="op">(</span><span class="st">"T3/Wheat"</span><span class="op">)</span></span></code></pre></div>
 <p>To manually create a BrAPI connection, you’ll need to specify the host of the BrAPI server (and optionally set the protocol, path, and/or version) in the <a href="https://triticeaetoolbox.github.io/BrAPI.R/reference/createBrAPIConnection.html" class="external-link">createBrAPIConnection() function</a>:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true"></a><span class="op">&gt;</span><span class="st"> </span>kelp &lt;-<span class="st"> </span><span class="kw">createBrAPIConnection</span>(<span class="st">"sugarkelpbase.org"</span>)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true"></a><span class="op">&gt;</span><span class="st"> </span>kelpv1 &lt;-<span class="st"> </span><span class="kw">createBrAPIConnection</span>(<span class="st">"sugarkelpbase.org"</span>, <span class="dt">version=</span><span class="st">"v1"</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">kelp</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/createBrAPIConnection.html">createBrAPIConnection</a></span><span class="op">(</span><span class="st">"sugarkelpbase.org"</span><span class="op">)</span></span>
+<span><span class="va">kelpv1</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/createBrAPIConnection.html">createBrAPIConnection</a></span><span class="op">(</span><span class="st">"sugarkelpbase.org"</span>, version<span class="op">=</span><span class="st">"v1"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="making-http-requests">Making HTTP Requests<a class="anchor" aria-label="anchor" href="#making-http-requests"></a>
@@ -127,10 +132,10 @@
 <li>
 <code>body</code> - (optional) A named list or vector of body parameters (this will be automatically converted to JSON)</li>
 <li>
-<code>page</code> - the index of the page of results to return<ul><li>When <code>page="all"</code>, all of the available pages will be fetched sequentially and the response properties of all of the individual pages along with the combined data from all of the pages will be returned</li></ul>
+<code>page</code> - (optional) the index of the page of results to return (DEFAULT: 0)<ul><li>When <code>page="all"</code>, all of the available pages will be fetched sequentially and the response properties of all of the individual pages along with the combined data from all of the pages will be returned</li></ul>
 </li>
 <li>
-<code>pageSize</code> - the maximum size of the page of results to return</li>
+<code>pageSize</code> - (optional) the maximum size of the page of results to return (DEFAULT: 10)</li>
 </ul>
 </div>
 <div class="section level3">
@@ -170,25 +175,31 @@
 <div class="section level2">
 <h2 id="examples">Examples<a class="anchor" aria-label="anchor" href="#examples"></a>
 </h2>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true"></a><span class="co"># GET Request</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true"></a><span class="op">&gt;</span><span class="st"> </span>wheat &lt;-<span class="st"> </span><span class="kw">getBrAPIConnection</span>(<span class="st">"T3/Wheat"</span>)</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true"></a><span class="op">&gt;</span><span class="st"> </span>resp &lt;-<span class="st"> </span>wheat<span class="op">$</span><span class="kw">get</span>(<span class="st">"/studies"</span>, <span class="dt">query=</span><span class="kw">list</span>(<span class="dt">programName=</span><span class="st">"Cornell University"</span>))</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true"></a></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true"></a><span class="co"># POST Request</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true"></a><span class="op">&gt;</span><span class="st"> </span>sandbox &lt;-<span class="st"> </span>BrAPIConnection<span class="op">$</span><span class="kw">new</span>(<span class="st">"wheat-sandbox.triticeaetoolbox.org"</span>)</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true"></a><span class="op">&gt;</span><span class="st"> </span>d1 &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">observationUnitDbId=</span><span class="st">"ou1"</span>, <span class="dt">observationVariableDbId=</span><span class="st">"ov1"</span>, <span class="dt">value=</span><span class="dv">50</span>)</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true"></a><span class="op">&gt;</span><span class="st"> </span>d2 &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">observationUnitDbId=</span><span class="st">"ou2"</span>, <span class="dt">observationVariableDbId=</span><span class="st">"ov1"</span>, <span class="dt">value=</span><span class="dv">40</span>)</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true"></a><span class="op">&gt;</span><span class="st"> </span>data &lt;-<span class="st"> </span><span class="kw">list</span>(d1, d2)</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true"></a><span class="op">&gt;</span><span class="st"> </span>resp &lt;-<span class="st"> </span>sandbox<span class="op">$</span><span class="kw">post</span>(<span class="st">"/token"</span>, <span class="dt">query=</span><span class="kw">list</span>(<span class="dt">username=</span><span class="st">"testing"</span>, <span class="dt">password=</span><span class="st">"testing123"</span>))</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true"></a><span class="op">&gt;</span><span class="st"> </span>resp &lt;-<span class="st"> </span>sandbox<span class="op">$</span><span class="kw">post</span>(<span class="st">"/observations"</span>, <span class="dt">body=</span>data, <span class="dt">token=</span>resp<span class="op">$</span>content<span class="op">$</span>access_token)</span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true"></a></span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true"></a><span class="co"># PUT Request</span></span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true"></a><span class="op">&gt;</span><span class="st"> </span>sandbox &lt;-<span class="st"> </span>BrAPIConnection<span class="op">$</span><span class="kw">new</span>(<span class="st">"wheat-sandbox.triticeaetoolbox.org"</span>)</span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true"></a><span class="op">&gt;</span><span class="st"> </span>d1 &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">observationDbId =</span> <span class="st">"ob1"</span>, <span class="dt">observationUnitDbId=</span><span class="st">"ou1"</span>, <span class="dt">observationVariableDbId=</span><span class="st">"ov1"</span>, <span class="dt">value=</span><span class="dv">60</span>)</span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true"></a><span class="op">&gt;</span><span class="st"> </span>d2 &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">observationDbId =</span> <span class="st">"ob2"</span>, <span class="dt">observationUnitDbId=</span><span class="st">"ou2"</span>, <span class="dt">observationVariableDbId=</span><span class="st">"ov1"</span>, <span class="dt">value=</span><span class="dv">70</span>)</span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true"></a><span class="op">&gt;</span><span class="st"> </span>data &lt;-<span class="st"> </span><span class="kw">list</span>(d1, d2)</span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true"></a><span class="op">&gt;</span><span class="st"> </span>resp &lt;-<span class="st"> </span>sandbox<span class="op">$</span><span class="kw">post</span>(<span class="st">"/token"</span>, <span class="dt">query=</span><span class="kw">list</span>(<span class="dt">username=</span><span class="st">"testing"</span>, <span class="dt">password=</span><span class="st">"testing123"</span>))</span>
-<span id="cb6-19"><a href="#cb6-19" aria-hidden="true"></a><span class="op">&gt;</span><span class="st"> </span>resp &lt;-<span class="st"> </span>sandbox<span class="op">$</span><span class="kw">put</span>(<span class="st">"/observations"</span>, <span class="dt">body=</span>data, <span class="dt">token=</span>resp<span class="op">$</span>content<span class="op">$</span>access_token)</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># GET Request</span></span>
+<span><span class="va">wheat</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/getBrAPIConnection.html">getBrAPIConnection</a></span><span class="op">(</span><span class="st">"T3/Wheat"</span><span class="op">)</span></span>
+<span><span class="va">resp</span> <span class="op">&lt;-</span> <span class="va">wheat</span><span class="op">$</span><span class="fu">get</span><span class="op">(</span><span class="st">"/studies"</span>, query<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>programName<span class="op">=</span><span class="st">"Cornell University"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># POST Request</span></span>
+<span><span class="va">sandbox</span> <span class="op">&lt;-</span> <span class="va"><a href="reference/BrAPIConnection.html">BrAPIConnection</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="st">"wheat-sandbox.triticeaetoolbox.org"</span><span class="op">)</span></span>
+<span><span class="va">d1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>observationUnitDbId<span class="op">=</span><span class="st">"ou1"</span>, observationVariableDbId<span class="op">=</span><span class="st">"ov1"</span>, value<span class="op">=</span><span class="fl">50</span><span class="op">)</span></span>
+<span><span class="va">d2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>observationUnitDbId<span class="op">=</span><span class="st">"ou2"</span>, observationVariableDbId<span class="op">=</span><span class="st">"ov1"</span>, value<span class="op">=</span><span class="fl">40</span><span class="op">)</span></span>
+<span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">d1</span>, <span class="va">d2</span><span class="op">)</span></span>
+<span><span class="va">resp</span> <span class="op">&lt;-</span> <span class="va">sandbox</span><span class="op">$</span><span class="fu">post</span><span class="op">(</span><span class="st">"/token"</span>, query<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>username<span class="op">=</span><span class="st">"testing"</span>, password<span class="op">=</span><span class="st">"testing123"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">resp</span> <span class="op">&lt;-</span> <span class="va">sandbox</span><span class="op">$</span><span class="fu">post</span><span class="op">(</span><span class="st">"/observations"</span>, body<span class="op">=</span><span class="va">data</span>, token<span class="op">=</span><span class="va">resp</span><span class="op">$</span><span class="va">content</span><span class="op">$</span><span class="va">access_token</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># PUT Request</span></span>
+<span><span class="va">sandbox</span> <span class="op">&lt;-</span> <span class="va"><a href="reference/BrAPIConnection.html">BrAPIConnection</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="st">"wheat-sandbox.triticeaetoolbox.org"</span><span class="op">)</span></span>
+<span><span class="va">d1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>observationDbId <span class="op">=</span> <span class="st">"ob1"</span>, observationUnitDbId<span class="op">=</span><span class="st">"ou1"</span>, observationVariableDbId<span class="op">=</span><span class="st">"ov1"</span>, value<span class="op">=</span><span class="fl">60</span><span class="op">)</span></span>
+<span><span class="va">d2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>observationDbId <span class="op">=</span> <span class="st">"ob2"</span>, observationUnitDbId<span class="op">=</span><span class="st">"ou2"</span>, observationVariableDbId<span class="op">=</span><span class="st">"ov1"</span>, value<span class="op">=</span><span class="fl">70</span><span class="op">)</span></span>
+<span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">d1</span>, <span class="va">d2</span><span class="op">)</span></span>
+<span><span class="va">resp</span> <span class="op">&lt;-</span> <span class="va">sandbox</span><span class="op">$</span><span class="fu">post</span><span class="op">(</span><span class="st">"/token"</span>, query<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>username<span class="op">=</span><span class="st">"testing"</span>, password<span class="op">=</span><span class="st">"testing123"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">resp</span> <span class="op">&lt;-</span> <span class="va">sandbox</span><span class="op">$</span><span class="fu">put</span><span class="op">(</span><span class="st">"/observations"</span>, body<span class="op">=</span><span class="va">data</span>, token<span class="op">=</span><span class="va">resp</span><span class="op">$</span><span class="va">content</span><span class="op">$</span><span class="va">access_token</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="tutorial">Tutorial<a class="anchor" aria-label="anchor" href="#tutorial"></a>
+</h2>
+<p>A more in-depth tutorial using data from T3/Wheat can be found in the TUTORIAL.md file.</p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="license">
