@@ -164,6 +164,60 @@ BrAPIConnection <- R6::R6Class("BrAPIConnection",
     wizard = function(data_type, filters = list(), verbose = FALSE) {
       private$check_if_breedbase()
       BreedbaseRequest(private$base(), "wizard", data_type, filters, verbose)
+    },
+
+
+    #' @description Download a Breedbase VCF File
+    #'
+    #' NOTE: Depending on the number of markers and accessions, this download may take a 
+    #' very long time to complete.  You may want to use the conn$vcf_archived() function 
+    #' to download a static archived VCF file of a genotyping project, if one is available.
+    #'
+    #' @param output The path to the output VCF file
+    #' @param genotyping_protocol_id The Database ID of the genotyping protocol to download
+    #' @param accessions (optional) A list of Accession Database IDs to use as a filter for the VCF data
+    #' @param verbose Set to TRUE to include logging information
+    #'
+    #' @return Status information about the request.  If successful, the genotype data will 
+    #' be downloaded to the VCF file specified by the output argument.
+    #'
+    #' @examples
+    #' \dontrun{
+    #' wheat <- getBrAPIConnection("T3/WheatCAP")
+    #' wheat$vcf("~/Desktop/my_data.vcf", genotyping_protocol_id = 249)
+    #' wheat$vcf("~/Desktop/my_data.vcf", genotyping_protocol_id = 249, accessions = c(228677, 1666408))
+    #' }
+    vcf = function(output, genotyping_protocol_id, accessions = NULL, verbose = FALSE) {
+      private$check_if_breedbase()
+      BreedbaseRequest(private$base(), "vcf", output, genotyping_protocol_id, accessions, verbose)
+    },
+
+    #' @description Download an Archived Breedbase VCF File
+    #'
+    #' This function will list all of the available archived VCF files available for the specified protocol 
+    #' and/or project.  You can select one to download and save to the provided output file.
+    #'
+    #' The archived files are saved at the project-level.  So, if you specify a protocol, you'll get a list
+    #' of all of the available files for each project in that protocol.  If you're performing analysis at 
+    #' the protocol-level, you'll need to manually merge the VCF files from each project in that protocol.
+    #'
+    #' @param output The path to the output VCF file
+    #' @param genotyping_protocol_id The Database ID of the genotyping protocol
+    #' @param genotyping_project_id The Database ID of the genotyping project
+    #' @param verbose Set to TRUE to include logging information
+    #'
+    #' @return Status information about the request. If the download of an available archived VCF file is
+    #' successful, the genotype data will be downloaded to the VCF file specified by the output argument.
+    #'
+    #' @examples
+    #' \dontrun{
+    #' wheat <- getBrAPIConnection("T3/WheatCAP")
+    #' wheat$vcf_archived("~/Desktop/my_data.vcf", genotyping_protocol_id=233)
+    #' wheat$vcf_archived("~/Desktop/my_data.vcf", genotyping_project_id=10371)
+    #' }
+    vcf_archived = function(output, genotyping_protocol_id = NULL, genotyping_project_id = NULL, verbose = FALSE) {
+      private$check_if_breedbase()
+      BreedbaseRequest(private$base(), "vcf_archived", output, genotyping_protocol_id, genotyping_project_id, verbose)
     }
 
   ),

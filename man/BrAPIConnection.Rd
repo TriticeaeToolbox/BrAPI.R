@@ -87,6 +87,26 @@ accessions <- wheat$wizard("accessions", list(trials = c("CornellMaster_2024_Hel
 
 # find genotyping protocols that have data for the above set of accessions
 geno_protocols <- wheat$wizard("genotyping_protocols", list(accessions = accessions$data$ids))
+
+## ------------------------------------------------
+## Method `BrAPIConnection$vcf`
+## ------------------------------------------------
+
+\dontrun{
+wheat <- getBrAPIConnection("T3/WheatCAP")
+wheat$vcf("~/Desktop/my_data.vcf", genotyping_protocol_id = 249)
+wheat$vcf("~/Desktop/my_data.vcf", genotyping_protocol_id = 249, accessions = c(228677, 1666408))
+}
+
+## ------------------------------------------------
+## Method `BrAPIConnection$vcf_archived`
+## ------------------------------------------------
+
+\dontrun{
+wheat <- getBrAPIConnection("T3/WheatCAP")
+wheat$vcf_archived("~/Desktop/my_data.vcf", genotyping_protocol_id=233)
+wheat$vcf_archived("~/Desktop/my_data.vcf", genotyping_project_id=10371)
+}
 }
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
@@ -112,6 +132,8 @@ adds additional support for breedbase-specific functionality. (Default: \code{FA
 \item \href{#method-BrAPIConnection-post}{\code{BrAPIConnection$post()}}
 \item \href{#method-BrAPIConnection-put}{\code{BrAPIConnection$put()}}
 \item \href{#method-BrAPIConnection-wizard}{\code{BrAPIConnection$wizard()}}
+\item \href{#method-BrAPIConnection-vcf}{\code{BrAPIConnection$vcf()}}
+\item \href{#method-BrAPIConnection-vcf_archived}{\code{BrAPIConnection$vcf_archived()}}
 \item \href{#method-BrAPIConnection-clone}{\code{BrAPIConnection$clone()}}
 }
 }
@@ -321,6 +343,105 @@ accessions <- wheat$wizard("accessions", list(trials = c("CornellMaster_2024_Hel
 
 # find genotyping protocols that have data for the above set of accessions
 geno_protocols <- wheat$wizard("genotyping_protocols", list(accessions = accessions$data$ids))
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-BrAPIConnection-vcf"></a>}}
+\if{latex}{\out{\hypertarget{method-BrAPIConnection-vcf}{}}}
+\subsection{Method \code{vcf()}}{
+Download a Breedbase VCF File
+
+NOTE: Depending on the number of markers and accessions, this download may take a
+very long time to complete.  You may want to use the conn$vcf_archived() function
+to download a static archived VCF file of a genotyping project, if one is available.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BrAPIConnection$vcf(
+  output,
+  genotyping_protocol_id,
+  accessions = NULL,
+  verbose = FALSE
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{output}}{The path to the output VCF file}
+
+\item{\code{genotyping_protocol_id}}{The Database ID of the genotyping protocol to download}
+
+\item{\code{accessions}}{(optional) A list of Accession Database IDs to use as a filter for the VCF data}
+
+\item{\code{verbose}}{Set to TRUE to include logging information}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+Status information about the request.  If successful, the genotype data will
+be downloaded to the VCF file specified by the output argument.
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+wheat <- getBrAPIConnection("T3/WheatCAP")
+wheat$vcf("~/Desktop/my_data.vcf", genotyping_protocol_id = 249)
+wheat$vcf("~/Desktop/my_data.vcf", genotyping_protocol_id = 249, accessions = c(228677, 1666408))
+}
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-BrAPIConnection-vcf_archived"></a>}}
+\if{latex}{\out{\hypertarget{method-BrAPIConnection-vcf_archived}{}}}
+\subsection{Method \code{vcf_archived()}}{
+Download an Archived Breedbase VCF File
+
+This function will list all of the available archived VCF files available for the specified protocol
+and/or project.  You can select one to download and save to the provided output file.
+
+The archived files are saved at the project-level.  So, if you specify a protocol, you'll get a list
+of all of the available files for each project in that protocol.  If you're performing analysis at
+the protocol-level, you'll need to manually merge the VCF files from each project in that protocol.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BrAPIConnection$vcf_archived(
+  output,
+  genotyping_protocol_id = NULL,
+  genotyping_project_id = NULL,
+  verbose = FALSE
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{output}}{The path to the output VCF file}
+
+\item{\code{genotyping_protocol_id}}{The Database ID of the genotyping protocol}
+
+\item{\code{genotyping_project_id}}{The Database ID of the genotyping project}
+
+\item{\code{verbose}}{Set to TRUE to include logging information}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+Status information about the request. If the download of an available archived VCF file is
+successful, the genotype data will be downloaded to the VCF file specified by the output argument.
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+wheat <- getBrAPIConnection("T3/WheatCAP")
+wheat$vcf_archived("~/Desktop/my_data.vcf", genotyping_protocol_id=233)
+wheat$vcf_archived("~/Desktop/my_data.vcf", genotyping_project_id=10371)
+}
 }
 \if{html}{\out{</div>}}
 
