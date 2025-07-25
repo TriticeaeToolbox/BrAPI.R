@@ -1,42 +1,16 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>/404.html</loc>
-  </url>
-  <url>
-    <loc>/LICENSE-text.html</loc>
-  </url>
-  <url>
-    <loc>/TUTORIAL.html</loc>
-  </url>
-  <url>
-    <loc>/authors.html</loc>
-  </url>
-  <url>
-    <loc>/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/BrAPIConnection.html</loc>
-  </url>
-  <url>
-    <loc>/reference/BrAPIRequest.html</loc>
-  </url>
-  <url>
-    <loc>/reference/KNOWN_BRAPI_CONNECTIONS.html</loc>
-  </url>
-  <url>
-    <loc>/reference/createBrAPIConnection.html</loc>
-  </url>
-  <url>
-    <loc>/reference/getBrAPIConnection.html</loc>
-  </url>
-  <url>
-    <loc>/reference/getBrAPIConnections.html</loc>
-  </url>
-  <url>
-    <loc>/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/listBrAPIConnections.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>/404.html</loc></url>
+<url><loc>/LICENSE-text.html</loc></url>
+<url><loc>/TUTORIAL.html</loc></url>
+<url><loc>/authors.html</loc></url>
+<url><loc>/index.html</loc></url>
+<url><loc>/reference/BrAPIConnection.html</loc></url>
+<url><loc>/reference/BrAPIRequest.html</loc></url>
+<url><loc>/reference/KNOWN_BRAPI_CONNECTIONS.html</loc></url>
+<url><loc>/reference/createBrAPIConnection.html</loc></url>
+<url><loc>/reference/getBrAPIConnection.html</loc></url>
+<url><loc>/reference/getBrAPIConnections.html</loc></url>
+<url><loc>/reference/index.html</loc></url>
+<url><loc>/reference/listBrAPIConnections.html</loc></url>
 </urlset>
+
