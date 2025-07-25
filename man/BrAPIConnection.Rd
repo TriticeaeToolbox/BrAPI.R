@@ -13,6 +13,7 @@ An R6 Class representing a connection to a BrAPI server.
 
 This Class provides all of the information needed for connecting to a BrAPI server.
 The host field is required.  For all other fields, the default value will be used if one is not provided.
+Add the \code{is_breedbase=TRUE} argument to enable breedbase-specific functions.
 
 This Class also provides helper functions for making requests to the BrAPI server.  Use \code{conn$get()} to make
 a GET request, \code{conn$post()} to make a POST request, and \code{conn$put()} to make a PUT request.
@@ -40,17 +41,26 @@ For a multi-page request (when \code{page="all"}):
 }
 \examples{
 # Directly Creating a new BrAPIConnection Object
-wheat <- BrAPIConnection$new("wheat.triticeaetoolbox.org")
+wheat <- BrAPIConnection$new("wheat.triticeaetoolbox.org", is_breedbase=TRUE)
 wheatv1 <- BrAPIConnection$new("wheat.triticeaetoolbox.org", version="v1")
 
 # Using the createBrAPIConnection function
 barley <- createBrAPIConnection("barley.triticeaetoolbox.org")
 barleyv1 <- createBrAPIConnection("barley.triticeaetoolbox.org", version="v1")
 
+
+## ------------------------------------------------
+## Method `BrAPIConnection$get`
+## ------------------------------------------------
+
 # Making a GET request
 resp <- wheat$get("/germplasm", pageSize=100)
 resp <- wheat$get("/studies", pageSize=1000, page="all")
 resp <- wheat$get("/studies", query=list(programName="Cornell University"), pageSize=1000)
+
+## ------------------------------------------------
+## Method `BrAPIConnection$post`
+## ------------------------------------------------
 
 # Make a POST request
 \dontrun{
@@ -62,6 +72,21 @@ resp <- sandbox$post("/token", query=list(username="testing", password="testing1
 resp <- sandbox$post("/observations", body=data, token=resp$content$access_token)
 }
 
+
+## ------------------------------------------------
+## Method `BrAPIConnection$wizard`
+## ------------------------------------------------
+
+wheat <- createBrAPIConnection("wheat.triticeaetoolbox.org", is_breedbase = TRUE)
+
+# find matching trials, filtered by two breeding programs (identified by ids) and one year
+trials <- wheat$wizard("trials", list(breeding_programs = c(327,367), years = c(2023)))
+
+# find matching accessions, filtered by field trials (identified by name)
+accessions <- wheat$wizard("accessions", list(trials = c("CornellMaster_2024_Helfer", "CornellMaster_2025_McGowan")))
+
+# find genotyping protocols that have data for the above set of accessions
+geno_protocols <- wheat$wizard("genotyping_protocols", list(accessions = accessions$data$ids))
 }
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
@@ -73,6 +98,9 @@ resp <- sandbox$post("/observations", body=data, token=resp$content$access_token
 \item{\code{path}}{The base bath of the BrAPI endpoints (not including the version) (Default: \verb{/brapi/})}
 
 \item{\code{version}}{The BrAPI version (such as 'v1' or 'v2') (Default: \code{v2})}
+
+\item{\code{is_breedbase}}{A flag to indicate this BrAPI connection is to a breedbase instance.  This
+adds additional support for breedbase-specific functionality. (Default: \code{FALSE})}
 }
 \if{html}{\out{</div>}}
 }
@@ -83,6 +111,7 @@ resp <- sandbox$post("/observations", body=data, token=resp$content$access_token
 \item \href{#method-BrAPIConnection-get}{\code{BrAPIConnection$get()}}
 \item \href{#method-BrAPIConnection-post}{\code{BrAPIConnection$post()}}
 \item \href{#method-BrAPIConnection-put}{\code{BrAPIConnection$put()}}
+\item \href{#method-BrAPIConnection-wizard}{\code{BrAPIConnection$wizard()}}
 \item \href{#method-BrAPIConnection-clone}{\code{BrAPIConnection$clone()}}
 }
 }
@@ -92,7 +121,13 @@ resp <- sandbox$post("/observations", body=data, token=resp$content$access_token
 \subsection{Method \code{new()}}{
 Create a new \code{BrAPIConnection} object
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BrAPIConnection$new(host, protocol = "https", path = "/brapi/", version = "v2")}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{BrAPIConnection$new(
+  host,
+  protocol = "https",
+  path = "/brapi/",
+  version = "v2",
+  is_breedbase = FALSE
+)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -105,6 +140,8 @@ Create a new \code{BrAPIConnection} object
 \item{\code{path}}{(optional) The base path of the BrAPI endpoints}
 
 \item{\code{version}}{(optional) The BrAPI version}
+
+\item{\code{is_breedbase}}{(optional) set to TRUE if the connection is to a breedbase instance}
 }
 \if{html}{\out{</div>}}
 }
@@ -143,6 +180,17 @@ Make a GET request
 \subsection{Returns}{
 A named list of Response properties
 }
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{# Making a GET request
+resp <- wheat$get("/germplasm", pageSize=100)
+resp <- wheat$get("/studies", pageSize=1000, page="all")
+resp <- wheat$get("/studies", query=list(programName="Cornell University"), pageSize=1000)
+}
+\if{html}{\out{</div>}}
+
+}
+
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BrAPIConnection-post"></a>}}
@@ -177,6 +225,23 @@ Make a POST request
 \subsection{Returns}{
 A named list of Response properties
 }
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{# Make a POST request
+\dontrun{
+sandbox <- BrAPIConnection$new("wheat-sandbox.triticeaetoolbox.org")
+d1 <- list(observationUnitDbId="ou1", observationVariableDbId="ov1", value=50)
+d2 <- list(observationUnitDbId="ou2", observationVariableDbId="ov1", value=40)
+data <- list(d1, d2)
+resp <- sandbox$post("/token", query=list(username="testing", password="testing123"))
+resp <- sandbox$post("/observations", body=data, token=resp$content$access_token)
+}
+
+}
+\if{html}{\out{</div>}}
+
+}
+
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BrAPIConnection-put"></a>}}
@@ -211,6 +276,56 @@ Make a PUT request
 \subsection{Returns}{
 A named list of Response properties
 }
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-BrAPIConnection-wizard"></a>}}
+\if{latex}{\out{\hypertarget{method-BrAPIConnection-wizard}{}}}
+\subsection{Method \code{wizard()}}{
+Make a Breedbase Search Wizard request
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BrAPIConnection$wizard(data_type, filters = list(), verbose = FALSE)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{data_type}}{The data type to return after filtering}
+
+\item{\code{filters}}{A list of the filters (up to 3) to apply to the search.  The key should be the
+name of the data type and the value should be a vector of database ids or names of the items
+to include in the filter.
+
+It is better to use IDs if you have them - when you use names, the function will make additional
+queries to lookup the IDs for the names you provide.
+
+Supported data types include: accessions, organisms, breeding_programs, genotyping_protocols, genotyping_projects, locations, plants, plots, tissue_sample, seedlots, trait_components, traits, trials, trial_designs, trial_types, years}
+
+\item{\code{verbose}}{Set to TRUE to include logging information}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A response with the matching data.
+The $content key contains the raw breedbase response.
+The $data key contains parsed data: a list parsed into \code{ids}, \code{names} and \code{map} (a named list of item names -> ids)
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{wheat <- createBrAPIConnection("wheat.triticeaetoolbox.org", is_breedbase = TRUE)
+
+# find matching trials, filtered by two breeding programs (identified by ids) and one year
+trials <- wheat$wizard("trials", list(breeding_programs = c(327,367), years = c(2023)))
+
+# find matching accessions, filtered by field trials (identified by name)
+accessions <- wheat$wizard("accessions", list(trials = c("CornellMaster_2024_Helfer", "CornellMaster_2025_McGowan")))
+
+# find genotyping protocols that have data for the above set of accessions
+geno_protocols <- wheat$wizard("genotyping_protocols", list(accessions = accessions$data$ids))
+}
+\if{html}{\out{</div>}}
+
+}
+
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BrAPIConnection-clone"></a>}}

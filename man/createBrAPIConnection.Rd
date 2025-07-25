@@ -6,9 +6,10 @@
 \usage{
 createBrAPIConnection(
   host = NULL,
-  protocol = NULL,
-  path = NULL,
-  version = NULL
+  protocol = "https",
+  path = "/brapi/",
+  version = "v2",
+  is_breedbase = FALSE
 )
 }
 \arguments{
@@ -19,6 +20,8 @@ createBrAPIConnection(
 \item{path}{(optional) the base path to the BrAPI endpoints (without the version) (DEFAULT: /brapi/)}
 
 \item{version}{(optional) the BrAPI version to use (DEFAULT: v2)}
+
+\item{is_breedbase}{(optional) set to TRUE if the connection is to a breedbase instance (DEFAULT: FALSE)}
 }
 \value{
 BrAPIConnection
@@ -27,7 +30,7 @@ BrAPIConnection
 Create a BrAPI connection to the specified host
 }
 \examples{
-wheat <- createBrAPIConnection("wheat.triticeaetoolbox.org")
-oatv1 <- createBrAPIConnection("oat.triticeaetoolbox.org", version="v1")
+wheat <- createBrAPIConnection("wheat.triticeaetoolbox.org", is_breedbase=TRUE)
+oatv1 <- createBrAPIConnection("oat.triticeaetoolbox.org", version="v1", is_breedbase=TRUE)
 
 }

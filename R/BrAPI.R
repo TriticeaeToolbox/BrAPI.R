@@ -65,7 +65,7 @@ BrAPIRequest <- function(method, base, call, ..., query=list(), body=list(), pag
     totalPages = content$metadata$pagination$totalPages
   }
 
-  #Print Response Info
+  # Print Response Info
   if ( verbose ) {
     cat(
       sprintf("Response [%s] <%s>", method, resp$url),
@@ -139,7 +139,7 @@ BrAPIRequest <- function(method, base, call, ..., query=list(), body=list(), pag
 
   }
 
-  # SINGE PAGE REQUESTED
+  # SINGLE PAGE REQUESTED
   # Return all of the Response properties
   else {
 
