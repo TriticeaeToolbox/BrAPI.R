@@ -303,7 +303,14 @@ A named list of Response properties
 \if{html}{\out{<a id="method-BrAPIConnection-wizard"></a>}}
 \if{latex}{\out{\hypertarget{method-BrAPIConnection-wizard}{}}}
 \subsection{Method \code{wizard()}}{
-Make a Breedbase Search Wizard request
+Make a Breedbase Search Wizard request.
+
+This function returns all of the items of the specified data type, filtered by the data types
+and items included in the filters argument.  For example, you can use this to find all field
+trials from a set of breeding programs in a specific year.  If you don't provide any filters,
+the function will return the full set of all items in the database for the data type.  The results
+only include the database IDs and names of the matching items.  You can use the IDs in the general
+BrAPI endpoints to get additional data about the items.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BrAPIConnection$wizard(data_type, filters = list(), verbose = FALSE)}\if{html}{\out{</div>}}
 }

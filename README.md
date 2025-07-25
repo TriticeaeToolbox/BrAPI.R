@@ -69,7 +69,7 @@ kelpv1 <- createBrAPIConnection("sugarkelpbase.org", version="v1")
 ```
 
 ### Breedbase Connections
-This package includes some breedbase-specific helper functions (such as pragmatically using the Search Wizard) that are only available for breedbase BrAPI instances.  When using the `createBrAPIConnection()` function, add the `is_breedbase=TRUE` argument to enable the breedbase-specific functions.
+This package includes some breedbase-specific helper functions (such as programatically using the Search Wizard) that are only available for breedbase BrAPI instances.  When using the `createBrAPIConnection()` function, add the `is_breedbase=TRUE` argument to enable the breedbase-specific functions.
 
 ```R
 wheat <- createBrAPIConnection("wheat.triticeaetoolbox.org", is_breedbase=TRUE)
@@ -144,6 +144,10 @@ resp <- sandbox$put("/observations", body=data, token=resp$content$access_token)
 ## Breedbase Functions
 
 This package includes some breedbase-specific helper functions for performing some non-BrAPI compliant tasks that are available on breedbase.  The `BrAPIConnection` object needs to have the `is_breedbase` argument set to `TRUE` in order for these functions to be enabled.
+
+- [conn$wizard() function](https://triticeaetoolbox.github.io/BrAPI.R/reference/BrAPIConnection.html#method-BrAPIConnection-wizard) - filter data using the breedbase Search Wizard
+- [conn$vcf() function](https://triticeaetoolbox.github.io/BrAPI.R/reference/BrAPIConnection.html#method-BrAPIConnection-vcf) - download a breedbase-generated VCF file for a genotyping protocol, optionally filtered by accessions
+- [conn$vcf_archive() function](https://triticeaetoolbox.github.io/BrAPI.R/reference/BrAPIConnection.html#method-BrAPIConnection-vcf_archived) - download a static, archived VCF for an entire genotyping project
 
 ### Search Wizard: `conn$wizard(data_type, filters, verbose)`
 

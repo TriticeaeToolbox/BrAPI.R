@@ -104,7 +104,7 @@
 <div class="section level3">
 <h3 id="breedbase-connections">Breedbase Connections<a class="anchor" aria-label="anchor" href="#breedbase-connections"></a>
 </h3>
-<p>This package includes some breedbase-specific helper functions (such as pragmatically using the Search Wizard) that are only available for breedbase BrAPI instances. When using the <code><a href="reference/createBrAPIConnection.html">createBrAPIConnection()</a></code> function, add the <code>is_breedbase=TRUE</code> argument to enable the breedbase-specific functions.</p>
+<p>This package includes some breedbase-specific helper functions (such as programatically using the Search Wizard) that are only available for breedbase BrAPI instances. When using the <code><a href="reference/createBrAPIConnection.html">createBrAPIConnection()</a></code> function, add the <code>is_breedbase=TRUE</code> argument to enable the breedbase-specific functions.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">wheat</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/createBrAPIConnection.html">createBrAPIConnection</a></span><span class="op">(</span><span class="st">"wheat.triticeaetoolbox.org"</span>, is_breedbase<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>When using the known connections via the <code><a href="reference/getBrAPIConnection.html">getBrAPIConnection()</a></code> function, the <code>is_breedbase</code> argument will automatically be added for breedbase connections.</p>
@@ -205,6 +205,14 @@
 <h2 id="breedbase-functions">Breedbase Functions<a class="anchor" aria-label="anchor" href="#breedbase-functions"></a>
 </h2>
 <p>This package includes some breedbase-specific helper functions for performing some non-BrAPI compliant tasks that are available on breedbase. The <code>BrAPIConnection</code> object needs to have the <code>is_breedbase</code> argument set to <code>TRUE</code> in order for these functions to be enabled.</p>
+<ul>
+<li>
+<a href="https://triticeaetoolbox.github.io/BrAPI.R/reference/BrAPIConnection.html#method-BrAPIConnection-wizard" class="external-link">conn$wizard() function</a> - filter data using the breedbase Search Wizard</li>
+<li>
+<a href="https://triticeaetoolbox.github.io/BrAPI.R/reference/BrAPIConnection.html#method-BrAPIConnection-vcf" class="external-link">conn$vcf() function</a> - download a breedbase-generated VCF file for a genotyping protocol, optionally filtered by accessions</li>
+<li>
+<a href="https://triticeaetoolbox.github.io/BrAPI.R/reference/BrAPIConnection.html#method-BrAPIConnection-vcf_archived" class="external-link">conn$vcf_archive() function</a> - download a static, archived VCF for an entire genotyping project</li>
+</ul>
 <div class="section level3">
 <h3 id="search-wizard-connwizarddata_type-filters-verbose">Search Wizard: <code>conn$wizard(data_type, filters, verbose)</code>
 <a class="anchor" aria-label="anchor" href="#search-wizard-connwizarddata_type-filters-verbose"></a>

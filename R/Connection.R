@@ -133,7 +133,14 @@ BrAPIConnection <- R6::R6Class("BrAPIConnection",
       BrAPIRequest("PUT", private$url(), call, ...)
     },
 
-    #' @description Make a Breedbase Search Wizard request
+    #' @description Make a Breedbase Search Wizard request.
+    #'
+    #' This function returns all of the items of the specified data type, filtered by the data types
+    #' and items included in the filters argument.  For example, you can use this to find all field
+    #' trials from a set of breeding programs in a specific year.  If you don't provide any filters,
+    #' the function will return the full set of all items in the database for the data type.  The results
+    #' only include the database IDs and names of the matching items.  You can use the IDs in the general
+    #' BrAPI endpoints to get additional data about the items.
     #'
     #' @param data_type The data type to return after filtering
     #' @param filters A list of the filters (up to 3) to apply to the search.  The key should be the 

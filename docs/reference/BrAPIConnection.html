@@ -306,7 +306,13 @@ resp &lt;- sandbox$post("/observations", body=data, token=resp$content$access_to
 
 </div><p></p><hr><a id="method-BrAPIConnection-wizard"></a><div class="section">
 <h3 id="method-wizard-">Method <code>wizard()</code><a class="anchor" aria-label="anchor" href="#method-wizard-"></a></h3>
-<p>Make a Breedbase Search Wizard request</p><div class="section">
+<p>Make a Breedbase Search Wizard request.</p>
+<p>This function returns all of the items of the specified data type, filtered by the data types
+and items included in the filters argument.  For example, you can use this to find all field
+trials from a set of breeding programs in a specific year.  If you don't provide any filters,
+the function will return the full set of all items in the database for the data type.  The results
+only include the database IDs and names of the matching items.  You can use the IDs in the general
+BrAPI endpoints to get additional data about the items.</p><div class="section">
 <h4 id="usage-4">Usage<a class="anchor" aria-label="anchor" href="#usage-4"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BrAPIConnection</span><span class="op">$</span><span class="fu">wizard</span><span class="op">(</span><span class="va">data_type</span>, filters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
