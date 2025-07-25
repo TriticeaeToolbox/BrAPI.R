@@ -147,7 +147,7 @@ This package includes some breedbase-specific helper functions for performing so
 
 ### Search Wizard: `conn$wizard(data_type, filters, verbose)`
 
-The breedbase Search Wizard is a great tool for quickly filtering and combining datasets in the database.  You can use it to request data of a specific data type that matches specified filter criteria.
+The breedbase Search Wizard is a great tool for quickly filtering and combining datasets in the database.  You can use it to request data of a specific data type that matches specified filter criteria.  The filter criteria can be specified by either the IDs or the names of the items.  However, if you use names, the function will perform additional queries to lookup the IDs for the named items.  If you already have the IDs, it is better to use those.
 
 For example, you can use it to find the genotyping protocols that have data from a set of accessions that were observed in a set of field trials.
 
@@ -189,6 +189,48 @@ The `filters` argument can contain up to 3 different filters. The name of the li
 ```R
 # Find all trials from these two breeding programs from one year
 trials <- wheat$wizard("trials", list(breeding_programs = c(327,367), years = c(2023)))
+```
+
+### Downloading VCF Files: `conn$vcf(output, genotyping_protocol_id, accessions)`
+
+If the BrAPI genotyping endpoints are too slow, you can try downloading VCF files of the genotyping data using the internal breedbase endpoints that are used to download genotyping data from the Search Wizard.  To use the `conn$vcf()` function, you'll need to provide the path to the output file where the VCF file will be saved on your computer, the database id of the genotyping protocol, and (optionally) a list of database ids of accessions to use as a filter on the genotype data.
+
+To download an entire genotyping protocol:
+
+```R
+wheat <- getBrAPIConnection("T3/WheatCAP")
+wheat$vcf("~/Desktop/my_data.vcf", genotyping_protocol_id = 249)
+```
+
+To download a subset of accessions from a genotyping protocol:
+
+```R
+wheat <- getBrAPIConnection("T3/WheatCAP")
+wheat$vcf("~/Desktop/my_data.vcf", genotyping_protocol_id = 249, accessions = c(228677, 1666408))
+```
+
+Depending on the size of the genotyping protocol (number of markers) and the number of accessions to download, **this download function may still take a long time to download**.  If the function timesout, you may want to try to download an archived VCF file of the data.
+
+### Downloading Archived VCF Files: `conn$vcf_archived(output, genotyping_protocol_id, genotyping_project_id)`
+
+This function will allow you to download a static, archived VCF file for a specific genotyping project, when available.  These files are the original VCF files that were used to upload the data to the database.
+
+The archived files are saved at the project level.  So, if you specify a protocol, you'll get a list of all of the available files for each project in that protocol and you can select which one to download.  If you're performing analysis at the protocol level, you'll need to manually merge the VCF files from each project in that protocol.
+
+```R
+> wheat <- getBrAPIConnection("T3/WheatCAP")
+> resp <- wheat$vcf_archived("~/Desktop/my_data.vcf", genotyping_protocol_id=233)
+Finding archived VCF files...
+--> Select a file to download:
+[1] UCD_2020_Allegro (Allegro)
+[2] KSU_2023_Allegro (Allegro)
+--> Enter file number: 1
+Response [GET] <https://wheatcap.triticeaetoolbox.org/ajax/genotyping_project/download_archived_vcf?genotyping_project_id=11359&basename=2024-06-13_14:25:50_23GUT_FIN.vcf>
+  Success: (200) OK
+  Project: KSU_2023_Allegro (11359)
+  Protocol: Allegro (233)
+  Basename: 2024-06-13_14:25:50_23GUT_FIN.vcf
+  Output File: ~/Desktop/my_data.vcf
 ```
 
 ## Tutorial
