@@ -68,6 +68,15 @@ kelp <- createBrAPIConnection("sugarkelpbase.org")
 kelpv1 <- createBrAPIConnection("sugarkelpbase.org", version="v1")
 ```
 
+### Breedbase Connections
+This package includes some breedbase-specific helper functions (such as pragmatically using the Search Wizard) that are only available for breedbase BrAPI instances.  When using the `createBrAPIConnection()` function, add the `is_breedbase=TRUE` argument to enable the breedbase-specific functions.
+
+```R
+wheat <- createBrAPIConnection("wheat.triticeaetoolbox.org", is_breedbase=TRUE)
+```
+
+When using the known connections via the `getBrAPIConnection()` function, the `is_breedbase` argument will automatically be added for breedbase connections.
+
 ## Making HTTP Requests
 
 Once you have a `BrAPIConnection` object, you can use it to make HTTP Requests to the BrAPI server.  There is a separate helper function for each type of HTTP request.
@@ -108,7 +117,7 @@ For a multi-page request (when `page="all"`):
 - `data` - a list of the data object from the body of the response by page, if returned
 - `combined_data` - a combined vector of the data from all of the pages, if returned
 
-## Examples
+### Examples
 
 ```R
 # GET Request
@@ -116,7 +125,7 @@ wheat <- getBrAPIConnection("T3/Wheat")
 resp <- wheat$get("/studies", query=list(programName="Cornell University"))
 
 # POST Request
-sandbox <- BrAPIConnection$new("wheat-sandbox.triticeaetoolbox.org")
+sandbox <- createBrAPIConnection("wheat-sandbox.triticeaetoolbox.org")
 d1 <- list(observationUnitDbId="ou1", observationVariableDbId="ov1", value=50)
 d2 <- list(observationUnitDbId="ou2", observationVariableDbId="ov1", value=40)
 data <- list(d1, d2)
@@ -124,12 +133,62 @@ resp <- sandbox$post("/token", query=list(username="testing", password="testing1
 resp <- sandbox$post("/observations", body=data, token=resp$content$access_token)
 
 # PUT Request
-sandbox <- BrAPIConnection$new("wheat-sandbox.triticeaetoolbox.org")
+sandbox <- createBrAPIConnection("wheat-sandbox.triticeaetoolbox.org")
 d1 <- list(observationDbId = "ob1", observationUnitDbId="ou1", observationVariableDbId="ov1", value=60)
 d2 <- list(observationDbId = "ob2", observationUnitDbId="ou2", observationVariableDbId="ov1", value=70)
 data <- list(d1, d2)
 resp <- sandbox$post("/token", query=list(username="testing", password="testing123"))
 resp <- sandbox$put("/observations", body=data, token=resp$content$access_token)
+```
+
+## Breedbase Functions
+
+This package includes some breedbase-specific helper functions for performing some non-BrAPI compliant tasks that are available on breedbase.  The `BrAPIConnection` object needs to have the `is_breedbase` argument set to `TRUE` in order for these functions to be enabled.
+
+### Search Wizard: `conn$wizard(data_type, filters, verbose)`
+
+The breedbase Search Wizard is a great tool for quickly filtering and combining datasets in the database.  You can use it to request data of a specific data type that matches specified filter criteria.
+
+For example, you can use it to find the genotyping protocols that have data from a set of accessions that were observed in a set of field trials.
+
+```R
+wheat <- getBrAPIConnection("T3/WheatCAP")
+
+# Find accessions that were observed in these two trials
+accessions <- wheat$wizard("accessions", list(trials = c("CornellMaster_2024_Helfer", "CornellMaster_2025_McGowan")), verbose=T)
+
+# Get genotyping protocols that have data for any of the trial's accessions
+geno <- wheat$wizard("genotyping_protocols", list(accessions = accessions$data$ids))
+```
+
+The Search Wizard response data will include the ids, names, and a map of names -> ids for the matching data:
+
+```R
+> geno$data$ids
+[1] 265 287 130 242
+
+> geno$data$names
+[1] "GBS Cornell 2024"  "GBS Cornell 2025"  "GBS CornellMaster"  "GBS MSU"
+
+> geno$data$map
+$`GBS Cornell 2024`
+[1] 265
+
+$`GBS Cornell 2025`
+[1] 287
+
+$`GBS CornellMaster`
+[1] 130
+
+$`GBS MSU`
+[1] 242
+```
+
+The `filters` argument can contain up to 3 different filters. The name of the list item is one of the supported breedbase data types: accessions, organisms, breeding_programs, genotyping_protocols, genotyping_projects, locations, plants, plots, tissue_sample, seedlots, trait_components, traits, trials, trial_designs, trial_types, years
+
+```R
+# Find all trials from these two breeding programs from one year
+trials <- wheat$wizard("trials", list(breeding_programs = c(327,367), years = c(2023)))
 ```
 
 ## Tutorial
