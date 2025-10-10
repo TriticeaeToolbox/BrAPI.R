@@ -9,7 +9,7 @@ BrAPI Connection Class"></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">BrAPI</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -92,12 +92,14 @@ adds additional support for breedbase-specific functionality. (Default: <code>FA
 <h3 id="public-methods">Public methods<a class="anchor" aria-label="anchor" href="#public-methods"></a></h3>
 
 <ul><li><p><a href="#method-BrAPIConnection-new"><code>BrAPIConnection$new()</code></a></p></li>
+<li><p><a href="#method-BrAPIConnection-base"><code>BrAPIConnection$base()</code></a></p></li>
 <li><p><a href="#method-BrAPIConnection-get"><code>BrAPIConnection$get()</code></a></p></li>
 <li><p><a href="#method-BrAPIConnection-post"><code>BrAPIConnection$post()</code></a></p></li>
 <li><p><a href="#method-BrAPIConnection-put"><code>BrAPIConnection$put()</code></a></p></li>
 <li><p><a href="#method-BrAPIConnection-wizard"><code>BrAPIConnection$wizard()</code></a></p></li>
 <li><p><a href="#method-BrAPIConnection-vcf"><code>BrAPIConnection$vcf()</code></a></p></li>
 <li><p><a href="#method-BrAPIConnection-vcf_archived"><code>BrAPIConnection$vcf_archived()</code></a></p></li>
+<li><p><a href="#method-BrAPIConnection-vcf_imputed"><code>BrAPIConnection$vcf_imputed()</code></a></p></li>
 <li><p><a href="#method-BrAPIConnection-clone"><code>BrAPIConnection$clone()</code></a></p></li>
 </ul></div><p></p><hr><a id="method-BrAPIConnection-new"></a><div class="section">
 <h3 id="method-new-">Method <code>new()</code><a class="anchor" aria-label="anchor" href="#method-new-"></a></h3>
@@ -141,10 +143,22 @@ adds additional support for breedbase-specific functionality. (Default: <code>FA
 <p><code>BrAPIConnection</code> object</p>
 </div>
 
+</div><p></p><hr><a id="method-BrAPIConnection-base"></a><div class="section">
+<h3 id="method-base-">Method <code>base()</code><a class="anchor" aria-label="anchor" href="#method-base-"></a></h3>
+<p>Generate the base URL of the connection</p><div class="section">
+<h4 id="usage-1">Usage<a class="anchor" aria-label="anchor" href="#usage-1"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BrAPIConnection</span><span class="op">$</span><span class="fu">base</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+<div class="section">
+<h4 id="returns-1">Returns<a class="anchor" aria-label="anchor" href="#returns-1"></a></h4>
+<p>A String in the format <code>$protocol://$host</code></p>
+</div>
+
 </div><p></p><hr><a id="method-BrAPIConnection-get"></a><div class="section">
 <h3 id="method-get-">Method <code><a href="https://rdrr.io/r/base/get.html" class="external-link">get()</a></code><a class="anchor" aria-label="anchor" href="#method-get-"></a></h3>
 <p>Make a GET request</p><div class="section">
-<h4 id="usage-1">Usage<a class="anchor" aria-label="anchor" href="#usage-1"></a></h4>
+<h4 id="usage-2">Usage<a class="anchor" aria-label="anchor" href="#usage-2"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BrAPIConnection</span><span class="op">$</span><span class="fu">get</span><span class="op">(</span><span class="va">call</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -181,7 +195,7 @@ adds additional support for breedbase-specific functionality. (Default: <code>FA
 </dl><p></p></div>
 </div>
 <div class="section">
-<h4 id="returns-1">Returns<a class="anchor" aria-label="anchor" href="#returns-1"></a></h4>
+<h4 id="returns-2">Returns<a class="anchor" aria-label="anchor" href="#returns-2"></a></h4>
 <p>A named list of Response properties</p>
 </div>
 <div class="section">
@@ -196,7 +210,7 @@ adds additional support for breedbase-specific functionality. (Default: <code>FA
 </div><p></p><hr><a id="method-BrAPIConnection-post"></a><div class="section">
 <h3 id="method-post-">Method <code>post()</code><a class="anchor" aria-label="anchor" href="#method-post-"></a></h3>
 <p>Make a POST request</p><div class="section">
-<h4 id="usage-2">Usage<a class="anchor" aria-label="anchor" href="#usage-2"></a></h4>
+<h4 id="usage-3">Usage<a class="anchor" aria-label="anchor" href="#usage-3"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BrAPIConnection</span><span class="op">$</span><span class="fu">post</span><span class="op">(</span><span class="va">call</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -237,7 +251,7 @@ adds additional support for breedbase-specific functionality. (Default: <code>FA
 </dl><p></p></div>
 </div>
 <div class="section">
-<h4 id="returns-2">Returns<a class="anchor" aria-label="anchor" href="#returns-2"></a></h4>
+<h4 id="returns-3">Returns<a class="anchor" aria-label="anchor" href="#returns-3"></a></h4>
 <p>A named list of Response properties</p>
 </div>
 <div class="section">
@@ -259,7 +273,7 @@ resp &lt;- sandbox$post("/observations", body=data, token=resp$content$access_to
 </div><p></p><hr><a id="method-BrAPIConnection-put"></a><div class="section">
 <h3 id="method-put-">Method <code>put()</code><a class="anchor" aria-label="anchor" href="#method-put-"></a></h3>
 <p>Make a PUT request</p><div class="section">
-<h4 id="usage-3">Usage<a class="anchor" aria-label="anchor" href="#usage-3"></a></h4>
+<h4 id="usage-4">Usage<a class="anchor" aria-label="anchor" href="#usage-4"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BrAPIConnection</span><span class="op">$</span><span class="fu">put</span><span class="op">(</span><span class="va">call</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -300,7 +314,7 @@ resp &lt;- sandbox$post("/observations", body=data, token=resp$content$access_to
 </dl><p></p></div>
 </div>
 <div class="section">
-<h4 id="returns-3">Returns<a class="anchor" aria-label="anchor" href="#returns-3"></a></h4>
+<h4 id="returns-4">Returns<a class="anchor" aria-label="anchor" href="#returns-4"></a></h4>
 <p>A named list of Response properties</p>
 </div>
 
@@ -313,7 +327,7 @@ trials from a set of breeding programs in a specific year.  If you don't provide
 the function will return the full set of all items in the database for the data type.  The results
 only include the database IDs and names of the matching items.  You can use the IDs in the general
 BrAPI endpoints to get additional data about the items.</p><div class="section">
-<h4 id="usage-4">Usage<a class="anchor" aria-label="anchor" href="#usage-4"></a></h4>
+<h4 id="usage-5">Usage<a class="anchor" aria-label="anchor" href="#usage-5"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BrAPIConnection</span><span class="op">$</span><span class="fu">wizard</span><span class="op">(</span><span class="va">data_type</span>, filters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -339,7 +353,7 @@ queries to lookup the IDs for the names you provide.</p>
 </dl><p></p></div>
 </div>
 <div class="section">
-<h4 id="returns-4">Returns<a class="anchor" aria-label="anchor" href="#returns-4"></a></h4>
+<h4 id="returns-5">Returns<a class="anchor" aria-label="anchor" href="#returns-5"></a></h4>
 <p>A response with the matching data.
 The $content key contains the raw breedbase response.
 The $data key contains parsed data: a list parsed into <code>ids</code>, <code>names</code> and <code>map</code> (a named list of item names -&gt; ids)</p>
@@ -365,7 +379,7 @@ The $data key contains parsed data: a list parsed into <code>ids</code>, <code>n
 <p>NOTE: Depending on the number of markers and accessions, this download may take a
 very long time to complete.  You may want to use the conn$vcf_archived() function
 to download a static archived VCF file of a genotyping project, if one is available.</p><div class="section">
-<h4 id="usage-5">Usage<a class="anchor" aria-label="anchor" href="#usage-5"></a></h4>
+<h4 id="usage-6">Usage<a class="anchor" aria-label="anchor" href="#usage-6"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BrAPIConnection</span><span class="op">$</span><span class="fu">vcf</span><span class="op">(</span></span>
 <span>  <span class="va">output</span>,</span>
 <span>  <span class="va">genotyping_protocol_id</span>,</span>
@@ -395,7 +409,7 @@ to download a static archived VCF file of a genotyping project, if one is availa
 </dl><p></p></div>
 </div>
 <div class="section">
-<h4 id="returns-5">Returns<a class="anchor" aria-label="anchor" href="#returns-5"></a></h4>
+<h4 id="returns-6">Returns<a class="anchor" aria-label="anchor" href="#returns-6"></a></h4>
 <p>Status information about the request.  If successful, the genotype data will
 be downloaded to the VCF file specified by the output argument.</p>
 </div>
@@ -418,7 +432,7 @@ and/or project.  You can select one to download and save to the provided output 
 <p>The archived files are saved at the project-level.  So, if you specify a protocol, you'll get a list
 of all of the available files for each project in that protocol.  If you're performing analysis at
 the protocol-level, you'll need to manually merge the VCF files from each project in that protocol.</p><div class="section">
-<h4 id="usage-6">Usage<a class="anchor" aria-label="anchor" href="#usage-6"></a></h4>
+<h4 id="usage-7">Usage<a class="anchor" aria-label="anchor" href="#usage-7"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BrAPIConnection</span><span class="op">$</span><span class="fu">vcf_archived</span><span class="op">(</span></span>
 <span>  <span class="va">output</span>,</span>
 <span>  genotyping_protocol_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -448,7 +462,7 @@ the protocol-level, you'll need to manually merge the VCF files from each projec
 </dl><p></p></div>
 </div>
 <div class="section">
-<h4 id="returns-6">Returns<a class="anchor" aria-label="anchor" href="#returns-6"></a></h4>
+<h4 id="returns-7">Returns<a class="anchor" aria-label="anchor" href="#returns-7"></a></h4>
 <p>Status information about the request. If the download of an available archived VCF file is
 successful, the genotype data will be downloaded to the VCF file specified by the output argument.</p>
 </div>
@@ -463,15 +477,61 @@ wheat$vcf_archived("~/Desktop/my_data.vcf", genotyping_project_id=10371)
 </div>
 
 
-</div><p></p><hr><a id="method-BrAPIConnection-clone"></a><div class="section">
-<h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
-<p>The objects of this class are cloneable with this method.</p><div class="section">
-<h4 id="usage-7">Usage<a class="anchor" aria-label="anchor" href="#usage-7"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BrAPIConnection</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div><p></p><hr><a id="method-BrAPIConnection-vcf_imputed"></a><div class="section">
+<h3 id="method-vcf-imputed-">Method <code>vcf_imputed()</code><a class="anchor" aria-label="anchor" href="#method-vcf-imputed-"></a></h3>
+<p>Download an Imputed VCF File</p>
+<p>This function will download an imputed dataset for the selected genotyping project (if available).
+The genotype projects have been imputed using the Practical Haplotype Graph (PHG). The imputed marker density
+is 2.9M markers for assembly RefSeq v2.1. For quick access the imputed genotypes can be downloaded from a prepared file.
+A description of the imputation process can be found in About PHG imputation (https://wheat.triticeaetoolbox.org/static_content/files/imputation.html).</p><div class="section">
+<h4 id="usage-8">Usage<a class="anchor" aria-label="anchor" href="#usage-8"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BrAPIConnection</span><span class="op">$</span><span class="fu">vcf_imputed</span><span class="op">(</span></span>
+<span>  <span class="va">output</span>,</span>
+<span>  genotyping_project_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
 <h4 id="arguments-7">Arguments<a class="anchor" aria-label="anchor" href="#arguments-7"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>output</code></dt>
+<dd><p>The path to the output VCF file</p></dd>
+
+
+<dt><code>genotyping_project_id</code></dt>
+<dd><p>The Database ID of the genotyping project</p></dd>
+
+
+<dt><code>verbose</code></dt>
+<dd><p>Set to TRUE to include logging information</p></dd>
+
+
+</dl><p></p></div>
+</div>
+<div class="section">
+<h4 id="returns-8">Returns<a class="anchor" aria-label="anchor" href="#returns-8"></a></h4>
+<p>Status information about the request. If the download of an available imputed VCF file is
+successful, the genotype data will be downloaded to the VCF file specified by the output argument.</p>
+</div>
+<div class="section">
+<h4 id="examples-5">Examples<a class="anchor" aria-label="anchor" href="#examples-5"></a></h4>
+<p></p><div class="r example copy"><div class="sourceCode"><pre><code>\dontrun{
+wheat &lt;- getBrAPIConnection("T3/WheatCAP")
+wheat$vcf_imputed("~/Desktop/my_data.vcf", genotyping_project_id=10371)
+}
+</code></pre></div><p></p></div>
+</div>
+
+
+</div><p></p><hr><a id="method-BrAPIConnection-clone"></a><div class="section">
+<h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
+<p>The objects of this class are cloneable with this method.</p><div class="section">
+<h4 id="usage-9">Usage<a class="anchor" aria-label="anchor" href="#usage-9"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BrAPIConnection</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+<div class="section">
+<h4 id="arguments-8">Arguments<a class="anchor" aria-label="anchor" href="#arguments-8"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>deep</code></dt>
 <dd><p>Whether to make a deep clone.</p></dd>
 
@@ -553,6 +613,15 @@ wheat$vcf_archived("~/Desktop/my_data.vcf", genotyping_project_id=10371)
 <span class="r-in"><span><span class="va">wheat</span> <span class="op">&lt;-</span> <span class="fu"><a href="getBrAPIConnection.html">getBrAPIConnection</a></span><span class="op">(</span><span class="st">"T3/WheatCAP"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">wheat</span><span class="op">$</span><span class="fu">vcf_archived</span><span class="op">(</span><span class="st">"~/Desktop/my_data.vcf"</span>, genotyping_protocol_id<span class="op">=</span><span class="fl">233</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">wheat</span><span class="op">$</span><span class="fu">vcf_archived</span><span class="op">(</span><span class="st">"~/Desktop/my_data.vcf"</span>, genotyping_project_id<span class="op">=</span><span class="fl">10371</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="co">## Method `BrAPIConnection$vcf_imputed`</span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
+<span class="r-in"><span><span class="va">wheat</span> <span class="op">&lt;-</span> <span class="fu"><a href="getBrAPIConnection.html">getBrAPIConnection</a></span><span class="op">(</span><span class="st">"T3/WheatCAP"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">wheat</span><span class="op">$</span><span class="fu">vcf_imputed</span><span class="op">(</span><span class="st">"~/Desktop/my_data.vcf"</span>, genotyping_project_id<span class="op">=</span><span class="fl">10371</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
