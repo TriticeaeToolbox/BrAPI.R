@@ -76,6 +76,18 @@ BrAPIConnection <- R6::R6Class("BrAPIConnection",
       self$is_breedbase <- is_breedbase
     },
 
+    #' @description Generate the base URL of the connection
+    #' @return A String in the format `$protocol://$host`
+    base = function() {
+      protocol <- self$protocol
+      host <- self$host
+
+      protocol <- sub(":?/+$", "", protocol)
+      host <- sub("^https?://", "", host)
+
+      return(paste(protocol, host, sep='://'))
+    },
+
     #' @description Make a GET request
     #' @param call The BrAPI endpoint to request
     #' @param query (optional) A named list of query parameters
@@ -170,7 +182,7 @@ BrAPIConnection <- R6::R6Class("BrAPIConnection",
     #' geno_protocols <- wheat$wizard("genotyping_protocols", list(accessions = accessions$data$ids))
     wizard = function(data_type, filters = list(), verbose = FALSE) {
       private$check_if_breedbase()
-      BreedbaseRequest(private$base(), "wizard", data_type, filters, verbose)
+      BreedbaseRequest(self, "wizard", data_type, filters, verbose)
     },
 
 
@@ -196,7 +208,7 @@ BrAPIConnection <- R6::R6Class("BrAPIConnection",
     #' }
     vcf = function(output, genotyping_protocol_id, accessions = NULL, verbose = FALSE) {
       private$check_if_breedbase()
-      BreedbaseRequest(private$base(), "vcf", output, genotyping_protocol_id, accessions, verbose)
+      BreedbaseRequest(self, "vcf", output, genotyping_protocol_id, accessions, verbose)
     },
 
     #' @description Download an Archived Breedbase VCF File
@@ -224,29 +236,41 @@ BrAPIConnection <- R6::R6Class("BrAPIConnection",
     #' }
     vcf_archived = function(output, genotyping_protocol_id = NULL, genotyping_project_id = NULL, verbose = FALSE) {
       private$check_if_breedbase()
-      BreedbaseRequest(private$base(), "vcf_archived", output, genotyping_protocol_id, genotyping_project_id, verbose)
+      BreedbaseRequest(self, "vcf_archived", output, genotyping_protocol_id, genotyping_project_id, verbose)
+    },
+
+    #' @description Download an Imputed VCF File
+    #'
+    #' This function will download an imputed dataset for the selected genotyping project (if available).
+    #' The genotype projects have been imputed using the Practical Haplotype Graph (PHG). The imputed marker density 
+    #' is 2.9M markers for assembly RefSeq v2.1. For quick access the imputed genotypes can be downloaded from a prepared file. 
+    #' A description of the imputation process can be found in About PHG imputation (https://wheat.triticeaetoolbox.org/static_content/files/imputation.html).
+    #'
+    #' @param output The path to the output VCF file
+    #' @param genotyping_project_id The Database ID of the genotyping project
+    #' @param verbose Set to TRUE to include logging information
+    #'
+    #' @return Status information about the request. If the download of an available imputed VCF file is
+    #' successful, the genotype data will be downloaded to the VCF file specified by the output argument.
+    #'
+    #' @examples
+    #' \dontrun{
+    #' wheat <- getBrAPIConnection("T3/WheatCAP")
+    #' wheat$vcf_imputed("~/Desktop/my_data.vcf", genotyping_project_id=10371)
+    #' }
+    vcf_imputed = function(output, genotyping_project_id = NULL, verbose = FALSE) {
+      private$check_if_breedbase();
+      BreedbaseRequest(self, "vcf_imputed", output, genotyping_project_id, verbose)
     }
 
   ),
 
   private = list(
 
-    # Generate the base URL of the connection
-    # Returns a String in the format `$protocol://$host`
-    base = function() {
-      protocol <- self$protocol
-      host <- self$host
-
-      protocol <- sub(":?/+$", "", protocol)
-      host <- sub("^https?://", "", host)
-
-      return(paste(protocol, host, sep='://'))
-    },
-    
     # Generate the full URL to the BrAPI endpoints
     # Returns a String in the format `$base/$path/$version/`
     url = function() {
-      base <- private$base()
+      base <- self$base()
       path <- self$path
       version <- self$version
       

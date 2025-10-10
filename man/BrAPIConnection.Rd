@@ -107,6 +107,15 @@ wheat <- getBrAPIConnection("T3/WheatCAP")
 wheat$vcf_archived("~/Desktop/my_data.vcf", genotyping_protocol_id=233)
 wheat$vcf_archived("~/Desktop/my_data.vcf", genotyping_project_id=10371)
 }
+
+## ------------------------------------------------
+## Method `BrAPIConnection$vcf_imputed`
+## ------------------------------------------------
+
+\dontrun{
+wheat <- getBrAPIConnection("T3/WheatCAP")
+wheat$vcf_imputed("~/Desktop/my_data.vcf", genotyping_project_id=10371)
+}
 }
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
@@ -128,12 +137,14 @@ adds additional support for breedbase-specific functionality. (Default: \code{FA
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-BrAPIConnection-new}{\code{BrAPIConnection$new()}}
+\item \href{#method-BrAPIConnection-base}{\code{BrAPIConnection$base()}}
 \item \href{#method-BrAPIConnection-get}{\code{BrAPIConnection$get()}}
 \item \href{#method-BrAPIConnection-post}{\code{BrAPIConnection$post()}}
 \item \href{#method-BrAPIConnection-put}{\code{BrAPIConnection$put()}}
 \item \href{#method-BrAPIConnection-wizard}{\code{BrAPIConnection$wizard()}}
 \item \href{#method-BrAPIConnection-vcf}{\code{BrAPIConnection$vcf()}}
 \item \href{#method-BrAPIConnection-vcf_archived}{\code{BrAPIConnection$vcf_archived()}}
+\item \href{#method-BrAPIConnection-vcf_imputed}{\code{BrAPIConnection$vcf_imputed()}}
 \item \href{#method-BrAPIConnection-clone}{\code{BrAPIConnection$clone()}}
 }
 }
@@ -169,6 +180,19 @@ Create a new \code{BrAPIConnection} object
 }
 \subsection{Returns}{
 \code{BrAPIConnection} object
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-BrAPIConnection-base"></a>}}
+\if{latex}{\out{\hypertarget{method-BrAPIConnection-base}{}}}
+\subsection{Method \code{base()}}{
+Generate the base URL of the connection
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BrAPIConnection$base()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+A String in the format \verb{$protocol://$host}
 }
 }
 \if{html}{\out{<hr>}}
@@ -448,6 +472,51 @@ successful, the genotype data will be downloaded to the VCF file specified by th
 wheat <- getBrAPIConnection("T3/WheatCAP")
 wheat$vcf_archived("~/Desktop/my_data.vcf", genotyping_protocol_id=233)
 wheat$vcf_archived("~/Desktop/my_data.vcf", genotyping_project_id=10371)
+}
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-BrAPIConnection-vcf_imputed"></a>}}
+\if{latex}{\out{\hypertarget{method-BrAPIConnection-vcf_imputed}{}}}
+\subsection{Method \code{vcf_imputed()}}{
+Download an Imputed VCF File
+
+This function will download an imputed dataset for the selected genotyping project (if available).
+The genotype projects have been imputed using the Practical Haplotype Graph (PHG). The imputed marker density
+is 2.9M markers for assembly RefSeq v2.1. For quick access the imputed genotypes can be downloaded from a prepared file.
+A description of the imputation process can be found in About PHG imputation (https://wheat.triticeaetoolbox.org/static_content/files/imputation.html).
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BrAPIConnection$vcf_imputed(
+  output,
+  genotyping_project_id = NULL,
+  verbose = FALSE
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{output}}{The path to the output VCF file}
+
+\item{\code{genotyping_project_id}}{The Database ID of the genotyping project}
+
+\item{\code{verbose}}{Set to TRUE to include logging information}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+Status information about the request. If the download of an available imputed VCF file is
+successful, the genotype data will be downloaded to the VCF file specified by the output argument.
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+wheat <- getBrAPIConnection("T3/WheatCAP")
+wheat$vcf_imputed("~/Desktop/my_data.vcf", genotyping_project_id=10371)
 }
 }
 \if{html}{\out{</div>}}

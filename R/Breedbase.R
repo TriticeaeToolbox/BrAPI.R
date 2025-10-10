@@ -10,15 +10,18 @@ SUPPORTED_DATA_TYPES = c("accessions", "organisms", "breeding_programs", "genoty
 # Handle each specific Breedbase Request in its individual function
 # Return an error if the request is not supported
 #
-BreedbaseRequest <- function(base, request, ...) {
+BreedbaseRequest <- function(conn, request, ...) {
   if ( request == "wizard" ) {
-    return(BreedbaseRequestWizard(base, ...))
+    return(BreedbaseRequestWizard(conn, ...))
   }
   if ( request == "vcf" ) {
-    return(BreedbaseRequestVCF(base, ...))
+    return(BreedbaseRequestVCF(conn, ...))
   }
   if ( request == "vcf_archived" ) {
-    return(BreedbaseRequestArchivedVCF(base, ...))
+    return(BreedbaseRequestArchivedVCF(conn, ...))
+  }
+  if ( request == "vcf_imputed" ) {
+    return(BreedbaseRequestImputedVCF(conn, ...))
   }
   else {
     stop("Unsupported breedbase request name")
@@ -39,7 +42,7 @@ BreedbaseRequest <- function(base, request, ...) {
 # matching items.  The names key is a vector of all unique database names of the matching items.  The data
 # key is a list with the item name as the key and the item db id as the value.
 #
-BreedbaseRequestWizard <- function(base, data_type, filters = list(), verbose = FALSE) {
+BreedbaseRequestWizard <- function(conn, data_type, filters = list(), verbose = FALSE) {
 
   # Check data type names
   for ( dt in c(data_type, names(filters)) ) {
@@ -89,7 +92,7 @@ BreedbaseRequestWizard <- function(base, data_type, filters = list(), verbose = 
         if ( verbose ) {
           cat(sprintf("... looking up %s by name ...\n", dt))
         }
-        lookup_results = BreedbaseRequestWizard(base, dt, verbose = verbose)
+        lookup_results = BreedbaseRequestWizard(conn, dt, verbose = verbose)
 
         # ... and see if there is matching item by name
         # ... if there is a match, add its id to the parsed values list
@@ -126,7 +129,7 @@ BreedbaseRequestWizard <- function(base, data_type, filters = list(), verbose = 
   body = append(body, list("categories[]" = data_type))
 
   # Make the HTTP request
-  resp = httr::POST(paste(base, "ajax", "breeder", "search", sep="/"), body = body, encode = "multipart")
+  resp = httr::POST(paste(conn$base(), "ajax", "breeder", "search", sep="/"), body = body, encode = "multipart")
   content = httr::content(resp)
   httr::warn_for_status(resp)
 
@@ -181,11 +184,11 @@ BreedbaseRequestWizard <- function(base, data_type, filters = list(), verbose = 
 # The output file and genotyping protocol ID must be specified.  If accessions are specified, the genotype
 # data will be filtered to only include those accessions.
 #
-BreedbaseRequestVCF <- function(base, output, genotyping_protocol_id, accessions = NULL, verbose = FALSE) {
+BreedbaseRequestVCF <- function(conn, output, genotyping_protocol_id, accessions = NULL, verbose = FALSE) {
 
   # Download entire genotyping protocol
   if ( is.null(accessions) ) {
-    url = sprintf("%s/breeders/download_gbs_action/?protocol_id=%i&download_format=VCF&format=accession_ids", base, genotyping_protocol_id)
+    url = sprintf("%s/breeders/download_gbs_action/?protocol_id=%i&download_format=VCF&format=accession_ids", conn$base(), genotyping_protocol_id)
     resp = httr::GET(url, httr::write_disk(output, overwrite=TRUE), httr::timeout(3600))
     httr::warn_for_status(resp)
     if ( verbose ) {
@@ -201,7 +204,7 @@ BreedbaseRequestVCF <- function(base, output, genotyping_protocol_id, accessions
 
   # Download subset of protocol with specific accessions
   else {
-    url = sprintf("%s/breeders/download_gbs_action", base)
+    url = sprintf("%s/breeders/download_gbs_action", conn$base())
     body = list(
       ids = gsub(" ", "", toString(accessions)),
       protocol_id = genotyping_protocol_id,
@@ -237,7 +240,7 @@ BreedbaseRequestVCF <- function(base, output, genotyping_protocol_id, accessions
 # Prompt the user to select a project
 # Download the project's archived VCF file to the specified output
 #
-BreedbaseRequestArchivedVCF <- function(base, output, genotyping_protocol_id = NULL, genotyping_project_id = NULL, verbose = FALSE) {
+BreedbaseRequestArchivedVCF <- function(conn, output, genotyping_protocol_id = NULL, genotyping_project_id = NULL, verbose = FALSE) {
 
   # A protocol or a project is required
   if ( is.null(genotyping_protocol_id) && is.null(genotyping_project_id) ) {
@@ -254,7 +257,7 @@ BreedbaseRequestArchivedVCF <- function(base, output, genotyping_protocol_id = N
       cat(sprintf("  Genotyping Project: %i\n", genotyping_project_id))
     }
   }
-  url = sprintf("%s/ajax/genotyping_project/has_archived_vcf", base)
+  url = sprintf("%s/ajax/genotyping_project/has_archived_vcf", conn$base())
   resp = httr::GET(url, query=list(genotyping_protocol_id=genotyping_protocol_id, genotyping_project_id=genotyping_project_id))
   content = httr::content(resp)
   httr::warn_for_status(resp)
@@ -285,7 +288,7 @@ BreedbaseRequestArchivedVCF <- function(base, output, genotyping_protocol_id = N
   # Download the selected file
   selected_basename=files[[selection]]
   selected_file=files_info[[selected_basename]]
-  url = sprintf("%s/ajax/genotyping_project/download_archived_vcf?genotyping_project_id=%i&basename=%s", base, selected_file$genotyping_project_id, selected_file$basename)
+  url = sprintf("%s/ajax/genotyping_project/download_archived_vcf?genotyping_project_id=%i&basename=%s", conn$base(), selected_file$genotyping_project_id, selected_file$basename)
   resp = httr::GET(url, httr::write_disk(output, overwrite=TRUE), httr::timeout(3600))
   httr::warn_for_status(resp)
   if ( verbose ) {
@@ -306,4 +309,100 @@ BreedbaseRequestArchivedVCF <- function(base, output, genotyping_protocol_id = N
     content = output,
     data = output
   ))
+}
+
+
+#
+# Get Breedbase Imputed VCF File
+#
+# Get the available imputed VCF files based on the provided project
+# Get project info for the selected project
+# Get protocol info for the selected project
+# Check to see if an imputed dataset is available
+# Download the project's imputed VCF file to the specified output
+#
+BreedbaseRequestImputedVCF <- function(conn, output, genotyping_project_id = NULL, verbose = FALSE) {
+  
+  # A project is required
+  if ( is.null(genotyping_project_id) ) {
+    stop("A genotyping project is required")
+  }
+
+  # Get the project name
+  if ( verbose ) print(sprintf("--> Getting project name for project [id = %i]", genotyping_project_id))
+  projects = conn$wizard("genotyping_projects")
+  genotyping_project_name = projects$data$names[which(projects$data$ids == genotyping_project_id)]
+  if ( length(genotyping_project_name) == 0 ) {
+    stop(sprintf("Genotyping Project not found for project id %i", genotyping_project_id))
+  }
+
+  # Get the corresponding protocol
+  if ( verbose ) print(sprintf("--> Getting matching protocol for project [id = %i]", genotyping_project_id))
+  protocols = conn$wizard("genotyping_protocols", list(genotyping_projects = c(genotyping_project_id)))
+  if ( length(protocols$data$ids) == 0 ) {
+    stop(sprintf("No matching Genotyping Protocol found for project id %i", genotyping_project_id))
+  }
+  if ( length(protocols$data$ids) > 1 ) {
+    stop(sprintf("More than 1 matching Genotyping Protocols found for project id %i", genotyping_project_id))
+  }
+
+  # Get the project's organisms and their genera
+  if ( verbose ) print(sprintf("--> Getting matching organisms for project [id = %i]", genotyping_project_id))
+  organisms = conn$wizard("organisms", list(genotyping_projects = c(genotyping_project_id)))
+  if ( length(organisms$data$names) == 0 ) {
+    stop(sprintf("No matching Organisms found for project id %i", genotyping_project_id))
+  }
+  genera = unique(gsub(" .*", '', organisms$data$names))
+  if ( length(genera) == 0 ) {
+    stop(sprintf("No matching genera found for project id %i", genotyping_project_id))
+  }
+  if ( length(genera) > 1 ) {
+    stop(sprintf("More than 1 matching genera found for project id %i [%s]", genotyping_project_id, paste(genera, collapse=", ")))
+  }
+
+  # Generate URL for imputed VCF
+  url = paste(
+    paste(
+      gsub("://[^.]+", "://files", conn$base()),
+      "download",
+      genera[1],
+      protocols$data$ids[1],
+      genotyping_project_name,
+      sep="/"
+    ),
+    "vcf.gz",
+    sep = "."
+  )
+  if ( verbose ) print(sprintf("--> Download URL: %s", url))
+
+  # Check for presence of file
+  resp = httr::HEAD(url, httr::timeout(3600))
+  if ( verbose ) {
+    cat(
+      sprintf("Response [HEAD] <%s>", resp$url),
+      sprintf("  %s", httr::http_status(resp)$message),
+      sprintf("  Project: %s (%i)", genotyping_project_name, genotyping_project_id),
+      sprintf("  Protocol: %s (%i)", protocols$data$names[1], protocols$data$ids[1]),
+      sprintf("  Species: %s", genera[1]),
+      sep = "\n"
+    )
+  }
+  if ( resp$status != 200 ) {
+    stop(sprintf("No imputed data found for project id %i [%s]", genotyping_project_id, http_status(resp$status)$reason))
+  }
+
+  # Download file, if found
+  resp = httr::GET(url, httr::write_disk(output, overwrite=TRUE), httr::timeout(3600))
+  httr::warn_for_status(resp)
+  if ( verbose ) {
+    cat(
+      sprintf("Response [GET] <%s>", resp$url),
+      sprintf("  %s", httr::http_status(resp)$message),
+      sprintf("  Project: %s (%i)", genotyping_project_name, genotyping_project_id),
+      sprintf("  Protocol: %s (%i)", protocols$data$names[1], protocols$data$ids[1]),
+      sprintf("  Species: %s", genera[1]),
+      sprintf("  Output File: %s", output),
+      sep = "\n"
+    )
+  }
 }
