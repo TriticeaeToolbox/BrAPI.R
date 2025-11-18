@@ -77,6 +77,32 @@ wheat <- createBrAPIConnection("wheat.triticeaetoolbox.org", is_breedbase=TRUE)
 
 When using the known connections via the `getBrAPIConnection()` function, the `is_breedbase` argument will automatically be added for breedbase connections.
 
+## Authorization
+
+Some databases may require authorization for all or some endpoints (such as those that are used to add or update data in the database).  Since authorization methods have not been standardized across all BrAPI databases, each database may handle it slighly differently - please refer to the documentation of the BrAPI database or tool you're trying to connect to for details.
+
+This package assumes that authorization is handled by adding a `Authorization: Bearer {token}` header to the requests.
+
+### Breedbase Databases
+
+If you're connecting to a breedbase database, you can use the BrAPI Connection's `login(username, password)` function to get an authorization token that will be used in all future requests for that connection.
+
+The `login()` function will send a `POST` request to the the `/token` endpoint with your username and password to retrieve and save a new authorization token.
+
+```R
+wheat$login("myusername", "mypassword") # if successful, this saves an authorization token 
+wheat$get("/germplasm") # this request will automatically have the authorization token added to it, you don't need to do anything differently
+```
+
+### Other Databases
+
+If you're connecting to a non-breedbase database that requires authorization, you will need to manually request an authorization token. Once you have it, you can use the `login(token = "myAuthToken")` function to save the token for future requests.
+
+```R
+wheat$login(token = "myAuthToken") # this will store your auth token as-is for future requests
+wheat$get("/germplasm") # this request will automatically have the authorization token added to it, you don't need to do anything differently
+``` 
+
 ## Making HTTP Requests
 
 Once you have a `BrAPIConnection` object, you can use it to make HTTP Requests to the BrAPI server.  There is a separate helper function for each type of HTTP request.

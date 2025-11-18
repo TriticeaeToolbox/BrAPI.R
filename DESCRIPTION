@@ -1,6 +1,6 @@
 Package: BrAPI
-Version: 0.5
-Date: 2025-10-09
+Version: 0.6
+Date: 2025-11-18
 Title: BrAPI
 Description: Simple wrapper functions for httr that make it easier to make manual HTTP calls to a BrAPI server
 Authors@R: 

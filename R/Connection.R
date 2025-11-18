@@ -59,6 +59,9 @@ BrAPIConnection <- R6::R6Class("BrAPIConnection",
     #' adds additional support for breedbase-specific functionality. (Default: `FALSE`)
     is_breedbase = "boolean",
 
+    #' @field auth_token An auth token that will be as a Bearer Token to the the Authorization header to all requests
+    auth_token = "character",
+
     #' @description Create a new `BrAPIConnection` object
     #' 
     #' @param host (required) The hostname of the BrAPI server
@@ -66,14 +69,16 @@ BrAPIConnection <- R6::R6Class("BrAPIConnection",
     #' @param path (optional) The base path of the BrAPI endpoints
     #' @param version (optional) The BrAPI version
     #' @param is_breedbase (optional) set to TRUE if the connection is to a breedbase instance
+    #' @param auth_token (optional) set the Auth Token when creating the connection
     #' 
     #' @return `BrAPIConnection` object
-    initialize = function(host, protocol='https', path='/brapi/', version='v2', is_breedbase = FALSE) {
+    initialize = function(host, protocol='https', path='/brapi/', version='v2', is_breedbase = FALSE, auth_token = NULL) {
       self$host <- host
       self$protocol <- protocol
       self$path <- path
       self$version <- version
       self$is_breedbase <- is_breedbase
+      self$auth_token <- auth_token
     },
 
     #' @description Generate the base URL of the connection
@@ -86,6 +91,22 @@ BrAPIConnection <- R6::R6Class("BrAPIConnection",
       host <- sub("^https?://", "", host)
 
       return(paste(protocol, host, sep='://'))
+    },
+
+    #' @description Login to the server to set an auth token for all future requests.  If a username and password are provided, a POST request will be made to the /token endpoint with your username and password to request a new auth token.  If a token is provided, then that will be saved and used as-is in future requests.
+    #'
+    #' @param username (optional) Your account username for the database
+    #' @param password (optional) Your account password for the database
+    #' @param token (optional) An auth token to use in all future requests to this database
+    login = function(username=NULL, password=NULL, token=NULL) {
+      if ( !is.null(token) ) {
+        self$auth_token <- token
+      }
+      else if ( !is.null(username) && !is.null(password) ) {
+        print("REQUESTING TOKEN")
+        resp = self$post("/token", query = list(username = username, password = password))
+        self$auth_token <- resp$content$access_token
+      }
     },
 
     #' @description Make a GET request
@@ -103,7 +124,7 @@ BrAPIConnection <- R6::R6Class("BrAPIConnection",
     #' resp <- wheat$get("/studies", pageSize=1000, page="all")
     #' resp <- wheat$get("/studies", query=list(programName="Cornell University"), pageSize=1000)
     get = function(call, ...) {
-      BrAPIRequest("GET", private$url(), call, ...)
+      BrAPIRequest("GET", private$url(), call, token = self$auth_token, ...)
     },
 
     #' @description Make a POST request
@@ -112,7 +133,6 @@ BrAPIConnection <- R6::R6Class("BrAPIConnection",
     #' @param body (optional) A named list or vector of the request body (will be converted to JSON)
     #' @param page (optional) The index of the page of results (use 'all' to get all pages) (Default: 0)
     #' @param pageSize (optional) The max size of the result pages (Default: 10)
-    #' @param token (optional) An Authorization token to add to the request
     #' @param verbose (optional) Set to true to include additional output to the console about the Response
     #' @param ... (optional) Additional arguments passed to `httr`
     #' @return A named list of Response properties
@@ -123,12 +143,12 @@ BrAPIConnection <- R6::R6Class("BrAPIConnection",
     #' d1 <- list(observationUnitDbId="ou1", observationVariableDbId="ov1", value=50)
     #' d2 <- list(observationUnitDbId="ou2", observationVariableDbId="ov1", value=40)
     #' data <- list(d1, d2)
-    #' resp <- sandbox$post("/token", query=list(username="testing", password="testing123"))
-    #' resp <- sandbox$post("/observations", body=data, token=resp$content$access_token)
+    #' sandbox$login(username = "testing", password = "testing123")
+    #' resp <- sandbox$post("/observations", body=data)
     #'}
     #'
     post = function(call, ...) {
-      BrAPIRequest("POST", private$url(), call, ...)
+      BrAPIRequest("POST", private$url(), call, token = self$auth_token, ...)
     },
 
     #' @description Make a PUT request
@@ -137,12 +157,11 @@ BrAPIConnection <- R6::R6Class("BrAPIConnection",
     #' @param body (optional) A named list or vector of the request body (will be converted to JSON)
     #' @param page (optional) The index of the page of results (use 'all' to get all pages) (Default: 0)
     #' @param pageSize (optional) The max size of the result pages (Default: 10)
-    #' @param token (optional) An Authorization token to add to the request
     #' @param verbose (optional) Set to true to include additional output to the console about the Response
     #' @param ... (optional) Additional arguments passed to `httr`
     #' @return A named list of Response properties
     put = function(call, ...) {
-      BrAPIRequest("PUT", private$url(), call, ...)
+      BrAPIRequest("PUT", private$url(), call, token = self$auth_token, ...)
     },
 
     #' @description Make a Breedbase Search Wizard request.

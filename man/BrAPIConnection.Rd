@@ -68,8 +68,8 @@ sandbox <- BrAPIConnection$new("wheat-sandbox.triticeaetoolbox.org")
 d1 <- list(observationUnitDbId="ou1", observationVariableDbId="ov1", value=50)
 d2 <- list(observationUnitDbId="ou2", observationVariableDbId="ov1", value=40)
 data <- list(d1, d2)
-resp <- sandbox$post("/token", query=list(username="testing", password="testing123"))
-resp <- sandbox$post("/observations", body=data, token=resp$content$access_token)
+sandbox$login(username = "testing", password = "testing123")
+resp <- sandbox$post("/observations", body=data)
 }
 
 
@@ -130,6 +130,8 @@ wheat$vcf_imputed("~/Desktop/my_data.vcf", genotyping_project_id=10371)
 
 \item{\code{is_breedbase}}{A flag to indicate this BrAPI connection is to a breedbase instance.  This
 adds additional support for breedbase-specific functionality. (Default: \code{FALSE})}
+
+\item{\code{auth_token}}{An auth token that will be as a Bearer Token to the the Authorization header to all requests}
 }
 \if{html}{\out{</div>}}
 }
@@ -138,6 +140,7 @@ adds additional support for breedbase-specific functionality. (Default: \code{FA
 \itemize{
 \item \href{#method-BrAPIConnection-new}{\code{BrAPIConnection$new()}}
 \item \href{#method-BrAPIConnection-base}{\code{BrAPIConnection$base()}}
+\item \href{#method-BrAPIConnection-login}{\code{BrAPIConnection$login()}}
 \item \href{#method-BrAPIConnection-get}{\code{BrAPIConnection$get()}}
 \item \href{#method-BrAPIConnection-post}{\code{BrAPIConnection$post()}}
 \item \href{#method-BrAPIConnection-put}{\code{BrAPIConnection$put()}}
@@ -159,7 +162,8 @@ Create a new \code{BrAPIConnection} object
   protocol = "https",
   path = "/brapi/",
   version = "v2",
-  is_breedbase = FALSE
+  is_breedbase = FALSE,
+  auth_token = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -175,6 +179,8 @@ Create a new \code{BrAPIConnection} object
 \item{\code{version}}{(optional) The BrAPI version}
 
 \item{\code{is_breedbase}}{(optional) set to TRUE if the connection is to a breedbase instance}
+
+\item{\code{auth_token}}{(optional) set the Auth Token when creating the connection}
 }
 \if{html}{\out{</div>}}
 }
@@ -193,6 +199,27 @@ Generate the base URL of the connection
 
 \subsection{Returns}{
 A String in the format \verb{$protocol://$host}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-BrAPIConnection-login"></a>}}
+\if{latex}{\out{\hypertarget{method-BrAPIConnection-login}{}}}
+\subsection{Method \code{login()}}{
+Login to the server to set an auth token for all future requests.  If a username and password are provided, a POST request will be made to the /token endpoint with your username and password to request a new auth token.  If a token is provided, then that will be saved and used as-is in future requests.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BrAPIConnection$login(username = NULL, password = NULL, token = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{username}}{(optional) Your account username for the database}
+
+\item{\code{password}}{(optional) Your account password for the database}
+
+\item{\code{token}}{(optional) An auth token to use in all future requests to this database}
+}
+\if{html}{\out{</div>}}
 }
 }
 \if{html}{\out{<hr>}}
@@ -262,8 +289,6 @@ Make a POST request
 
 \item{\code{pageSize}}{(optional) The max size of the result pages (Default: 10)}
 
-\item{\code{token}}{(optional) An Authorization token to add to the request}
-
 \item{\code{verbose}}{(optional) Set to true to include additional output to the console about the Response}
 }
 \if{html}{\out{</div>}}
@@ -279,8 +304,8 @@ sandbox <- BrAPIConnection$new("wheat-sandbox.triticeaetoolbox.org")
 d1 <- list(observationUnitDbId="ou1", observationVariableDbId="ov1", value=50)
 d2 <- list(observationUnitDbId="ou2", observationVariableDbId="ov1", value=40)
 data <- list(d1, d2)
-resp <- sandbox$post("/token", query=list(username="testing", password="testing123"))
-resp <- sandbox$post("/observations", body=data, token=resp$content$access_token)
+sandbox$login(username = "testing", password = "testing123")
+resp <- sandbox$post("/observations", body=data)
 }
 
 }
@@ -312,8 +337,6 @@ Make a PUT request
 \item{\code{page}}{(optional) The index of the page of results (use 'all' to get all pages) (Default: 0)}
 
 \item{\code{pageSize}}{(optional) The max size of the result pages (Default: 10)}
-
-\item{\code{token}}{(optional) An Authorization token to add to the request}
 
 \item{\code{verbose}}{(optional) Set to true to include additional output to the console about the Response}
 }
