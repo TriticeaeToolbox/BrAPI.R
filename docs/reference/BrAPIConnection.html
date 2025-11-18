@@ -9,7 +9,7 @@ BrAPI Connection Class"></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">BrAPI</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -83,6 +83,10 @@ a GET request, <code>conn$post()</code> to make a POST request, and <code>conn$p
 adds additional support for breedbase-specific functionality. (Default: <code>FALSE</code>)</p></dd>
 
 
+<dt><code>auth_token</code></dt>
+<dd><p>An auth token that will be as a Bearer Token to the the Authorization header to all requests</p></dd>
+
+
 </dl><p></p></div>
     </div>
     <div class="section level2">
@@ -93,6 +97,7 @@ adds additional support for breedbase-specific functionality. (Default: <code>FA
 
 <ul><li><p><a href="#method-BrAPIConnection-new"><code>BrAPIConnection$new()</code></a></p></li>
 <li><p><a href="#method-BrAPIConnection-base"><code>BrAPIConnection$base()</code></a></p></li>
+<li><p><a href="#method-BrAPIConnection-login"><code>BrAPIConnection$login()</code></a></p></li>
 <li><p><a href="#method-BrAPIConnection-get"><code>BrAPIConnection$get()</code></a></p></li>
 <li><p><a href="#method-BrAPIConnection-post"><code>BrAPIConnection$post()</code></a></p></li>
 <li><p><a href="#method-BrAPIConnection-put"><code>BrAPIConnection$put()</code></a></p></li>
@@ -110,7 +115,8 @@ adds additional support for breedbase-specific functionality. (Default: <code>FA
 <span>  protocol <span class="op">=</span> <span class="st">"https"</span>,</span>
 <span>  path <span class="op">=</span> <span class="st">"/brapi/"</span>,</span>
 <span>  version <span class="op">=</span> <span class="st">"v2"</span>,</span>
-<span>  is_breedbase <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  is_breedbase <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  auth_token <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -136,6 +142,10 @@ adds additional support for breedbase-specific functionality. (Default: <code>FA
 <dd><p>(optional) set to TRUE if the connection is to a breedbase instance</p></dd>
 
 
+<dt><code>auth_token</code></dt>
+<dd><p>(optional) set the Auth Token when creating the connection</p></dd>
+
+
 </dl><p></p></div>
 </div>
 <div class="section">
@@ -155,15 +165,39 @@ adds additional support for breedbase-specific functionality. (Default: <code>FA
 <p>A String in the format <code>$protocol://$host</code></p>
 </div>
 
-</div><p></p><hr><a id="method-BrAPIConnection-get"></a><div class="section">
-<h3 id="method-get-">Method <code><a href="https://rdrr.io/r/base/get.html" class="external-link">get()</a></code><a class="anchor" aria-label="anchor" href="#method-get-"></a></h3>
-<p>Make a GET request</p><div class="section">
+</div><p></p><hr><a id="method-BrAPIConnection-login"></a><div class="section">
+<h3 id="method-login-">Method <code>login()</code><a class="anchor" aria-label="anchor" href="#method-login-"></a></h3>
+<p>Login to the server to set an auth token for all future requests.  If a username and password are provided, a POST request will be made to the /token endpoint with your username and password to request a new auth token.  If a token is provided, then that will be saved and used as-is in future requests.</p><div class="section">
 <h4 id="usage-2">Usage<a class="anchor" aria-label="anchor" href="#usage-2"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BrAPIConnection</span><span class="op">$</span><span class="fu">get</span><span class="op">(</span><span class="va">call</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BrAPIConnection</span><span class="op">$</span><span class="fu">login</span><span class="op">(</span>username <span class="op">=</span> <span class="cn">NULL</span>, password <span class="op">=</span> <span class="cn">NULL</span>, token <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
 <h4 id="arguments-1">Arguments<a class="anchor" aria-label="anchor" href="#arguments-1"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>username</code></dt>
+<dd><p>(optional) Your account username for the database</p></dd>
+
+
+<dt><code>password</code></dt>
+<dd><p>(optional) Your account password for the database</p></dd>
+
+
+<dt><code>token</code></dt>
+<dd><p>(optional) An auth token to use in all future requests to this database</p></dd>
+
+
+</dl><p></p></div>
+</div>
+
+</div><p></p><hr><a id="method-BrAPIConnection-get"></a><div class="section">
+<h3 id="method-get-">Method <code><a href="https://rdrr.io/r/base/get.html" class="external-link">get()</a></code><a class="anchor" aria-label="anchor" href="#method-get-"></a></h3>
+<p>Make a GET request</p><div class="section">
+<h4 id="usage-3">Usage<a class="anchor" aria-label="anchor" href="#usage-3"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BrAPIConnection</span><span class="op">$</span><span class="fu">get</span><span class="op">(</span><span class="va">call</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+<div class="section">
+<h4 id="arguments-2">Arguments<a class="anchor" aria-label="anchor" href="#arguments-2"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>call</code></dt>
 <dd><p>The BrAPI endpoint to request</p></dd>
 
@@ -210,71 +244,8 @@ adds additional support for breedbase-specific functionality. (Default: <code>FA
 </div><p></p><hr><a id="method-BrAPIConnection-post"></a><div class="section">
 <h3 id="method-post-">Method <code>post()</code><a class="anchor" aria-label="anchor" href="#method-post-"></a></h3>
 <p>Make a POST request</p><div class="section">
-<h4 id="usage-3">Usage<a class="anchor" aria-label="anchor" href="#usage-3"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BrAPIConnection</span><span class="op">$</span><span class="fu">post</span><span class="op">(</span><span class="va">call</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div><p></p></div>
-</div>
-
-<div class="section">
-<h4 id="arguments-2">Arguments<a class="anchor" aria-label="anchor" href="#arguments-2"></a></h4>
-<p></p><div class="arguments"><dl><dt><code>call</code></dt>
-<dd><p>The BrAPI endpoint to request</p></dd>
-
-
-<dt><code>...</code></dt>
-<dd><p>(optional) Additional arguments passed to <code>httr</code></p></dd>
-
-
-<dt><code>query</code></dt>
-<dd><p>(optional) A named list of query parameters</p></dd>
-
-
-<dt><code>body</code></dt>
-<dd><p>(optional) A named list or vector of the request body (will be converted to JSON)</p></dd>
-
-
-<dt><code>page</code></dt>
-<dd><p>(optional) The index of the page of results (use 'all' to get all pages) (Default: 0)</p></dd>
-
-
-<dt><code>pageSize</code></dt>
-<dd><p>(optional) The max size of the result pages (Default: 10)</p></dd>
-
-
-<dt><code>token</code></dt>
-<dd><p>(optional) An Authorization token to add to the request</p></dd>
-
-
-<dt><code>verbose</code></dt>
-<dd><p>(optional) Set to true to include additional output to the console about the Response</p></dd>
-
-
-</dl><p></p></div>
-</div>
-<div class="section">
-<h4 id="returns-3">Returns<a class="anchor" aria-label="anchor" href="#returns-3"></a></h4>
-<p>A named list of Response properties</p>
-</div>
-<div class="section">
-<h4 id="examples-1">Examples<a class="anchor" aria-label="anchor" href="#examples-1"></a></h4>
-<p></p><div class="r example copy"><div class="sourceCode"><pre><code># Make a POST request
-\dontrun{
-sandbox &lt;- BrAPIConnection$new("wheat-sandbox.triticeaetoolbox.org")
-d1 &lt;- list(observationUnitDbId="ou1", observationVariableDbId="ov1", value=50)
-d2 &lt;- list(observationUnitDbId="ou2", observationVariableDbId="ov1", value=40)
-data &lt;- list(d1, d2)
-resp &lt;- sandbox$post("/token", query=list(username="testing", password="testing123"))
-resp &lt;- sandbox$post("/observations", body=data, token=resp$content$access_token)
-}
-
-</code></pre></div><p></p></div>
-</div>
-
-
-</div><p></p><hr><a id="method-BrAPIConnection-put"></a><div class="section">
-<h3 id="method-put-">Method <code>put()</code><a class="anchor" aria-label="anchor" href="#method-put-"></a></h3>
-<p>Make a PUT request</p><div class="section">
 <h4 id="usage-4">Usage<a class="anchor" aria-label="anchor" href="#usage-4"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BrAPIConnection</span><span class="op">$</span><span class="fu">put</span><span class="op">(</span><span class="va">call</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BrAPIConnection</span><span class="op">$</span><span class="fu">post</span><span class="op">(</span><span class="va">call</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -303,8 +274,63 @@ resp &lt;- sandbox$post("/observations", body=data, token=resp$content$access_to
 <dd><p>(optional) The max size of the result pages (Default: 10)</p></dd>
 
 
-<dt><code>token</code></dt>
-<dd><p>(optional) An Authorization token to add to the request</p></dd>
+<dt><code>verbose</code></dt>
+<dd><p>(optional) Set to true to include additional output to the console about the Response</p></dd>
+
+
+</dl><p></p></div>
+</div>
+<div class="section">
+<h4 id="returns-3">Returns<a class="anchor" aria-label="anchor" href="#returns-3"></a></h4>
+<p>A named list of Response properties</p>
+</div>
+<div class="section">
+<h4 id="examples-1">Examples<a class="anchor" aria-label="anchor" href="#examples-1"></a></h4>
+<p></p><div class="r example copy"><div class="sourceCode"><pre><code># Make a POST request
+\dontrun{
+sandbox &lt;- BrAPIConnection$new("wheat-sandbox.triticeaetoolbox.org")
+d1 &lt;- list(observationUnitDbId="ou1", observationVariableDbId="ov1", value=50)
+d2 &lt;- list(observationUnitDbId="ou2", observationVariableDbId="ov1", value=40)
+data &lt;- list(d1, d2)
+sandbox$login(username = "testing", password = "testing123")
+resp &lt;- sandbox$post("/observations", body=data)
+}
+
+</code></pre></div><p></p></div>
+</div>
+
+
+</div><p></p><hr><a id="method-BrAPIConnection-put"></a><div class="section">
+<h3 id="method-put-">Method <code>put()</code><a class="anchor" aria-label="anchor" href="#method-put-"></a></h3>
+<p>Make a PUT request</p><div class="section">
+<h4 id="usage-5">Usage<a class="anchor" aria-label="anchor" href="#usage-5"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BrAPIConnection</span><span class="op">$</span><span class="fu">put</span><span class="op">(</span><span class="va">call</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+<div class="section">
+<h4 id="arguments-4">Arguments<a class="anchor" aria-label="anchor" href="#arguments-4"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>call</code></dt>
+<dd><p>The BrAPI endpoint to request</p></dd>
+
+
+<dt><code>...</code></dt>
+<dd><p>(optional) Additional arguments passed to <code>httr</code></p></dd>
+
+
+<dt><code>query</code></dt>
+<dd><p>(optional) A named list of query parameters</p></dd>
+
+
+<dt><code>body</code></dt>
+<dd><p>(optional) A named list or vector of the request body (will be converted to JSON)</p></dd>
+
+
+<dt><code>page</code></dt>
+<dd><p>(optional) The index of the page of results (use 'all' to get all pages) (Default: 0)</p></dd>
+
+
+<dt><code>pageSize</code></dt>
+<dd><p>(optional) The max size of the result pages (Default: 10)</p></dd>
 
 
 <dt><code>verbose</code></dt>
@@ -327,12 +353,12 @@ trials from a set of breeding programs in a specific year.  If you don't provide
 the function will return the full set of all items in the database for the data type.  The results
 only include the database IDs and names of the matching items.  You can use the IDs in the general
 BrAPI endpoints to get additional data about the items.</p><div class="section">
-<h4 id="usage-5">Usage<a class="anchor" aria-label="anchor" href="#usage-5"></a></h4>
+<h4 id="usage-6">Usage<a class="anchor" aria-label="anchor" href="#usage-6"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BrAPIConnection</span><span class="op">$</span><span class="fu">wizard</span><span class="op">(</span><span class="va">data_type</span>, filters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
-<h4 id="arguments-4">Arguments<a class="anchor" aria-label="anchor" href="#arguments-4"></a></h4>
+<h4 id="arguments-5">Arguments<a class="anchor" aria-label="anchor" href="#arguments-5"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>data_type</code></dt>
 <dd><p>The data type to return after filtering</p></dd>
 
@@ -379,7 +405,7 @@ The $data key contains parsed data: a list parsed into <code>ids</code>, <code>n
 <p>NOTE: Depending on the number of markers and accessions, this download may take a
 very long time to complete.  You may want to use the conn$vcf_archived() function
 to download a static archived VCF file of a genotyping project, if one is available.</p><div class="section">
-<h4 id="usage-6">Usage<a class="anchor" aria-label="anchor" href="#usage-6"></a></h4>
+<h4 id="usage-7">Usage<a class="anchor" aria-label="anchor" href="#usage-7"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BrAPIConnection</span><span class="op">$</span><span class="fu">vcf</span><span class="op">(</span></span>
 <span>  <span class="va">output</span>,</span>
 <span>  <span class="va">genotyping_protocol_id</span>,</span>
@@ -389,7 +415,7 @@ to download a static archived VCF file of a genotyping project, if one is availa
 </div>
 
 <div class="section">
-<h4 id="arguments-5">Arguments<a class="anchor" aria-label="anchor" href="#arguments-5"></a></h4>
+<h4 id="arguments-6">Arguments<a class="anchor" aria-label="anchor" href="#arguments-6"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>output</code></dt>
 <dd><p>The path to the output VCF file</p></dd>
 
@@ -432,7 +458,7 @@ and/or project.  You can select one to download and save to the provided output 
 <p>The archived files are saved at the project-level.  So, if you specify a protocol, you'll get a list
 of all of the available files for each project in that protocol.  If you're performing analysis at
 the protocol-level, you'll need to manually merge the VCF files from each project in that protocol.</p><div class="section">
-<h4 id="usage-7">Usage<a class="anchor" aria-label="anchor" href="#usage-7"></a></h4>
+<h4 id="usage-8">Usage<a class="anchor" aria-label="anchor" href="#usage-8"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BrAPIConnection</span><span class="op">$</span><span class="fu">vcf_archived</span><span class="op">(</span></span>
 <span>  <span class="va">output</span>,</span>
 <span>  genotyping_protocol_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -442,7 +468,7 @@ the protocol-level, you'll need to manually merge the VCF files from each projec
 </div>
 
 <div class="section">
-<h4 id="arguments-6">Arguments<a class="anchor" aria-label="anchor" href="#arguments-6"></a></h4>
+<h4 id="arguments-7">Arguments<a class="anchor" aria-label="anchor" href="#arguments-7"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>output</code></dt>
 <dd><p>The path to the output VCF file</p></dd>
 
@@ -484,7 +510,7 @@ wheat$vcf_archived("~/Desktop/my_data.vcf", genotyping_project_id=10371)
 The genotype projects have been imputed using the Practical Haplotype Graph (PHG). The imputed marker density
 is 2.9M markers for assembly RefSeq v2.1. For quick access the imputed genotypes can be downloaded from a prepared file.
 A description of the imputation process can be found in About PHG imputation (https://wheat.triticeaetoolbox.org/static_content/files/imputation.html).</p><div class="section">
-<h4 id="usage-8">Usage<a class="anchor" aria-label="anchor" href="#usage-8"></a></h4>
+<h4 id="usage-9">Usage<a class="anchor" aria-label="anchor" href="#usage-9"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BrAPIConnection</span><span class="op">$</span><span class="fu">vcf_imputed</span><span class="op">(</span></span>
 <span>  <span class="va">output</span>,</span>
 <span>  genotyping_project_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -493,7 +519,7 @@ A description of the imputation process can be found in About PHG imputation (ht
 </div>
 
 <div class="section">
-<h4 id="arguments-7">Arguments<a class="anchor" aria-label="anchor" href="#arguments-7"></a></h4>
+<h4 id="arguments-8">Arguments<a class="anchor" aria-label="anchor" href="#arguments-8"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>output</code></dt>
 <dd><p>The path to the output VCF file</p></dd>
 
@@ -526,12 +552,12 @@ wheat$vcf_imputed("~/Desktop/my_data.vcf", genotyping_project_id=10371)
 </div><p></p><hr><a id="method-BrAPIConnection-clone"></a><div class="section">
 <h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
 <p>The objects of this class are cloneable with this method.</p><div class="section">
-<h4 id="usage-9">Usage<a class="anchor" aria-label="anchor" href="#usage-9"></a></h4>
+<h4 id="usage-10">Usage<a class="anchor" aria-label="anchor" href="#usage-10"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BrAPIConnection</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
-<h4 id="arguments-8">Arguments<a class="anchor" aria-label="anchor" href="#arguments-8"></a></h4>
+<h4 id="arguments-9">Arguments<a class="anchor" aria-label="anchor" href="#arguments-9"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>deep</code></dt>
 <dd><p>Whether to make a deep clone.</p></dd>
 
@@ -573,8 +599,8 @@ wheat$vcf_imputed("~/Desktop/my_data.vcf", genotyping_project_id=10371)
 <span class="r-in"><span><span class="va">d1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>observationUnitDbId<span class="op">=</span><span class="st">"ou1"</span>, observationVariableDbId<span class="op">=</span><span class="st">"ov1"</span>, value<span class="op">=</span><span class="fl">50</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">d2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>observationUnitDbId<span class="op">=</span><span class="st">"ou2"</span>, observationVariableDbId<span class="op">=</span><span class="st">"ov1"</span>, value<span class="op">=</span><span class="fl">40</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">d1</span>, <span class="va">d2</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">resp</span> <span class="op">&lt;-</span> <span class="va">sandbox</span><span class="op">$</span><span class="fu">post</span><span class="op">(</span><span class="st">"/token"</span>, query<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>username<span class="op">=</span><span class="st">"testing"</span>, password<span class="op">=</span><span class="st">"testing123"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">resp</span> <span class="op">&lt;-</span> <span class="va">sandbox</span><span class="op">$</span><span class="fu">post</span><span class="op">(</span><span class="st">"/observations"</span>, body<span class="op">=</span><span class="va">data</span>, token<span class="op">=</span><span class="va">resp</span><span class="op">$</span><span class="va">content</span><span class="op">$</span><span class="va">access_token</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sandbox</span><span class="op">$</span><span class="fu">login</span><span class="op">(</span>username <span class="op">=</span> <span class="st">"testing"</span>, password <span class="op">=</span> <span class="st">"testing123"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">resp</span> <span class="op">&lt;-</span> <span class="va">sandbox</span><span class="op">$</span><span class="fu">post</span><span class="op">(</span><span class="st">"/observations"</span>, body<span class="op">=</span><span class="va">data</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
