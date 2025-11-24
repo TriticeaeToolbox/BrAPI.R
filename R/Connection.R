@@ -153,7 +153,7 @@ BrAPIConnection <- R6::R6Class("BrAPIConnection",
 
     #' @description Make a PUT request
     #' @param call The BrAPI endpoint to request
-        #' @param query (optional) A named list of query parameters
+    #' @param query (optional) A named list of query parameters
     #' @param body (optional) A named list or vector of the request body (will be converted to JSON)
     #' @param page (optional) The index of the page of results (use 'all' to get all pages) (Default: 0)
     #' @param pageSize (optional) The max size of the result pages (Default: 10)
@@ -162,6 +162,64 @@ BrAPIConnection <- R6::R6Class("BrAPIConnection",
     #' @return A named list of Response properties
     put = function(call, ...) {
       BrAPIRequest("PUT", private$url(), call, token = self$auth_token, ...)
+    },
+
+    #' @description Make a BrAPI Search request.
+    #'
+    #' This function performs the two-step BrAPI search request, first making a POST request 
+    #' to the /search/{datatype} endpoint and then automatically fetches all of the search 
+    #' results from the /search/{datatype}/{searchResultsDbId} endpoint.
+    #'
+    #' The call parameter should be the supported /search/{datatype} endpoint (such as
+    #' /search/observations). You can omit the /search prefix and it will automatically be added 
+    #  (such as just /observations).
+    #'
+    #' You should include any of your search filters as the body to the request.
+    #'
+    #' If the initial /search/{datatype} is successful, this function will automatically request 
+    #' the /search/{datatype}/{searchResultDbId} with page = 'all' set to return all of the returned
+    #' search results.
+    #'
+    #' @param call The BrAPI search endpoint to request (such as /search/observations or just /observations)
+    #' @param query (optional) A named list of query parameters
+    #' @param body (optional) A named list or vector of the request body (will be converted to JSON)
+    #' @param page (optional) The index of the page of results (use 'all' to get all pages) (Default: 0)
+    #' @param pageSize (optional) The max size of the result pages (Default: 10)
+    #' @param verbose (optional) Set to true to include additional output to the console about the Response
+    #' @param ... (optional) Additional arguments passed to `httr`
+    #' @return A named list of Response properties
+    search = function(call, ...) {
+      # check if call includes the /search prefix
+      if ( !startsWith(call, "/search") && !startsWith(call, "search") ) {
+        call <- paste("/search", call, sep="/")
+      }
+      call <- gsub("/+", "/", call)
+
+      # start the search
+      start <- BrAPIRequest("POST", private$url(), call, token = self$auth_token, ...)
+
+      # Get the results, if search started successfully
+      if ( start$response$status_code >= 200 && start$response$status_code <= 299 ) {
+
+        # use search result db id to fetch results
+        srid = start$content$result$searchResultsDbId
+        if ( !is.null(srid) && srid != "" ) {
+          call <- paste(call, srid, sep="/")
+          results <- BrAPIRequest("GET", private$url(), call, token = self$auth_token, page = "all")
+          return(results)
+        }
+
+        # return warning if no search result db id returned
+        else {
+          warning(sprintf("Search Failed: [No Search Results DB ID returned]"))
+        }
+
+      }
+
+      # Return warning with error message
+      else {
+        warning(sprintf("Search Failed [%s]", start$status$message))
+      }
     },
 
     #' @description Make a Breedbase Search Wizard request.

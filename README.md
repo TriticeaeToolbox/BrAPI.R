@@ -167,6 +167,17 @@ resp <- sandbox$post("/token", query=list(username="testing", password="testing1
 resp <- sandbox$put("/observations", body=data, token=resp$content$access_token)
 ```
 
+### Search Function
+The [conn$search() function](https://triticeaetoolbox.github.io/BrAPI.R/reference/BrAPIConnection.html#method-BrAPIConnection-search) is a helper function that can be used to perform a BrAPI two-step search.  This function will make the initial request to the `/search/{datatype}` endpoint.  If that is successful, it will then automatically fetch all of the results from the `/search/{datatype}/{searchResultsDbId}` endpoint.
+
+For example, to search for and retrieve all of the observations from a specific trial:
+
+```R
+wheat <- getBrAPIConnection("T3/Wheat")
+results <- wheat$search("/observations", body = list(studyDbIds = c(7459)))
+# results$combined_data will contain all of the search results
+```
+
 ## Breedbase Functions
 
 This package includes some breedbase-specific helper functions for performing some non-BrAPI compliant tasks that are available on breedbase.  The `BrAPIConnection` object needs to have the `is_breedbase` argument set to `TRUE` in order for these functions to be enabled.

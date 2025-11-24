@@ -144,6 +144,7 @@ adds additional support for breedbase-specific functionality. (Default: \code{FA
 \item \href{#method-BrAPIConnection-get}{\code{BrAPIConnection$get()}}
 \item \href{#method-BrAPIConnection-post}{\code{BrAPIConnection$post()}}
 \item \href{#method-BrAPIConnection-put}{\code{BrAPIConnection$put()}}
+\item \href{#method-BrAPIConnection-search}{\code{BrAPIConnection$search()}}
 \item \href{#method-BrAPIConnection-wizard}{\code{BrAPIConnection$wizard()}}
 \item \href{#method-BrAPIConnection-vcf}{\code{BrAPIConnection$vcf()}}
 \item \href{#method-BrAPIConnection-vcf_archived}{\code{BrAPIConnection$vcf_archived()}}
@@ -327,6 +328,51 @@ Make a PUT request
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{call}}{The BrAPI endpoint to request}
+
+\item{\code{...}}{(optional) Additional arguments passed to \code{httr}}
+
+\item{\code{query}}{(optional) A named list of query parameters}
+
+\item{\code{body}}{(optional) A named list or vector of the request body (will be converted to JSON)}
+
+\item{\code{page}}{(optional) The index of the page of results (use 'all' to get all pages) (Default: 0)}
+
+\item{\code{pageSize}}{(optional) The max size of the result pages (Default: 10)}
+
+\item{\code{verbose}}{(optional) Set to true to include additional output to the console about the Response}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A named list of Response properties
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-BrAPIConnection-search"></a>}}
+\if{latex}{\out{\hypertarget{method-BrAPIConnection-search}{}}}
+\subsection{Method \code{search()}}{
+Make a BrAPI Search request.
+
+This function performs the two-step BrAPI search request, first making a POST request
+to the /search/{datatype} endpoint and then automatically fetches all of the search
+results from the /search/{datatype}/{searchResultsDbId} endpoint.
+
+The call parameter should be the supported /search/{datatype} endpoint (such as
+/search/observations). You can omit the /search prefix and it will automatically be added
+
+You should include any of your search filters as the body to the request.
+
+If the initial /search/{datatype} is successful, this function will automatically request
+the /search/{datatype}/{searchResultDbId} with page = 'all' set to return all of the returned
+search results.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BrAPIConnection$search(call, ...)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{call}}{The BrAPI search endpoint to request (such as /search/observations or just /observations)}
 
 \item{\code{...}}{(optional) Additional arguments passed to \code{httr}}
 
