@@ -103,8 +103,7 @@ BrAPIConnection <- R6::R6Class("BrAPIConnection",
         self$auth_token <- token
       }
       else if ( !is.null(username) && !is.null(password) ) {
-        print("REQUESTING TOKEN")
-        resp = self$post("/token", query = list(username = username, password = password))
+        resp = self$post("/token", body = list(username = username, password = password), encode = "multipart")
         self$auth_token <- resp$content$access_token
       }
     },

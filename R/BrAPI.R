@@ -16,12 +16,13 @@ library(httr)
 # @param query A named list of query parameters
 # @param body A named list or vector of a POST request's body
 # @param page The page of results to return (Default: 0). When set to 'all', returns all pages
+# @param encode The body encoding: form, multipart, or json (Default: json)
 # @param pageSize The size of a page of results to return (Default: 10)
 # @param token An Authorization Token to be added as an Authorization Header
 # @param verbose When set to true, print some response metadata to the console
 # 
 # @return A named list containing the Response properties
-BrAPIRequest <- function(method, base, call, ..., query=list(), body=list(), page=0, pageSize=10, token=NULL, verbose=FALSE) {
+BrAPIRequest <- function(method, base, call, ..., query=list(), body=list(), encode="json", page=0, pageSize=10, token=NULL, verbose=FALSE) {
 
   # Check for required arguments
   if ( !hasArg(method) ) stop("The HTTP method is required!")
@@ -51,7 +52,7 @@ BrAPIRequest <- function(method, base, call, ..., query=list(), body=list(), pag
     method, url, config,
     query = query,
     body = body,
-    encode = "json",
+    encode = encode,
     ...
   )
   content = httr::content(resp)
