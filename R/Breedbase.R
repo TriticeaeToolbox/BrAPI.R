@@ -264,6 +264,11 @@ BreedbaseRequestListArchivedVCF <- function(conn, genotyping_protocol_id = NULL,
   content = httr::content(resp)
   httr::warn_for_status(resp)
 
+  # Check for error message
+  if ( "error" %in% names(content) ) {
+    stop(content$error)
+  }
+
   # Build table of file info
   files = data.frame(
     protocol_id = numeric(),

@@ -116,7 +116,7 @@ files <- wheat$vcf_archived_list(gentyping_project_id=2761)
 wheat <- getBrAPIConnection("T3/Wheat")
 wheat$vcf_archived("~/Desktop/my_data.vcf", genotyping_protocol_id=70)
 wheat$vcf_archived("~/Desktop/my_data.vcf", genotyping_project_id=2761)
-wheat$vcf_archived("~/Desktop/my_data.vcf", genotyping_project_id=2761)
+wheat$vcf_archived("~/Desktop/my_data.vcf", genotyping_protocol_id=70, file_name="2019-12-30_16:33:07_TCAP90K_HWWAMP.vcf")
 
 }
 
@@ -609,7 +609,7 @@ successful, the genotype data will be downloaded to the VCF file specified by th
 wheat <- getBrAPIConnection("T3/Wheat")
 wheat$vcf_archived("~/Desktop/my_data.vcf", genotyping_protocol_id=70)
 wheat$vcf_archived("~/Desktop/my_data.vcf", genotyping_project_id=2761)
-wheat$vcf_archived("~/Desktop/my_data.vcf", genotyping_project_id=2761)
+wheat$vcf_archived("~/Desktop/my_data.vcf", genotyping_protocol_id=70, file_name="2019-12-30_16:33:07_TCAP90K_HWWAMP.vcf")
 
 }
 }
