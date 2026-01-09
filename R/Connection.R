@@ -1,4 +1,5 @@
 library(R6)
+library(askpass)
 
 #' BrAPI Connection Class
 #'
@@ -59,7 +60,7 @@ BrAPIConnection <- R6::R6Class("BrAPIConnection",
     #' adds additional support for breedbase-specific functionality. (Default: `FALSE`)
     is_breedbase = "boolean",
 
-    #' @field auth_token An auth token that will be as a Bearer Token to the the Authorization header to all requests
+    #' @field auth_token An auth token that will be passed as a Bearer Token in the the Authorization header to all requests
     auth_token = "character",
 
     #' @description Create a new `BrAPIConnection` object
@@ -93,7 +94,12 @@ BrAPIConnection <- R6::R6Class("BrAPIConnection",
       return(paste(protocol, host, sep='://'))
     },
 
-    #' @description Login to the server to set an auth token for all future requests.  If a username and password are provided, a POST request will be made to the /token endpoint with your username and password to request a new auth token.  If a token is provided, then that will be saved and used as-is in future requests.
+    #' @description Login to the server to set an auth token for all future requests.
+    #' 
+    #' If a username and password are provided, a POST request will be made to the /token endpoint 
+    #' with your username and password to request a new auth token. If a token is provided, then that
+    #' will be saved and used as-is in future requests. If none are provided, the user will be 
+    #' prompted for their username and password
     #'
     #' @param username (optional) Your account username for the database
     #' @param password (optional) Your account password for the database
@@ -105,6 +111,11 @@ BrAPIConnection <- R6::R6Class("BrAPIConnection",
       else if ( !is.null(username) && !is.null(password) ) {
         resp = self$post("/token", body = list(username = username, password = password), encode = "multipart")
         self$auth_token <- resp$content$access_token
+      }
+      else {
+        username = readline("Username: ")
+        password = askpass()
+        self$login(username, password)
       }
     },
 

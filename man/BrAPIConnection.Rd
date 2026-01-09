@@ -131,7 +131,7 @@ wheat$vcf_imputed("~/Desktop/my_data.vcf", genotyping_project_id=10371)
 \item{\code{is_breedbase}}{A flag to indicate this BrAPI connection is to a breedbase instance.  This
 adds additional support for breedbase-specific functionality. (Default: \code{FALSE})}
 
-\item{\code{auth_token}}{An auth token that will be as a Bearer Token to the the Authorization header to all requests}
+\item{\code{auth_token}}{An auth token that will be passed as a Bearer Token in the the Authorization header to all requests}
 }
 \if{html}{\out{</div>}}
 }
@@ -206,7 +206,12 @@ A String in the format \verb{$protocol://$host}
 \if{html}{\out{<a id="method-BrAPIConnection-login"></a>}}
 \if{latex}{\out{\hypertarget{method-BrAPIConnection-login}{}}}
 \subsection{Method \code{login()}}{
-Login to the server to set an auth token for all future requests.  If a username and password are provided, a POST request will be made to the /token endpoint with your username and password to request a new auth token.  If a token is provided, then that will be saved and used as-is in future requests.
+Login to the server to set an auth token for all future requests.
+
+If a username and password are provided, a POST request will be made to the /token endpoint
+with your username and password to request a new auth token. If a token is provided, then that
+will be saved and used as-is in future requests. If none are provided, the user will be
+prompted for their username and password
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BrAPIConnection$login(username = NULL, password = NULL, token = NULL)}\if{html}{\out{</div>}}
 }
