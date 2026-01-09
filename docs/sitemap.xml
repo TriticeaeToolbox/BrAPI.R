@@ -1,16 +1,16 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
-<url><loc>/404.html</loc></url>
-<url><loc>/LICENSE-text.html</loc></url>
-<url><loc>/TUTORIAL.html</loc></url>
-<url><loc>/authors.html</loc></url>
-<url><loc>/index.html</loc></url>
-<url><loc>/reference/BrAPIConnection.html</loc></url>
-<url><loc>/reference/BrAPIRequest.html</loc></url>
-<url><loc>/reference/KNOWN_BRAPI_CONNECTIONS.html</loc></url>
-<url><loc>/reference/createBrAPIConnection.html</loc></url>
-<url><loc>/reference/getBrAPIConnection.html</loc></url>
-<url><loc>/reference/getBrAPIConnections.html</loc></url>
-<url><loc>/reference/index.html</loc></url>
-<url><loc>/reference/listBrAPIConnections.html</loc></url>
+<url><loc>https://triticeaetoolbox.github.io/BrAPI.R/404.html</loc></url>
+<url><loc>https://triticeaetoolbox.github.io/BrAPI.R/LICENSE-text.html</loc></url>
+<url><loc>https://triticeaetoolbox.github.io/BrAPI.R/TUTORIAL.html</loc></url>
+<url><loc>https://triticeaetoolbox.github.io/BrAPI.R/authors.html</loc></url>
+<url><loc>https://triticeaetoolbox.github.io/BrAPI.R/index.html</loc></url>
+<url><loc>https://triticeaetoolbox.github.io/BrAPI.R/reference/BrAPIConnection.html</loc></url>
+<url><loc>https://triticeaetoolbox.github.io/BrAPI.R/reference/BrAPIRequest.html</loc></url>
+<url><loc>https://triticeaetoolbox.github.io/BrAPI.R/reference/KNOWN_BRAPI_CONNECTIONS.html</loc></url>
+<url><loc>https://triticeaetoolbox.github.io/BrAPI.R/reference/createBrAPIConnection.html</loc></url>
+<url><loc>https://triticeaetoolbox.github.io/BrAPI.R/reference/getBrAPIConnection.html</loc></url>
+<url><loc>https://triticeaetoolbox.github.io/BrAPI.R/reference/getBrAPIConnections.html</loc></url>
+<url><loc>https://triticeaetoolbox.github.io/BrAPI.R/reference/index.html</loc></url>
+<url><loc>https://triticeaetoolbox.github.io/BrAPI.R/reference/listBrAPIConnections.html</loc></url>
 </urlset>
 

@@ -18,6 +18,11 @@ resp <- wheat$get("/germplasm", page="all", pageSize=5000)
 germplasm <- resp$combined_data
 ```
 
+### Tutorial
+
+A more in-depth tutorial using data from T3/Wheat can be found in the TUTORIAL.md file.
+
+
 ## Installation
 
 This package can be installed directly from GitHub, using the `devtools` package.
@@ -85,7 +90,7 @@ This package assumes that authorization is handled by adding a `Authorization: B
 
 ### Breedbase Databases
 
-If you're connecting to a breedbase database, you can use the BrAPI Connection's `login(username, password)` function to get an authorization token that will be used in all future requests for that connection.
+If you're connecting to a breedbase database, you can use the BrAPI Connection's `login(username, password)` function to get an authorization token that will be used in all future requests for that connection.  Alternatively, you can use the `login()` function without the username and password and you will be prompted to enter your username and password when the function is called.
 
 The `login()` function will send a `POST` request to the the `/token` endpoint with your username and password to retrieve and save a new authorization token.
 
@@ -185,6 +190,7 @@ This package includes some breedbase-specific helper functions for performing so
 - [conn$wizard() function](https://triticeaetoolbox.github.io/BrAPI.R/reference/BrAPIConnection.html#method-BrAPIConnection-wizard) - filter data using the breedbase Search Wizard
 - [conn$vcf() function](https://triticeaetoolbox.github.io/BrAPI.R/reference/BrAPIConnection.html#method-BrAPIConnection-vcf) - download a breedbase-generated VCF file for a genotyping protocol, optionally filtered by accessions
 - [conn$vcf_archive() function](https://triticeaetoolbox.github.io/BrAPI.R/reference/BrAPIConnection.html#method-BrAPIConnection-vcf_archived) - download a static, archived VCF for an entire genotyping project
+- [conn$vcf_imputed() function](https://triticeaetoolbox.github.io/BrAPI.R/reference/BrAPIConnection.html#method-BrAPIConnection-vcf_imputed) - download a static VCF of imputed data for an imputed genotyping project (not all genotyping projects have been imputed)
 
 ### Search Wizard: `conn$wizard(data_type, filters, verbose)`
 
@@ -250,30 +256,59 @@ wheat <- getBrAPIConnection("T3/WheatCAP")
 wheat$vcf("~/Desktop/my_data.vcf", genotyping_protocol_id = 249, accessions = c(228677, 1666408))
 ```
 
-Depending on the size of the genotyping protocol (number of markers) and the number of accessions to download, **this download function may still take a long time to download**.  If the function timesout, you may want to try to download an archived VCF file of the data.
+Depending on the size of the genotyping protocol (number of markers) and the number of accessions to download, **this download function may still take a long time to download**.  If the function times out, you may want to try to download an archived VCF file of the data.
 
-### Downloading Archived VCF Files: `conn$vcf_archived(output, genotyping_protocol_id, genotyping_project_id)`
+### Downloading Archived VCF Files: `conn$vcf_archived(output, genotyping_protocol_id, genotyping_project_id, file_name)`
 
 This function will allow you to download a static, archived VCF file for a specific genotyping project, when available.  These files are the original VCF files that were used to upload the data to the database.
 
 The archived files are saved at the project level.  So, if you specify a protocol, you'll get a list of all of the available files for each project in that protocol and you can select which one to download.  If you're performing analysis at the protocol level, you'll need to manually merge the VCF files from each project in that protocol.
 
 ```R
-> wheat <- getBrAPIConnection("T3/WheatCAP")
-> resp <- wheat$vcf_archived("~/Desktop/my_data.vcf", genotyping_protocol_id=233)
+> wheat <- getBrAPIConnection("T3/Wheat")
+> resp <- wheat$vcf_archived("~/Desktop/my_data.vcf", genotyping_protocol_id=297)
 Finding archived VCF files...
+  Genotyping Protocol: 297
+Found 4 files...
 --> Select a file to download:
-[1] UCD_2020_Allegro (Allegro)
-[2] KSU_2023_Allegro (Allegro)
---> Enter file number: 1
-Response [GET] <https://wheatcap.triticeaetoolbox.org/ajax/genotyping_project/download_archived_vcf?genotyping_project_id=11359&basename=2024-06-13_14:25:50_23GUT_FIN.vcf>
+[#] Project Name (Protocol Name) [File Name]
+--------------------------------------------
+[1] Allegro V1 tempate (Allegro V1) [2025-09-03_18:51:07_fileuEjk]
+[2] KSU_2023_Allegro (Allegro V1) [2025-09-03_19:07:44_fileFJaf]
+[3] KSU_2023_Allegro_AeTa (Allegro V1) [2025-09-03_19:28:16_filee3Si]
+[4] UCD_2020_Allegro (Allegro V1) [2025-09-03_18:53:02_filepq5P]
+--> Enter file number: 4
+Response [GET] <https://wheatcap.triticeaetoolbox.org/ajax/genotyping_project/download_archived_vcf?genotyping_project_id=10371&basename=2025-09-03_18:53:02_filepq5P>
   Success: (200) OK
-  Project: KSU_2023_Allegro (11359)
-  Protocol: Allegro (233)
-  Basename: 2024-06-13_14:25:50_23GUT_FIN.vcf
+  Protocol: Allegro V1 (297)
+  Project: UCD_2020_Allegro (10371)
+  File Name: 2025-09-03_18:53:02_filepq5P
   Output File: ~/Desktop/my_data.vcf
 ```
 
-## Tutorial
+If you know which file you want to download, you can add the archived file's file name as the `file_name` argument to the `vcf_archived()` function.  When there is only one matching file, that file will be automatically downloaded to the output file (you won't be prompted to select a file).
 
-A more in-depth tutorial using data from T3/Wheat can be found in the TUTORIAL.md file.
+If you want to get a table of available files before requesting a download, you can do so with the `vcf_archived_list()` function, which also takes a `genotyping_protocol_id` and/or `genotyping_project_id` as arguments.  This will return a data frame with the protocol id and name, project id and name, and file name of the available archived files for your request.  You can then use one of the returned file names as the `file_name` argument in the `vcf_archived()` download function.
+
+```R
+> files <- wheat$vcf_archived_list(genotyping_protocol_id=297, verbose=T)
+Finding archived VCF files...
+  Genotyping Protocol: 297
+Found 4 files...
+> files
+  protocol_id protocol_name project_id          project_name                    file_name
+1         297    Allegro V1      13533    Allegro V1 tempate 2025-09-03_18:51:07_fileuEjk
+3         297    Allegro V1      11359      KSU_2023_Allegro 2025-09-03_19:07:44_fileFJaf
+4         297    Allegro V1      13534 KSU_2023_Allegro_AeTa 2025-09-03_19:28:16_filee3Si
+2         297    Allegro V1      10371      UCD_2020_Allegro 2025-09-03_18:53:02_filepq5P
+> resp <- wheat$vcf_archived("~/Desktop/geno_data.vcf", genotyping_protocol_id=297, file_name="2025-09-03_19:07:44_fileFJaf", verbose=T)
+Finding archived VCF files...
+  Genotyping Protocol: 297
+Found 4 files...
+Response [GET] <https://wheatcap.triticeaetoolbox.org/ajax/genotyping_project/download_archived_vcf?genotyping_project_id=11359&basename=2025-09-03_19:07:44_fileFJaf>
+  Success: (200) OK
+  Protocol: Allegro V1 (297)
+  Project: KSU_2023_Allegro (11359)
+  File Name: 2025-09-03_19:07:44_fileFJaf
+  Output File: ~/Desktop/geno_data.vcf
+```

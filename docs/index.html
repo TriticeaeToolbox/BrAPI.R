@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="index.html">BrAPI</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,6 +60,11 @@
 <span><span class="co"># Get all Germplasm stored in the database</span></span>
 <span><span class="va">resp</span> <span class="op">&lt;-</span> <span class="va">wheat</span><span class="op">$</span><span class="fu">get</span><span class="op">(</span><span class="st">"/germplasm"</span>, page<span class="op">=</span><span class="st">"all"</span>, pageSize<span class="op">=</span><span class="fl">5000</span><span class="op">)</span></span>
 <span><span class="va">germplasm</span> <span class="op">&lt;-</span> <span class="va">resp</span><span class="op">$</span><span class="va">combined_data</span></span></code></pre></div>
+<div class="section level3">
+<h3 id="tutorial">Tutorial<a class="anchor" aria-label="anchor" href="#tutorial"></a>
+</h3>
+<p>A more in-depth tutorial using data from T3/Wheat can be found in the TUTORIAL.md file.</p>
+</div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
@@ -71,18 +76,18 @@
 <span><span class="co"># Install the BrAPI package from GitHub</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://devtools.r-lib.org/" class="external-link">devtools</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"TriticeaeToolbox/BrAPI.R"</span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">BrAPI</span><span class="op">)</span></span></code></pre></div>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://triticeaetoolbox.github.io/BrAPI.R/">BrAPI</a></span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="documentation">Documentation<a class="anchor" aria-label="anchor" href="#documentation"></a>
 </h2>
-<p>Reference Documentation can be found here: <a href="https://triticeaetoolbox.github.io/BrAPI.R" class="external-link">https://triticeaetoolbox.github.io/BrAPI.R</a></p>
+<p>Reference Documentation can be found here: <a href="https://triticeaetoolbox.github.io/BrAPI.R">https://triticeaetoolbox.github.io/BrAPI.R</a></p>
 </div>
 <div class="section level2">
 <h2 id="creating-a-brapi-connection">Creating a BrAPI Connection<a class="anchor" aria-label="anchor" href="#creating-a-brapi-connection"></a>
 </h2>
-<p>The <a href="https://triticeaetoolbox.github.io/BrAPI.R/reference/BrAPIConnection.html" class="external-link">BrAPIConnection Class</a> contains information about the BrAPI server and has helper functions for making HTTP requests.</p>
-<p>There are some known pre-configured BrAPI connections included with this package. To see the list of known BrAPI connections, use the <a href="https://triticeaetoolbox.github.io/BrAPI.R/reference/listBrAPIConnections.html" class="external-link">listBrAPIConnections() function</a>:</p>
+<p>The <a href="https://triticeaetoolbox.github.io/BrAPI.R/reference/BrAPIConnection.html">BrAPIConnection Class</a> contains information about the BrAPI server and has helper functions for making HTTP requests.</p>
+<p>There are some known pre-configured BrAPI connections included with this package. To see the list of known BrAPI connections, use the <a href="https://triticeaetoolbox.github.io/BrAPI.R/reference/listBrAPIConnections.html">listBrAPIConnections() function</a>:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/listBrAPIConnections.html">listBrAPIConnections</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co"># PRINTS:</span></span>
@@ -94,10 +99,10 @@
 <span><span class="co">#  T3/Barley = barley.triticeaetoolbox.org [v2]</span></span>
 <span><span class="co">#  T3/Barley Sandbox = barley-sandbox.triticeaetoolbox.org [v2]</span></span>
 <span><span class="co">#  Cassavabase = cassavabase.org [v2]</span></span></code></pre></div>
-<p>To use a known BrAPI connection, reference it by name in the <a href="https://triticeaetoolbox.github.io/BrAPI.R/reference/getBrAPIConnection.html" class="external-link">getBrAPIConnection() function</a>:</p>
+<p>To use a known BrAPI connection, reference it by name in the <a href="https://triticeaetoolbox.github.io/BrAPI.R/reference/getBrAPIConnection.html">getBrAPIConnection() function</a>:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">wheat</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/getBrAPIConnection.html">getBrAPIConnection</a></span><span class="op">(</span><span class="st">"T3/Wheat"</span><span class="op">)</span></span></code></pre></div>
-<p>To manually create a BrAPI connection, you’ll need to specify the host of the BrAPI server (and optionally set the protocol, path, and/or version) in the <a href="https://triticeaetoolbox.github.io/BrAPI.R/reference/createBrAPIConnection.html" class="external-link">createBrAPIConnection() function</a>:</p>
+<p>To manually create a BrAPI connection, you’ll need to specify the host of the BrAPI server (and optionally set the protocol, path, and/or version) in the <a href="https://triticeaetoolbox.github.io/BrAPI.R/reference/createBrAPIConnection.html">createBrAPIConnection() function</a>:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">kelp</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/createBrAPIConnection.html">createBrAPIConnection</a></span><span class="op">(</span><span class="st">"sugarkelpbase.org"</span><span class="op">)</span></span>
 <span><span class="va">kelpv1</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/createBrAPIConnection.html">createBrAPIConnection</a></span><span class="op">(</span><span class="st">"sugarkelpbase.org"</span>, version<span class="op">=</span><span class="st">"v1"</span><span class="op">)</span></span></code></pre></div>
@@ -118,7 +123,7 @@
 <div class="section level3">
 <h3 id="breedbase-databases">Breedbase Databases<a class="anchor" aria-label="anchor" href="#breedbase-databases"></a>
 </h3>
-<p>If you’re connecting to a breedbase database, you can use the BrAPI Connection’s <code>login(username, password)</code> function to get an authorization token that will be used in all future requests for that connection.</p>
+<p>If you’re connecting to a breedbase database, you can use the BrAPI Connection’s <code>login(username, password)</code> function to get an authorization token that will be used in all future requests for that connection. Alternatively, you can use the <code>login()</code> function without the username and password and you will be prompted to enter your username and password when the function is called.</p>
 <p>The <code>login()</code> function will send a <code>POST</code> request to the the <code>/token</code> endpoint with your username and password to retrieve and save a new authorization token.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">wheat</span><span class="op">$</span><span class="fu">login</span><span class="op">(</span><span class="st">"myusername"</span>, <span class="st">"mypassword"</span><span class="op">)</span> <span class="co"># if successful, this saves an authorization token </span></span>
@@ -139,11 +144,11 @@
 <p>Once you have a <code>BrAPIConnection</code> object, you can use it to make HTTP Requests to the BrAPI server. There is a separate helper function for each type of HTTP request.</p>
 <ul>
 <li>
-<a href="https://triticeaetoolbox.github.io/BrAPI.R/reference/BrAPIConnection.html#method-BrAPIConnection-get" class="external-link">conn$get() function</a> - to make a GET request</li>
+<a href="https://triticeaetoolbox.github.io/BrAPI.R/reference/BrAPIConnection.html#method-BrAPIConnection-get">conn$get() function</a> - to make a GET request</li>
 <li>
-<a href="https://triticeaetoolbox.github.io/BrAPI.R/reference/BrAPIConnection.html#method-BrAPIConnection-post" class="external-link">conn$post() function</a> - make a POST request</li>
+<a href="https://triticeaetoolbox.github.io/BrAPI.R/reference/BrAPIConnection.html#method-BrAPIConnection-post">conn$post() function</a> - make a POST request</li>
 <li>
-<a href="https://triticeaetoolbox.github.io/BrAPI.R/reference/BrAPIConnection.html#method-BrAPIConnection-put" class="external-link">conn$put() function</a> - make a PUT request</li>
+<a href="https://triticeaetoolbox.github.io/BrAPI.R/reference/BrAPIConnection.html#method-BrAPIConnection-put">conn$put() function</a> - make a PUT request</li>
 </ul>
 <div class="section level3">
 <h3 id="request-parameters">Request Parameters<a class="anchor" aria-label="anchor" href="#request-parameters"></a>
@@ -226,7 +231,7 @@
 <div class="section level3">
 <h3 id="search-function">Search Function<a class="anchor" aria-label="anchor" href="#search-function"></a>
 </h3>
-<p>The <a href="https://triticeaetoolbox.github.io/BrAPI.R/reference/BrAPIConnection.html#method-BrAPIConnection-search" class="external-link">conn$search() function</a> is a helper function that can be used to perform a BrAPI two-step search. This function will make the initial request to the <code>/search/{datatype}</code> endpoint. If that is successful, it will then automatically fetch all of the results from the <code>/search/{datatype}/{searchResultsDbId}</code> endpoint.</p>
+<p>The <a href="https://triticeaetoolbox.github.io/BrAPI.R/reference/BrAPIConnection.html#method-BrAPIConnection-search">conn$search() function</a> is a helper function that can be used to perform a BrAPI two-step search. This function will make the initial request to the <code>/search/{datatype}</code> endpoint. If that is successful, it will then automatically fetch all of the results from the <code>/search/{datatype}/{searchResultsDbId}</code> endpoint.</p>
 <p>For example, to search for and retrieve all of the observations from a specific trial:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">wheat</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/getBrAPIConnection.html">getBrAPIConnection</a></span><span class="op">(</span><span class="st">"T3/Wheat"</span><span class="op">)</span></span>
@@ -240,11 +245,13 @@
 <p>This package includes some breedbase-specific helper functions for performing some non-BrAPI compliant tasks that are available on breedbase. The <code>BrAPIConnection</code> object needs to have the <code>is_breedbase</code> argument set to <code>TRUE</code> in order for these functions to be enabled.</p>
 <ul>
 <li>
-<a href="https://triticeaetoolbox.github.io/BrAPI.R/reference/BrAPIConnection.html#method-BrAPIConnection-wizard" class="external-link">conn$wizard() function</a> - filter data using the breedbase Search Wizard</li>
+<a href="https://triticeaetoolbox.github.io/BrAPI.R/reference/BrAPIConnection.html#method-BrAPIConnection-wizard">conn$wizard() function</a> - filter data using the breedbase Search Wizard</li>
 <li>
-<a href="https://triticeaetoolbox.github.io/BrAPI.R/reference/BrAPIConnection.html#method-BrAPIConnection-vcf" class="external-link">conn$vcf() function</a> - download a breedbase-generated VCF file for a genotyping protocol, optionally filtered by accessions</li>
+<a href="https://triticeaetoolbox.github.io/BrAPI.R/reference/BrAPIConnection.html#method-BrAPIConnection-vcf">conn$vcf() function</a> - download a breedbase-generated VCF file for a genotyping protocol, optionally filtered by accessions</li>
 <li>
-<a href="https://triticeaetoolbox.github.io/BrAPI.R/reference/BrAPIConnection.html#method-BrAPIConnection-vcf_archived" class="external-link">conn$vcf_archive() function</a> - download a static, archived VCF for an entire genotyping project</li>
+<a href="https://triticeaetoolbox.github.io/BrAPI.R/reference/BrAPIConnection.html#method-BrAPIConnection-vcf_archived">conn$vcf_archive() function</a> - download a static, archived VCF for an entire genotyping project</li>
+<li>
+<a href="https://triticeaetoolbox.github.io/BrAPI.R/reference/BrAPIConnection.html#method-BrAPIConnection-vcf_imputed">conn$vcf_imputed() function</a> - download a static VCF of imputed data for an imputed genotyping project (not all genotyping projects have been imputed)</li>
 </ul>
 <div class="section level3">
 <h3 id="search-wizard-connwizarddata_type-filters-verbose">Search Wizard: <code>conn$wizard(data_type, filters, verbose)</code>
@@ -297,33 +304,56 @@
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">wheat</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/getBrAPIConnection.html">getBrAPIConnection</a></span><span class="op">(</span><span class="st">"T3/WheatCAP"</span><span class="op">)</span></span>
 <span><span class="va">wheat</span><span class="op">$</span><span class="fu">vcf</span><span class="op">(</span><span class="st">"~/Desktop/my_data.vcf"</span>, genotyping_protocol_id <span class="op">=</span> <span class="fl">249</span>, accessions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">228677</span>, <span class="fl">1666408</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p>Depending on the size of the genotyping protocol (number of markers) and the number of accessions to download, <strong>this download function may still take a long time to download</strong>. If the function timesout, you may want to try to download an archived VCF file of the data.</p>
+<p>Depending on the size of the genotyping protocol (number of markers) and the number of accessions to download, <strong>this download function may still take a long time to download</strong>. If the function times out, you may want to try to download an archived VCF file of the data.</p>
 </div>
 <div class="section level3">
-<h3 id="downloading-archived-vcf-files-connvcf_archivedoutput-genotyping_protocol_id-genotyping_project_id">Downloading Archived VCF Files: <code>conn$vcf_archived(output, genotyping_protocol_id, genotyping_project_id)</code>
-<a class="anchor" aria-label="anchor" href="#downloading-archived-vcf-files-connvcf_archivedoutput-genotyping_protocol_id-genotyping_project_id"></a>
+<h3 id="downloading-archived-vcf-files-connvcf_archivedoutput-genotyping_protocol_id-genotyping_project_id-file_name">Downloading Archived VCF Files: <code>conn$vcf_archived(output, genotyping_protocol_id, genotyping_project_id, file_name)</code>
+<a class="anchor" aria-label="anchor" href="#downloading-archived-vcf-files-connvcf_archivedoutput-genotyping_protocol_id-genotyping_project_id-file_name"></a>
 </h3>
 <p>This function will allow you to download a static, archived VCF file for a specific genotyping project, when available. These files are the original VCF files that were used to upload the data to the database.</p>
 <p>The archived files are saved at the project level. So, if you specify a protocol, you’ll get a list of all of the available files for each project in that protocol and you can select which one to download. If you’re performing analysis at the protocol level, you’ll need to manually merge the VCF files from each project in that protocol.</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="sc">&gt;</span> wheat <span class="ot">&lt;-</span> <span class="fu">getBrAPIConnection</span>(<span class="st">"T3/WheatCAP"</span>)</span>
-<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a><span class="sc">&gt;</span> resp <span class="ot">&lt;-</span> wheat<span class="sc">$</span><span class="fu">vcf_archived</span>(<span class="st">"~/Desktop/my_data.vcf"</span>, <span class="at">genotyping_protocol_id=</span><span class="dv">233</span>)</span>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="sc">&gt;</span> wheat <span class="ot">&lt;-</span> <span class="fu">getBrAPIConnection</span>(<span class="st">"T3/Wheat"</span>)</span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a><span class="sc">&gt;</span> resp <span class="ot">&lt;-</span> wheat<span class="sc">$</span><span class="fu">vcf_archived</span>(<span class="st">"~/Desktop/my_data.vcf"</span>, <span class="at">genotyping_protocol_id=</span><span class="dv">297</span>)</span>
 <span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a>Finding archived VCF files...</span>
-<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a><span class="sc">-</span><span class="ot">-&gt;</span> Select a file to download<span class="sc">:</span></span>
-<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a>[<span class="dv">1</span>] <span class="fu">UCD_2020_Allegro</span> (Allegro)</span>
-<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a>[<span class="dv">2</span>] <span class="fu">KSU_2023_Allegro</span> (Allegro)</span>
-<span id="cb16-7"><a href="#cb16-7" tabindex="-1"></a><span class="sc">-</span><span class="ot">-&gt;</span> Enter file number<span class="sc">:</span> <span class="dv">1</span></span>
-<span id="cb16-8"><a href="#cb16-8" tabindex="-1"></a>Response [GET] <span class="sc">&lt;</span>https<span class="sc">:</span><span class="er">//</span>wheatcap.triticeaetoolbox.org<span class="sc">/</span>ajax<span class="sc">/</span>genotyping_project<span class="sc">/</span>download_archived_vcf?genotyping_project_id<span class="ot">=</span><span class="dv">11359</span><span class="sc">&amp;</span>basename<span class="ot">=</span><span class="dv">2024-06-13</span>_14<span class="sc">:</span><span class="dv">25</span><span class="sc">:</span><span class="dv">50</span>_23GUT_FIN.vcf<span class="sc">&gt;</span></span>
-<span id="cb16-9"><a href="#cb16-9" tabindex="-1"></a>  Success<span class="sc">:</span> (<span class="dv">200</span>) OK</span>
-<span id="cb16-10"><a href="#cb16-10" tabindex="-1"></a>  Project<span class="sc">:</span> <span class="fu">KSU_2023_Allegro</span> (<span class="dv">11359</span>)</span>
-<span id="cb16-11"><a href="#cb16-11" tabindex="-1"></a>  Protocol<span class="sc">:</span> <span class="fu">Allegro</span> (<span class="dv">233</span>)</span>
-<span id="cb16-12"><a href="#cb16-12" tabindex="-1"></a>  Basename<span class="sc">:</span> <span class="dv">2024-06-13</span>_14<span class="sc">:</span><span class="dv">25</span><span class="sc">:</span><span class="dv">50</span>_23GUT_FIN.vcf</span>
-<span id="cb16-13"><a href="#cb16-13" tabindex="-1"></a>  Output File<span class="sc">:</span> <span class="er">~/</span>Desktop<span class="sc">/</span>my_data.vcf</span></code></pre></div>
+<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a>  Genotyping Protocol<span class="sc">:</span> <span class="dv">297</span></span>
+<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a>Found <span class="dv">4</span> files...</span>
+<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a><span class="sc">-</span><span class="ot">-&gt;</span> Select a file to download<span class="sc">:</span></span>
+<span id="cb16-7"><a href="#cb16-7" tabindex="-1"></a>[<span class="co">#] Project Name (Protocol Name) [File Name]</span></span>
+<span id="cb16-8"><a href="#cb16-8" tabindex="-1"></a><span class="sc">--------------------------------------------</span></span>
+<span id="cb16-9"><a href="#cb16-9" tabindex="-1"></a>[<span class="dv">1</span>] Allegro V1 <span class="fu">tempate</span> (Allegro V1) [<span class="dv">2025-09-03</span>_18<span class="sc">:</span><span class="dv">51</span><span class="sc">:</span><span class="dv">07</span>_fileuEjk]</span>
+<span id="cb16-10"><a href="#cb16-10" tabindex="-1"></a>[<span class="dv">2</span>] <span class="fu">KSU_2023_Allegro</span> (Allegro V1) [<span class="dv">2025-09-03</span>_19<span class="sc">:</span><span class="dv">07</span><span class="sc">:</span><span class="dv">44</span>_fileFJaf]</span>
+<span id="cb16-11"><a href="#cb16-11" tabindex="-1"></a>[<span class="dv">3</span>] <span class="fu">KSU_2023_Allegro_AeTa</span> (Allegro V1) [<span class="dv">2025-09-03</span>_19<span class="sc">:</span><span class="dv">28</span><span class="sc">:</span><span class="dv">16</span>_filee3Si]</span>
+<span id="cb16-12"><a href="#cb16-12" tabindex="-1"></a>[<span class="dv">4</span>] <span class="fu">UCD_2020_Allegro</span> (Allegro V1) [<span class="dv">2025-09-03</span>_18<span class="sc">:</span><span class="dv">53</span><span class="sc">:</span><span class="dv">02</span>_filepq5P]</span>
+<span id="cb16-13"><a href="#cb16-13" tabindex="-1"></a><span class="sc">-</span><span class="ot">-&gt;</span> Enter file number<span class="sc">:</span> <span class="dv">4</span></span>
+<span id="cb16-14"><a href="#cb16-14" tabindex="-1"></a>Response [GET] <span class="sc">&lt;</span>https<span class="sc">:</span><span class="er">//</span>wheatcap.triticeaetoolbox.org<span class="sc">/</span>ajax<span class="sc">/</span>genotyping_project<span class="sc">/</span>download_archived_vcf?genotyping_project_id<span class="ot">=</span><span class="dv">10371</span><span class="sc">&amp;</span>basename<span class="ot">=</span><span class="dv">2025-09-03</span>_18<span class="sc">:</span><span class="dv">53</span><span class="sc">:</span><span class="dv">02</span>_filepq5P<span class="sc">&gt;</span></span>
+<span id="cb16-15"><a href="#cb16-15" tabindex="-1"></a>  Success<span class="sc">:</span> (<span class="dv">200</span>) OK</span>
+<span id="cb16-16"><a href="#cb16-16" tabindex="-1"></a>  Protocol<span class="sc">:</span> Allegro <span class="fu">V1</span> (<span class="dv">297</span>)</span>
+<span id="cb16-17"><a href="#cb16-17" tabindex="-1"></a>  Project<span class="sc">:</span> <span class="fu">UCD_2020_Allegro</span> (<span class="dv">10371</span>)</span>
+<span id="cb16-18"><a href="#cb16-18" tabindex="-1"></a>  File Name<span class="sc">:</span> <span class="dv">2025-09-03</span>_18<span class="sc">:</span><span class="dv">53</span><span class="sc">:</span><span class="dv">02</span>_filepq5P</span>
+<span id="cb16-19"><a href="#cb16-19" tabindex="-1"></a>  Output File<span class="sc">:</span> <span class="er">~/</span>Desktop<span class="sc">/</span>my_data.vcf</span></code></pre></div>
+<p>If you know which file you want to download, you can add the archived file’s file name as the <code>file_name</code> argument to the <code>vcf_archived()</code> function. When there is only one matching file, that file will be automatically downloaded to the output file (you won’t be prompted to select a file).</p>
+<p>If you want to get a table of available files before requesting a download, you can do so with the <code>vcf_archived_list()</code> function, which also takes a <code>genotyping_protocol_id</code> and/or <code>genotyping_project_id</code> as arguments. This will return a data frame with the protocol id and name, project id and name, and file name of the available archived files for your request. You can then use one of the returned file names as the <code>file_name</code> argument in the <code>vcf_archived()</code> download function.</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a><span class="sc">&gt;</span> files <span class="ot">&lt;-</span> wheat<span class="sc">$</span><span class="fu">vcf_archived_list</span>(<span class="at">genotyping_protocol_id=</span><span class="dv">297</span>, <span class="at">verbose=</span>T)</span>
+<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a>Finding archived VCF files...</span>
+<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a>  Genotyping Protocol<span class="sc">:</span> <span class="dv">297</span></span>
+<span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a>Found <span class="dv">4</span> files...</span>
+<span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a><span class="sc">&gt;</span> files</span>
+<span id="cb17-6"><a href="#cb17-6" tabindex="-1"></a>  protocol_id protocol_name project_id          project_name                    file_name</span>
+<span id="cb17-7"><a href="#cb17-7" tabindex="-1"></a><span class="dv">1</span>         <span class="dv">297</span>    Allegro V1      <span class="dv">13533</span>    Allegro V1 tempate <span class="dv">2025-09-03</span>_18<span class="sc">:</span><span class="dv">51</span><span class="sc">:</span><span class="dv">07</span>_fileuEjk</span>
+<span id="cb17-8"><a href="#cb17-8" tabindex="-1"></a><span class="dv">3</span>         <span class="dv">297</span>    Allegro V1      <span class="dv">11359</span>      KSU_2023_Allegro <span class="dv">2025-09-03</span>_19<span class="sc">:</span><span class="dv">07</span><span class="sc">:</span><span class="dv">44</span>_fileFJaf</span>
+<span id="cb17-9"><a href="#cb17-9" tabindex="-1"></a><span class="dv">4</span>         <span class="dv">297</span>    Allegro V1      <span class="dv">13534</span> KSU_2023_Allegro_AeTa <span class="dv">2025-09-03</span>_19<span class="sc">:</span><span class="dv">28</span><span class="sc">:</span><span class="dv">16</span>_filee3Si</span>
+<span id="cb17-10"><a href="#cb17-10" tabindex="-1"></a><span class="dv">2</span>         <span class="dv">297</span>    Allegro V1      <span class="dv">10371</span>      UCD_2020_Allegro <span class="dv">2025-09-03</span>_18<span class="sc">:</span><span class="dv">53</span><span class="sc">:</span><span class="dv">02</span>_filepq5P</span>
+<span id="cb17-11"><a href="#cb17-11" tabindex="-1"></a><span class="sc">&gt;</span> resp <span class="ot">&lt;-</span> wheat<span class="sc">$</span><span class="fu">vcf_archived</span>(<span class="st">"~/Desktop/geno_data.vcf"</span>, <span class="at">genotyping_protocol_id=</span><span class="dv">297</span>, <span class="at">file_name=</span><span class="st">"2025-09-03_19:07:44_fileFJaf"</span>, <span class="at">verbose=</span>T)</span>
+<span id="cb17-12"><a href="#cb17-12" tabindex="-1"></a>Finding archived VCF files...</span>
+<span id="cb17-13"><a href="#cb17-13" tabindex="-1"></a>  Genotyping Protocol<span class="sc">:</span> <span class="dv">297</span></span>
+<span id="cb17-14"><a href="#cb17-14" tabindex="-1"></a>Found <span class="dv">4</span> files...</span>
+<span id="cb17-15"><a href="#cb17-15" tabindex="-1"></a>Response [GET] <span class="sc">&lt;</span>https<span class="sc">:</span><span class="er">//</span>wheatcap.triticeaetoolbox.org<span class="sc">/</span>ajax<span class="sc">/</span>genotyping_project<span class="sc">/</span>download_archived_vcf?genotyping_project_id<span class="ot">=</span><span class="dv">11359</span><span class="sc">&amp;</span>basename<span class="ot">=</span><span class="dv">2025-09-03</span>_19<span class="sc">:</span><span class="dv">07</span><span class="sc">:</span><span class="dv">44</span>_fileFJaf<span class="sc">&gt;</span></span>
+<span id="cb17-16"><a href="#cb17-16" tabindex="-1"></a>  Success<span class="sc">:</span> (<span class="dv">200</span>) OK</span>
+<span id="cb17-17"><a href="#cb17-17" tabindex="-1"></a>  Protocol<span class="sc">:</span> Allegro <span class="fu">V1</span> (<span class="dv">297</span>)</span>
+<span id="cb17-18"><a href="#cb17-18" tabindex="-1"></a>  Project<span class="sc">:</span> <span class="fu">KSU_2023_Allegro</span> (<span class="dv">11359</span>)</span>
+<span id="cb17-19"><a href="#cb17-19" tabindex="-1"></a>  File Name<span class="sc">:</span> <span class="dv">2025-09-03</span>_19<span class="sc">:</span><span class="dv">07</span><span class="sc">:</span><span class="dv">44</span>_fileFJaf</span>
+<span id="cb17-20"><a href="#cb17-20" tabindex="-1"></a>  Output File<span class="sc">:</span> <span class="er">~/</span>Desktop<span class="sc">/</span>geno_data.vcf</span></code></pre></div>
 </div>
-</div>
-<div class="section level2">
-<h2 id="tutorial">Tutorial<a class="anchor" aria-label="anchor" href="#tutorial"></a>
-</h2>
-<p>A more in-depth tutorial using data from T3/Wheat can be found in the TUTORIAL.md file.</p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="license">
@@ -361,7 +391,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>

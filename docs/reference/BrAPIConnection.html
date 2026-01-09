@@ -9,7 +9,7 @@ BrAPI Connection Class"></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">BrAPI</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -84,7 +84,7 @@ adds additional support for breedbase-specific functionality. (Default: <code>FA
 
 
 <dt><code>auth_token</code></dt>
-<dd><p>An auth token that will be as a Bearer Token to the the Authorization header to all requests</p></dd>
+<dd><p>An auth token that will be passed as a Bearer Token in the the Authorization header to all requests</p></dd>
 
 
 </dl><p></p></div>
@@ -104,6 +104,7 @@ adds additional support for breedbase-specific functionality. (Default: <code>FA
 <li><p><a href="#method-BrAPIConnection-search"><code>BrAPIConnection$search()</code></a></p></li>
 <li><p><a href="#method-BrAPIConnection-wizard"><code>BrAPIConnection$wizard()</code></a></p></li>
 <li><p><a href="#method-BrAPIConnection-vcf"><code>BrAPIConnection$vcf()</code></a></p></li>
+<li><p><a href="#method-BrAPIConnection-vcf_archived_list"><code>BrAPIConnection$vcf_archived_list()</code></a></p></li>
 <li><p><a href="#method-BrAPIConnection-vcf_archived"><code>BrAPIConnection$vcf_archived()</code></a></p></li>
 <li><p><a href="#method-BrAPIConnection-vcf_imputed"><code>BrAPIConnection$vcf_imputed()</code></a></p></li>
 <li><p><a href="#method-BrAPIConnection-clone"><code>BrAPIConnection$clone()</code></a></p></li>
@@ -168,7 +169,11 @@ adds additional support for breedbase-specific functionality. (Default: <code>FA
 
 </div><p></p><hr><a id="method-BrAPIConnection-login"></a><div class="section">
 <h3 id="method-login-">Method <code>login()</code><a class="anchor" aria-label="anchor" href="#method-login-"></a></h3>
-<p>Login to the server to set an auth token for all future requests.  If a username and password are provided, a POST request will be made to the /token endpoint with your username and password to request a new auth token.  If a token is provided, then that will be saved and used as-is in future requests.</p><div class="section">
+<p>Login to the server to set an auth token for all future requests.</p>
+<p>If a username and password are provided, a POST request will be made to the /token endpoint
+with your username and password to request a new auth token. If a token is provided, then that
+will be saved and used as-is in future requests. If none are provided, the user will be
+prompted for their username and password</p><div class="section">
 <h4 id="usage-2">Usage<a class="anchor" aria-label="anchor" href="#usage-2"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BrAPIConnection</span><span class="op">$</span><span class="fu">login</span><span class="op">(</span>username <span class="op">=</span> <span class="cn">NULL</span>, password <span class="op">=</span> <span class="cn">NULL</span>, token <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
@@ -496,7 +501,7 @@ be downloaded to the VCF file specified by the output argument.</p>
 <div class="section">
 <h4 id="examples-3">Examples<a class="anchor" aria-label="anchor" href="#examples-3"></a></h4>
 <p></p><div class="r example copy"><div class="sourceCode"><pre><code>\dontrun{
-wheat &lt;- getBrAPIConnection("T3/WheatCAP")
+wheat &lt;- getBrAPIConnection("T3/Wheat")
 wheat$vcf("~/Desktop/my_data.vcf", genotyping_protocol_id = 249)
 wheat$vcf("~/Desktop/my_data.vcf", genotyping_protocol_id = 249, accessions = c(228677, 1666408))
 }
@@ -504,17 +509,17 @@ wheat$vcf("~/Desktop/my_data.vcf", genotyping_protocol_id = 249, accessions = c(
 </div>
 
 
-</div><p></p><hr><a id="method-BrAPIConnection-vcf_archived"></a><div class="section">
-<h3 id="method-vcf-archived-">Method <code>vcf_archived()</code><a class="anchor" aria-label="anchor" href="#method-vcf-archived-"></a></h3>
-<p>Download an Archived Breedbase VCF File</p>
-<p>This function will list all of the available archived VCF files available for the specified protocol
-and/or project.  You can select one to download and save to the provided output file.</p>
+</div><p></p><hr><a id="method-BrAPIConnection-vcf_archived_list"></a><div class="section">
+<h3 id="method-vcf-archived-list-">Method <code>vcf_archived_list()</code><a class="anchor" aria-label="anchor" href="#method-vcf-archived-list-"></a></h3>
+<p>List all of the available Archived Breedbase VCF Files</p>
+<p>This function will return a table with all of the archived VCF files available for the specified protocol
+and/or project.  The file_name can be used to specify the specific file to download when using the
+<code>vcf_archived</code> function.</p>
 <p>The archived files are saved at the project-level.  So, if you specify a protocol, you'll get a list
 of all of the available files for each project in that protocol.  If you're performing analysis at
 the protocol-level, you'll need to manually merge the VCF files from each project in that protocol.</p><div class="section">
 <h4 id="usage-9">Usage<a class="anchor" aria-label="anchor" href="#usage-9"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BrAPIConnection</span><span class="op">$</span><span class="fu">vcf_archived</span><span class="op">(</span></span>
-<span>  <span class="va">output</span>,</span>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BrAPIConnection</span><span class="op">$</span><span class="fu">vcf_archived_list</span><span class="op">(</span></span>
 <span>  genotyping_protocol_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  genotyping_project_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
@@ -523,11 +528,7 @@ the protocol-level, you'll need to manually merge the VCF files from each projec
 
 <div class="section">
 <h4 id="arguments-8">Arguments<a class="anchor" aria-label="anchor" href="#arguments-8"></a></h4>
-<p></p><div class="arguments"><dl><dt><code>output</code></dt>
-<dd><p>The path to the output VCF file</p></dd>
-
-
-<dt><code>genotyping_protocol_id</code></dt>
+<p></p><div class="arguments"><dl><dt><code>genotyping_protocol_id</code></dt>
 <dd><p>The Database ID of the genotyping protocol</p></dd>
 
 
@@ -543,15 +544,74 @@ the protocol-level, you'll need to manually merge the VCF files from each projec
 </div>
 <div class="section">
 <h4 id="returns-8">Returns<a class="anchor" aria-label="anchor" href="#returns-8"></a></h4>
-<p>Status information about the request. If the download of an available archived VCF file is
-successful, the genotype data will be downloaded to the VCF file specified by the output argument.</p>
+<p>a Data Frame with the protocol and project information for each available archived file</p>
 </div>
 <div class="section">
 <h4 id="examples-4">Examples<a class="anchor" aria-label="anchor" href="#examples-4"></a></h4>
 <p></p><div class="r example copy"><div class="sourceCode"><pre><code>\dontrun{
-wheat &lt;- getBrAPIConnection("T3/WheatCAP")
-wheat$vcf_archived("~/Desktop/my_data.vcf", genotyping_protocol_id=233)
-wheat$vcf_archived("~/Desktop/my_data.vcf", genotyping_project_id=10371)
+wheat &lt;- getBrAPIConnection("T3/Wheat")
+files &lt;- wheat$vcf_archived_list(genotyping_protocol_id=70)
+files &lt;- wheat$vcf_archived_list(gentyping_project_id=2761)
+}
+</code></pre></div><p></p></div>
+</div>
+
+
+</div><p></p><hr><a id="method-BrAPIConnection-vcf_archived"></a><div class="section">
+<h3 id="method-vcf-archived-">Method <code>vcf_archived()</code><a class="anchor" aria-label="anchor" href="#method-vcf-archived-"></a></h3>
+<p>Download an Archived Breedbase VCF File</p>
+<p>This function will download an archived VCF file from the server to the specified output file.  You must specify
+either a genotyping protocol and/or a genotyping project by id.  You may also specify the file name of the specific
+archived file you want to download.  If you don't specify the archived file's file_name, a list of all of the available
+files will be displayed for you to choose from.  You can also get a table of all of the available archived files from
+the <code>vcf_archived_list</code> function.</p><div class="section">
+<h4 id="usage-10">Usage<a class="anchor" aria-label="anchor" href="#usage-10"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BrAPIConnection</span><span class="op">$</span><span class="fu">vcf_archived</span><span class="op">(</span></span>
+<span>  <span class="va">output</span>,</span>
+<span>  genotyping_protocol_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  genotyping_project_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  file_name <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+<div class="section">
+<h4 id="arguments-9">Arguments<a class="anchor" aria-label="anchor" href="#arguments-9"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>output</code></dt>
+<dd><p>The path to the output VCF file</p></dd>
+
+
+<dt><code>genotyping_protocol_id</code></dt>
+<dd><p>The Database ID of the genotyping protocol</p></dd>
+
+
+<dt><code>genotyping_project_id</code></dt>
+<dd><p>The Database ID of the genotyping project</p></dd>
+
+
+<dt><code>file_name</code></dt>
+<dd><p>The name of the specific archived file to download (if not provided, all of the available files will be listed for you to choose from)</p></dd>
+
+
+<dt><code>verbose</code></dt>
+<dd><p>Set to TRUE to include logging information</p></dd>
+
+
+</dl><p></p></div>
+</div>
+<div class="section">
+<h4 id="returns-9">Returns<a class="anchor" aria-label="anchor" href="#returns-9"></a></h4>
+<p>Status information about the request. If the download of an available archived VCF file is
+successful, the genotype data will be downloaded to the VCF file specified by the output argument.</p>
+</div>
+<div class="section">
+<h4 id="examples-5">Examples<a class="anchor" aria-label="anchor" href="#examples-5"></a></h4>
+<p></p><div class="r example copy"><div class="sourceCode"><pre><code>\dontrun{
+wheat &lt;- getBrAPIConnection("T3/Wheat")
+wheat$vcf_archived("~/Desktop/my_data.vcf", genotyping_protocol_id=70)
+wheat$vcf_archived("~/Desktop/my_data.vcf", genotyping_project_id=2761)
+wheat$vcf_archived("~/Desktop/my_data.vcf", genotyping_protocol_id=70, file_name="2019-12-30_16:33:07_TCAP90K_HWWAMP.vcf")
+
 }
 </code></pre></div><p></p></div>
 </div>
@@ -564,7 +624,7 @@ wheat$vcf_archived("~/Desktop/my_data.vcf", genotyping_project_id=10371)
 The genotype projects have been imputed using the Practical Haplotype Graph (PHG). The imputed marker density
 is 2.9M markers for assembly RefSeq v2.1. For quick access the imputed genotypes can be downloaded from a prepared file.
 A description of the imputation process can be found in About PHG imputation (https://wheat.triticeaetoolbox.org/static_content/files/imputation.html).</p><div class="section">
-<h4 id="usage-10">Usage<a class="anchor" aria-label="anchor" href="#usage-10"></a></h4>
+<h4 id="usage-11">Usage<a class="anchor" aria-label="anchor" href="#usage-11"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BrAPIConnection</span><span class="op">$</span><span class="fu">vcf_imputed</span><span class="op">(</span></span>
 <span>  <span class="va">output</span>,</span>
 <span>  genotyping_project_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -573,7 +633,7 @@ A description of the imputation process can be found in About PHG imputation (ht
 </div>
 
 <div class="section">
-<h4 id="arguments-9">Arguments<a class="anchor" aria-label="anchor" href="#arguments-9"></a></h4>
+<h4 id="arguments-10">Arguments<a class="anchor" aria-label="anchor" href="#arguments-10"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>output</code></dt>
 <dd><p>The path to the output VCF file</p></dd>
 
@@ -589,12 +649,12 @@ A description of the imputation process can be found in About PHG imputation (ht
 </dl><p></p></div>
 </div>
 <div class="section">
-<h4 id="returns-9">Returns<a class="anchor" aria-label="anchor" href="#returns-9"></a></h4>
+<h4 id="returns-10">Returns<a class="anchor" aria-label="anchor" href="#returns-10"></a></h4>
 <p>Status information about the request. If the download of an available imputed VCF file is
 successful, the genotype data will be downloaded to the VCF file specified by the output argument.</p>
 </div>
 <div class="section">
-<h4 id="examples-5">Examples<a class="anchor" aria-label="anchor" href="#examples-5"></a></h4>
+<h4 id="examples-6">Examples<a class="anchor" aria-label="anchor" href="#examples-6"></a></h4>
 <p></p><div class="r example copy"><div class="sourceCode"><pre><code>\dontrun{
 wheat &lt;- getBrAPIConnection("T3/WheatCAP")
 wheat$vcf_imputed("~/Desktop/my_data.vcf", genotyping_project_id=10371)
@@ -606,12 +666,12 @@ wheat$vcf_imputed("~/Desktop/my_data.vcf", genotyping_project_id=10371)
 </div><p></p><hr><a id="method-BrAPIConnection-clone"></a><div class="section">
 <h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
 <p>The objects of this class are cloneable with this method.</p><div class="section">
-<h4 id="usage-11">Usage<a class="anchor" aria-label="anchor" href="#usage-11"></a></h4>
+<h4 id="usage-12">Usage<a class="anchor" aria-label="anchor" href="#usage-12"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BrAPIConnection</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
-<h4 id="arguments-10">Arguments<a class="anchor" aria-label="anchor" href="#arguments-10"></a></h4>
+<h4 id="arguments-11">Arguments<a class="anchor" aria-label="anchor" href="#arguments-11"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>deep</code></dt>
 <dd><p>Whether to make a deep clone.</p></dd>
 
@@ -670,7 +730,6 @@ wheat$vcf_imputed("~/Desktop/my_data.vcf", genotyping_project_id=10371)
 <span class="r-in"><span><span class="co"># find matching accessions, filtered by field trials (identified by name)</span></span></span>
 <span class="r-in"><span><span class="va">accessions</span> <span class="op">&lt;-</span> <span class="va">wheat</span><span class="op">$</span><span class="fu">wizard</span><span class="op">(</span><span class="st">"accessions"</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>trials <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CornellMaster_2024_Helfer"</span>, <span class="st">"CornellMaster_2025_McGowan"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>There is no matching item of type trials with the name CornellMaster_2024_Helfer</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>There is no matching item of type trials with the name CornellMaster_2025_McGowan</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># find genotyping protocols that have data for the above set of accessions</span></span></span>
 <span class="r-in"><span><span class="va">geno_protocols</span> <span class="op">&lt;-</span> <span class="va">wheat</span><span class="op">$</span><span class="fu">wizard</span><span class="op">(</span><span class="st">"genotyping_protocols"</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>accessions <span class="op">=</span> <span class="va">accessions</span><span class="op">$</span><span class="va">data</span><span class="op">$</span><span class="va">ids</span><span class="op">)</span><span class="op">)</span></span></span>
@@ -680,9 +739,19 @@ wheat$vcf_imputed("~/Desktop/my_data.vcf", genotyping_project_id=10371)
 <span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
-<span class="r-in"><span><span class="va">wheat</span> <span class="op">&lt;-</span> <span class="fu"><a href="getBrAPIConnection.html">getBrAPIConnection</a></span><span class="op">(</span><span class="st">"T3/WheatCAP"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">wheat</span> <span class="op">&lt;-</span> <span class="fu"><a href="getBrAPIConnection.html">getBrAPIConnection</a></span><span class="op">(</span><span class="st">"T3/Wheat"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">wheat</span><span class="op">$</span><span class="fu">vcf</span><span class="op">(</span><span class="st">"~/Desktop/my_data.vcf"</span>, genotyping_protocol_id <span class="op">=</span> <span class="fl">249</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">wheat</span><span class="op">$</span><span class="fu">vcf</span><span class="op">(</span><span class="st">"~/Desktop/my_data.vcf"</span>, genotyping_protocol_id <span class="op">=</span> <span class="fl">249</span>, accessions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">228677</span>, <span class="fl">1666408</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="co">## Method `BrAPIConnection$vcf_archived_list`</span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
+<span class="r-in"><span><span class="va">wheat</span> <span class="op">&lt;-</span> <span class="fu"><a href="getBrAPIConnection.html">getBrAPIConnection</a></span><span class="op">(</span><span class="st">"T3/Wheat"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">files</span> <span class="op">&lt;-</span> <span class="va">wheat</span><span class="op">$</span><span class="fu">vcf_archived_list</span><span class="op">(</span>genotyping_protocol_id<span class="op">=</span><span class="fl">70</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">files</span> <span class="op">&lt;-</span> <span class="va">wheat</span><span class="op">$</span><span class="fu">vcf_archived_list</span><span class="op">(</span>gentyping_project_id<span class="op">=</span><span class="fl">2761</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
@@ -690,9 +759,11 @@ wheat$vcf_imputed("~/Desktop/my_data.vcf", genotyping_project_id=10371)
 <span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
-<span class="r-in"><span><span class="va">wheat</span> <span class="op">&lt;-</span> <span class="fu"><a href="getBrAPIConnection.html">getBrAPIConnection</a></span><span class="op">(</span><span class="st">"T3/WheatCAP"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">wheat</span><span class="op">$</span><span class="fu">vcf_archived</span><span class="op">(</span><span class="st">"~/Desktop/my_data.vcf"</span>, genotyping_protocol_id<span class="op">=</span><span class="fl">233</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">wheat</span><span class="op">$</span><span class="fu">vcf_archived</span><span class="op">(</span><span class="st">"~/Desktop/my_data.vcf"</span>, genotyping_project_id<span class="op">=</span><span class="fl">10371</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">wheat</span> <span class="op">&lt;-</span> <span class="fu"><a href="getBrAPIConnection.html">getBrAPIConnection</a></span><span class="op">(</span><span class="st">"T3/Wheat"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">wheat</span><span class="op">$</span><span class="fu">vcf_archived</span><span class="op">(</span><span class="st">"~/Desktop/my_data.vcf"</span>, genotyping_protocol_id<span class="op">=</span><span class="fl">70</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">wheat</span><span class="op">$</span><span class="fu">vcf_archived</span><span class="op">(</span><span class="st">"~/Desktop/my_data.vcf"</span>, genotyping_project_id<span class="op">=</span><span class="fl">2761</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">wheat</span><span class="op">$</span><span class="fu">vcf_archived</span><span class="op">(</span><span class="st">"~/Desktop/my_data.vcf"</span>, genotyping_protocol_id<span class="op">=</span><span class="fl">70</span>, file_name<span class="op">=</span><span class="st">"2019-12-30_16:33:07_TCAP90K_HWWAMP.vcf"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
@@ -714,7 +785,7 @@ wheat$vcf_imputed("~/Desktop/my_data.vcf", genotyping_project_id=10371)
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer></div>
