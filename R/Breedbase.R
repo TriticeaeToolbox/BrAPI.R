@@ -14,13 +14,16 @@ BreedbaseRequest <- function(conn, request, ...) {
   if ( request == "wizard" ) {
     return(BreedbaseRequestWizard(conn, ...))
   }
-  if ( request == "vcf" ) {
+  else if ( request == "vcf" ) {
     return(BreedbaseRequestVCF(conn, ...))
   }
-  if ( request == "vcf_archived" ) {
+  else if ( request == "vcf_archived_list") {
+    return(BreedbaseRequestListArchivedVCF(conn, ...))
+  }
+  else if ( request == "vcf_archived" ) {
     return(BreedbaseRequestArchivedVCF(conn, ...))
   }
-  if ( request == "vcf_imputed" ) {
+  else if ( request == "vcf_imputed" ) {
     return(BreedbaseRequestImputedVCF(conn, ...))
   }
   else {
@@ -234,13 +237,12 @@ BreedbaseRequestVCF <- function(conn, output, genotyping_protocol_id, accessions
 }
 
 #
-# Get Breedbase Archived VCF File
+# List the available Breedbase Archived VCF Files
 #
-# Get the available archived VCF files based on the provided protocol and/or project
-# Prompt the user to select a project
-# Download the project's archived VCF file to the specified output
+# Get the available archived VCF files for the provided protocol
+# and/or project and return a table of the available files
 #
-BreedbaseRequestArchivedVCF <- function(conn, output, genotyping_protocol_id = NULL, genotyping_project_id = NULL, verbose = FALSE) {
+BreedbaseRequestListArchivedVCF <- function(conn, genotyping_protocol_id = NULL, genotyping_project_id = NULL, verbose = FALSE) {
 
   # A protocol or a project is required
   if ( is.null(genotyping_protocol_id) && is.null(genotyping_project_id) ) {
@@ -248,8 +250,8 @@ BreedbaseRequestArchivedVCF <- function(conn, output, genotyping_protocol_id = N
   }
 
   # Get available archived files
-  cat("Finding archived VCF files...\n")
   if ( verbose ) {
+    cat("Finding archived VCF files...\n")
     if ( !is.null(genotyping_protocol_id) ) {
       cat(sprintf("  Genotyping Protocol: %i\n", genotyping_protocol_id))
     }
@@ -262,42 +264,99 @@ BreedbaseRequestArchivedVCF <- function(conn, output, genotyping_protocol_id = N
   content = httr::content(resp)
   httr::warn_for_status(resp)
 
-  # List available archived files
-  cat("--> Select a file to download:\n")
-  files=c()
-  files_info=list()
-  index=1
+  # Build table of file info
+  files = data.frame(
+    protocol_id = numeric(),
+    protocol_name = character(),
+    project_id = numeric(),
+    project_name = character(),
+    file_name = character() 
+  )
+  i = 1
   for ( project in names(content) ) {
     for ( file in content[[project]] ) {
-      cat(sprintf("[%i] %s (%s)\n", index, file$genotyping_project_name, file$genotyping_protocol_name))
-      files=c(files, file$basename)
-      files_info[[file$basename]] = file
-      index=index+1
+      f = c(
+        file$genotyping_protocol_id,
+        file$genotyping_protocol_name,
+        file$genotyping_project_id,
+        file$genotyping_project_name,
+        file$basename
+      )
+      files[i,] = f
+      i = i+1
     }
   }
+
+  # Sort by protocol, project, file
+  files = files[order(files$protocol_name, files$project_name, files$file_name),]
+
   if ( length(files) < 1 ) {
     stop("No archived VCF files found")
   }
+  else if ( verbose ) {
+    cat(sprintf("Found %i files...\n", nrow(files)))
+  }
+
+  return(files)
+
+}
+
+#
+# Get Breedbase Archived VCF File
+#
+# Get the available archived VCF files based on the provided protocol and/or project
+# Prompt the user to select a project
+# Download the project's archived VCF file to the specified output
+#
+BreedbaseRequestArchivedVCF <- function(conn, output, genotyping_protocol_id = NULL, genotyping_project_id = NULL, file_name = NULL, verbose = FALSE) {
+
+  # Get all of the available files
+  files = BreedbaseRequestListArchivedVCF(conn, genotyping_protocol_id, genotyping_project_id, verbose)
+  selection = NA
+
+  # Subset files by file_name, if provided
+  if ( !is.null(file_name) ) {
+    files = files[which(files$file_name == file_name),]
+  }
+
+  # Stop if not files found
+  if ( nrow(files) < 1 ) {
+    stop("No archived VCF files found")
+  }
+
+  # List available archived files, if more than one found
+  else if ( nrow(files) > 1 ) {
+    cat("--> Select a file to download:\n")
+    cat("[#] Project Name (Protocol Name) [File Name]\n")
+    cat("--------------------------------------------\n")
+    for ( i in c(1:nrow(files)) ) {
+      file = files[i,]
+      cat(sprintf("[%i] %s (%s) [%s]\n", i, file$project_name, file$protocol_name, file$file_name))
+    }
+  }
+
+  # Only one file found, just download that one
+  else {
+    selection = 1
+  }
 
   # Have user select file to download
-  selection = NA
-  while ( is.na(selection) || selection < 1 || selection > length(files) ) {
+  while ( is.na(selection) || selection < 1 || selection > nrow(files) ) {
     selection = as.numeric(readline(prompt="--> Enter file number: "));
   }
 
   # Download the selected file
-  selected_basename=files[[selection]]
-  selected_file=files_info[[selected_basename]]
-  url = sprintf("%s/ajax/genotyping_project/download_archived_vcf?genotyping_project_id=%i&basename=%s", conn$base(), selected_file$genotyping_project_id, selected_file$basename)
+  selected_file = files[selection,]
+  url = sprintf("%s/ajax/genotyping_project/download_archived_vcf?genotyping_project_id=%i&basename=%s", conn$base(), as.numeric(selected_file$project_id), selected_file$file_name)
   resp = httr::GET(url, httr::write_disk(output, overwrite=TRUE), httr::timeout(3600))
   httr::warn_for_status(resp)
   if ( verbose ) {
     cat(
       sprintf("Response [GET] <%s>", resp$url),
       sprintf("  %s", httr::http_status(resp)$message),
-      sprintf("  Project: %s (%i)", selected_file$genotyping_project_name, selected_file$genotyping_project_id),
-      sprintf("  Protocol: %s (%i)", selected_file$genotyping_protocol_name, selected_file$genotyping_protocol_id),
-      sprintf("  Basename: %s", selected_file$basename),
+      sprintf("  Protocol: %s (%i)", selected_file$protocol_name, as.numeric(selected_file$protocol_id)),
+      sprintf("  Project: %s (%i)", selected_file$project_name, as.numeric(selected_file$project_id)),
+      sprintf("  File Name: %s", selected_file$file_name),
       sprintf("  Output File: %s", output),
       sep = "\n"
     )
