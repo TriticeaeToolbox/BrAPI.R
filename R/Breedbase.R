@@ -6,31 +6,6 @@ library(httr)
 #
 SUPPORTED_DATA_TYPES = c("accessions", "organisms", "breeding_programs", "genotyping_protocols", "genotyping_projects", "locations", "plants", "plots", "tissue_sample", "seedlots", "trait_components", "traits", "trials", "trial_designs", "trial_types", "years")
 
-#
-# Handle each specific Breedbase Request in its individual function
-# Return an error if the request is not supported
-#
-BreedbaseRequest <- function(conn, request, ...) {
-  if ( request == "wizard" ) {
-    return(BreedbaseRequestWizard(conn, ...))
-  }
-  else if ( request == "vcf" ) {
-    return(BreedbaseRequestVCF(conn, ...))
-  }
-  else if ( request == "vcf_archived_list") {
-    return(BreedbaseRequestListArchivedVCF(conn, ...))
-  }
-  else if ( request == "vcf_archived" ) {
-    return(BreedbaseRequestArchivedVCF(conn, ...))
-  }
-  else if ( request == "vcf_imputed" ) {
-    return(BreedbaseRequestImputedVCF(conn, ...))
-  }
-  else {
-    stop("Unsupported breedbase request name")
-  }
-}
-
 
 #
 # Request Search Wizard Data

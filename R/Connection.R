@@ -269,7 +269,7 @@ BrAPIConnection <- R6::R6Class("BrAPIConnection",
     #' geno_protocols <- wheat$wizard("genotyping_protocols", list(accessions = accessions$data$ids))
     wizard = function(data_type, filters = list(), verbose = FALSE) {
       private$check_if_breedbase()
-      BreedbaseRequest(self, "wizard", data_type, filters, verbose)
+      BreedbaseRequestWizard(self, data_type, filters, verbose)
     },
 
 
@@ -295,7 +295,7 @@ BrAPIConnection <- R6::R6Class("BrAPIConnection",
     #' }
     vcf = function(output, genotyping_protocol_id, accessions = NULL, verbose = FALSE) {
       private$check_if_breedbase()
-      BreedbaseRequest(self, "vcf", output, genotyping_protocol_id, accessions, verbose)
+      BreedbaseRequestVCF(self, output, genotyping_protocol_id, accessions, verbose)
     },
 
     #' @description List all of the available Archived Breedbase VCF Files
@@ -322,7 +322,7 @@ BrAPIConnection <- R6::R6Class("BrAPIConnection",
     #' }
     vcf_archived_list = function(genotyping_protocol_id = NULL, genotyping_project_id = NULL, verbose = FALSE) {
       private$check_if_breedbase()
-      BreedbaseRequest(self, "vcf_archived_list", genotyping_protocol_id, genotyping_project_id, verbose)
+      BreedbaseRequestListArchivedVCF(self, genotyping_protocol_id, genotyping_project_id, verbose)
     },
 
     #' @description Download an Archived Breedbase VCF File
@@ -352,7 +352,7 @@ BrAPIConnection <- R6::R6Class("BrAPIConnection",
     #' }
     vcf_archived = function(output, genotyping_protocol_id = NULL, genotyping_project_id = NULL, file_name = NULL, verbose = FALSE) {
       private$check_if_breedbase()
-      BreedbaseRequest(self, "vcf_archived", output, genotyping_protocol_id, genotyping_project_id, file_name, verbose)
+      BreedbaseRequestArchivedVCF(self, output, genotyping_protocol_id, genotyping_project_id, file_name, verbose)
     },
 
     #' @description Download an Imputed VCF File
@@ -376,7 +376,7 @@ BrAPIConnection <- R6::R6Class("BrAPIConnection",
     #' }
     vcf_imputed = function(output, genotyping_project_id = NULL, verbose = FALSE) {
       private$check_if_breedbase();
-      BreedbaseRequest(self, "vcf_imputed", output, genotyping_project_id, verbose)
+      BreedbaseRequestImputedVCF(self, output, genotyping_project_id, verbose)
     }
 
   ),
