@@ -103,6 +103,8 @@ adds additional support for breedbase-specific functionality. (Default: <code>FA
 <li><p><a href="#method-BrAPIConnection-put"><code>BrAPIConnection$put()</code></a></p></li>
 <li><p><a href="#method-BrAPIConnection-search"><code>BrAPIConnection$search()</code></a></p></li>
 <li><p><a href="#method-BrAPIConnection-wizard"><code>BrAPIConnection$wizard()</code></a></p></li>
+<li><p><a href="#method-BrAPIConnection-filter_geno_protocols"><code>BrAPIConnection$filter_geno_protocols()</code></a></p></li>
+<li><p><a href="#method-BrAPIConnection-filter_geno_projects"><code>BrAPIConnection$filter_geno_projects()</code></a></p></li>
 <li><p><a href="#method-BrAPIConnection-vcf"><code>BrAPIConnection$vcf()</code></a></p></li>
 <li><p><a href="#method-BrAPIConnection-vcf_archived_list"><code>BrAPIConnection$vcf_archived_list()</code></a></p></li>
 <li><p><a href="#method-BrAPIConnection-vcf_archived"><code>BrAPIConnection$vcf_archived()</code></a></p></li>
@@ -445,7 +447,7 @@ The $data key contains parsed data: a list parsed into <code>ids</code>, <code>n
 </div>
 <div class="section">
 <h4 id="examples-2">Examples<a class="anchor" aria-label="anchor" href="#examples-2"></a></h4>
-<p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="va">wheat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createBrAPIConnection.html">createBrAPIConnection</a></span><span class="op">(</span><span class="st">"wheat.triticeaetoolbox.org"</span>, is_breedbase <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="va">wheat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getBrAPIConnection.html">getBrAPIConnection</a></span><span class="op">(</span><span class="st">"T3/Wheat"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># find matching trials, filtered by two breeding programs (identified by ids) and one year</span></span>
 <span><span class="va">trials</span> <span class="op">&lt;-</span> <span class="va">wheat</span><span class="op">$</span><span class="fu">wizard</span><span class="op">(</span><span class="st">"trials"</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>breeding_programs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">327</span>,<span class="fl">367</span><span class="op">)</span>, years <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2023</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
@@ -458,13 +460,85 @@ The $data key contains parsed data: a list parsed into <code>ids</code>, <code>n
 </div>
 
 
+</div><p></p><hr><a id="method-BrAPIConnection-filter_geno_protocols"></a><div class="section">
+<h3 id="method-filter-geno-protocols-">Method <code>filter_geno_protocols()</code><a class="anchor" aria-label="anchor" href="#method-filter-geno-protocols-"></a></h3>
+<p>Find the best Genotyping Protocols for a set of accessions</p>
+<p>This function will return the top 3 genotyping protocols for a set of accessions along with
+a matrix defining which accessions are in which protocol.</p><div class="section">
+<h4 id="usage-8">Usage<a class="anchor" aria-label="anchor" href="#usage-8"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BrAPIConnection</span><span class="op">$</span><span class="fu">filter_geno_protocols</span><span class="op">(</span>accessions <span class="op">=</span> <span class="cn">NULL</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+<div class="section">
+<h4 id="arguments-7">Arguments<a class="anchor" aria-label="anchor" href="#arguments-7"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>accessions</code></dt>
+<dd><p>A vector of accession ids</p></dd>
+
+
+<dt><code>verbose</code></dt>
+<dd><p>Set to TRUE to inclue logging information</p></dd>
+
+
+</dl><p></p></div>
+</div>
+<div class="section">
+<h4 id="returns-7">Returns<a class="anchor" aria-label="anchor" href="#returns-7"></a></h4>
+<p>A response with the matching data
+The $content key contains the raw breedbase response.
+The $data key contains parsed data: <code>top_matches</code> = names of ranked genotyping protocols, <code>matches</code> = a matrix of accessions and protocols</p>
+</div>
+<div class="section">
+<h4 id="examples-3">Examples<a class="anchor" aria-label="anchor" href="#examples-3"></a></h4>
+<p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="va">wheat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getBrAPIConnection.html">getBrAPIConnection</a></span><span class="op">(</span><span class="st">"T3/Wheat"</span><span class="op">)</span></span>
+<span><span class="va">resp</span> <span class="op">&lt;-</span> <span class="va">wheat</span><span class="op">$</span><span class="fu">filter_geno_protocols</span><span class="op">(</span>accessions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">234712</span>, <span class="fl">1544778</span>, <span class="fl">1478255</span>, <span class="fl">1550494</span>, <span class="fl">1544454</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">best_protocols</span> <span class="op">&lt;-</span> <span class="va">resp</span><span class="op">$</span><span class="va">data</span><span class="op">$</span><span class="va">top_matches</span></span>
+<span><span class="va">protocol_usage</span> <span class="op">&lt;-</span> <span class="va">resp</span><span class="op">$</span><span class="va">data</span><span class="op">$</span><span class="va">matches</span></span></code></pre></div><p></p></div>
+</div>
+
+
+</div><p></p><hr><a id="method-BrAPIConnection-filter_geno_projects"></a><div class="section">
+<h3 id="method-filter-geno-projects-">Method <code>filter_geno_projects()</code><a class="anchor" aria-label="anchor" href="#method-filter-geno-projects-"></a></h3>
+<p>Find the best Genotyping Projects for a set of accessions</p>
+<p>This function will return the top 3 genotyping projects for a set of accessions along with
+a matrix defining which accessions are in which project.</p><div class="section">
+<h4 id="usage-9">Usage<a class="anchor" aria-label="anchor" href="#usage-9"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BrAPIConnection</span><span class="op">$</span><span class="fu">filter_geno_projects</span><span class="op">(</span>accessions <span class="op">=</span> <span class="cn">NULL</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+<div class="section">
+<h4 id="arguments-8">Arguments<a class="anchor" aria-label="anchor" href="#arguments-8"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>accessions</code></dt>
+<dd><p>A vector of accession ids</p></dd>
+
+
+<dt><code>verbose</code></dt>
+<dd><p>Set to TRUE to inclue logging information</p></dd>
+
+
+</dl><p></p></div>
+</div>
+<div class="section">
+<h4 id="returns-8">Returns<a class="anchor" aria-label="anchor" href="#returns-8"></a></h4>
+<p>A response with the matching data
+The $content key contains the raw breedbase response.
+The $data key contains parsed data: <code>top_matches</code> = names of ranked genotyping projects, <code>matches</code> = a matrix of accessions and projects</p>
+</div>
+<div class="section">
+<h4 id="examples-4">Examples<a class="anchor" aria-label="anchor" href="#examples-4"></a></h4>
+<p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="va">wheat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getBrAPIConnection.html">getBrAPIConnection</a></span><span class="op">(</span><span class="st">"T3/Wheat"</span><span class="op">)</span></span>
+<span><span class="va">resp</span> <span class="op">&lt;-</span> <span class="va">wheat</span><span class="op">$</span><span class="fu">filter_geno_projects</span><span class="op">(</span>accessions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">234712</span>, <span class="fl">1544778</span>, <span class="fl">1478255</span>, <span class="fl">1550494</span>, <span class="fl">1544454</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">best_projects</span> <span class="op">&lt;-</span> <span class="va">resp</span><span class="op">$</span><span class="va">data</span><span class="op">$</span><span class="va">top_matches</span></span>
+<span><span class="va">project_usage</span> <span class="op">&lt;-</span> <span class="va">resp</span><span class="op">$</span><span class="va">data</span><span class="op">$</span><span class="va">matches</span></span></code></pre></div><p></p></div>
+</div>
+
+
 </div><p></p><hr><a id="method-BrAPIConnection-vcf"></a><div class="section">
 <h3 id="method-vcf-">Method <code>vcf()</code><a class="anchor" aria-label="anchor" href="#method-vcf-"></a></h3>
 <p>Download a Breedbase VCF File</p>
 <p>NOTE: Depending on the number of markers and accessions, this download may take a
 very long time to complete.  You may want to use the conn$vcf_archived() function
 to download a static archived VCF file of a genotyping project, if one is available.</p><div class="section">
-<h4 id="usage-8">Usage<a class="anchor" aria-label="anchor" href="#usage-8"></a></h4>
+<h4 id="usage-10">Usage<a class="anchor" aria-label="anchor" href="#usage-10"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BrAPIConnection</span><span class="op">$</span><span class="fu">vcf</span><span class="op">(</span></span>
 <span>  <span class="va">output</span>,</span>
 <span>  <span class="va">genotyping_protocol_id</span>,</span>
@@ -474,7 +548,7 @@ to download a static archived VCF file of a genotyping project, if one is availa
 </div>
 
 <div class="section">
-<h4 id="arguments-7">Arguments<a class="anchor" aria-label="anchor" href="#arguments-7"></a></h4>
+<h4 id="arguments-9">Arguments<a class="anchor" aria-label="anchor" href="#arguments-9"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>output</code></dt>
 <dd><p>The path to the output VCF file</p></dd>
 
@@ -494,12 +568,12 @@ to download a static archived VCF file of a genotyping project, if one is availa
 </dl><p></p></div>
 </div>
 <div class="section">
-<h4 id="returns-7">Returns<a class="anchor" aria-label="anchor" href="#returns-7"></a></h4>
+<h4 id="returns-9">Returns<a class="anchor" aria-label="anchor" href="#returns-9"></a></h4>
 <p>Status information about the request.  If successful, the genotype data will
 be downloaded to the VCF file specified by the output argument.</p>
 </div>
 <div class="section">
-<h4 id="examples-3">Examples<a class="anchor" aria-label="anchor" href="#examples-3"></a></h4>
+<h4 id="examples-5">Examples<a class="anchor" aria-label="anchor" href="#examples-5"></a></h4>
 <p></p><div class="r example copy"><div class="sourceCode"><pre><code>\dontrun{
 wheat &lt;- getBrAPIConnection("T3/Wheat")
 wheat$vcf("~/Desktop/my_data.vcf", genotyping_protocol_id = 249)
@@ -518,7 +592,7 @@ and/or project.  The file_name can be used to specify the specific file to downl
 <p>The archived files are saved at the project-level.  So, if you specify a protocol, you'll get a list
 of all of the available files for each project in that protocol.  If you're performing analysis at
 the protocol-level, you'll need to manually merge the VCF files from each project in that protocol.</p><div class="section">
-<h4 id="usage-9">Usage<a class="anchor" aria-label="anchor" href="#usage-9"></a></h4>
+<h4 id="usage-11">Usage<a class="anchor" aria-label="anchor" href="#usage-11"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BrAPIConnection</span><span class="op">$</span><span class="fu">vcf_archived_list</span><span class="op">(</span></span>
 <span>  genotyping_protocol_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  genotyping_project_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -527,7 +601,7 @@ the protocol-level, you'll need to manually merge the VCF files from each projec
 </div>
 
 <div class="section">
-<h4 id="arguments-8">Arguments<a class="anchor" aria-label="anchor" href="#arguments-8"></a></h4>
+<h4 id="arguments-10">Arguments<a class="anchor" aria-label="anchor" href="#arguments-10"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>genotyping_protocol_id</code></dt>
 <dd><p>The Database ID of the genotyping protocol</p></dd>
 
@@ -543,11 +617,11 @@ the protocol-level, you'll need to manually merge the VCF files from each projec
 </dl><p></p></div>
 </div>
 <div class="section">
-<h4 id="returns-8">Returns<a class="anchor" aria-label="anchor" href="#returns-8"></a></h4>
+<h4 id="returns-10">Returns<a class="anchor" aria-label="anchor" href="#returns-10"></a></h4>
 <p>a Data Frame with the protocol and project information for each available archived file</p>
 </div>
 <div class="section">
-<h4 id="examples-4">Examples<a class="anchor" aria-label="anchor" href="#examples-4"></a></h4>
+<h4 id="examples-6">Examples<a class="anchor" aria-label="anchor" href="#examples-6"></a></h4>
 <p></p><div class="r example copy"><div class="sourceCode"><pre><code>\dontrun{
 wheat &lt;- getBrAPIConnection("T3/Wheat")
 files &lt;- wheat$vcf_archived_list(genotyping_protocol_id=70)
@@ -565,7 +639,7 @@ either a genotyping protocol and/or a genotyping project by id.  You may also sp
 archived file you want to download.  If you don't specify the archived file's file_name, a list of all of the available
 files will be displayed for you to choose from.  You can also get a table of all of the available archived files from
 the <code>vcf_archived_list</code> function.</p><div class="section">
-<h4 id="usage-10">Usage<a class="anchor" aria-label="anchor" href="#usage-10"></a></h4>
+<h4 id="usage-12">Usage<a class="anchor" aria-label="anchor" href="#usage-12"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BrAPIConnection</span><span class="op">$</span><span class="fu">vcf_archived</span><span class="op">(</span></span>
 <span>  <span class="va">output</span>,</span>
 <span>  genotyping_protocol_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -576,7 +650,7 @@ the <code>vcf_archived_list</code> function.</p><div class="section">
 </div>
 
 <div class="section">
-<h4 id="arguments-9">Arguments<a class="anchor" aria-label="anchor" href="#arguments-9"></a></h4>
+<h4 id="arguments-11">Arguments<a class="anchor" aria-label="anchor" href="#arguments-11"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>output</code></dt>
 <dd><p>The path to the output VCF file</p></dd>
 
@@ -600,12 +674,12 @@ the <code>vcf_archived_list</code> function.</p><div class="section">
 </dl><p></p></div>
 </div>
 <div class="section">
-<h4 id="returns-9">Returns<a class="anchor" aria-label="anchor" href="#returns-9"></a></h4>
+<h4 id="returns-11">Returns<a class="anchor" aria-label="anchor" href="#returns-11"></a></h4>
 <p>Status information about the request. If the download of an available archived VCF file is
 successful, the genotype data will be downloaded to the VCF file specified by the output argument.</p>
 </div>
 <div class="section">
-<h4 id="examples-5">Examples<a class="anchor" aria-label="anchor" href="#examples-5"></a></h4>
+<h4 id="examples-7">Examples<a class="anchor" aria-label="anchor" href="#examples-7"></a></h4>
 <p></p><div class="r example copy"><div class="sourceCode"><pre><code>\dontrun{
 wheat &lt;- getBrAPIConnection("T3/Wheat")
 wheat$vcf_archived("~/Desktop/my_data.vcf", genotyping_protocol_id=70)
@@ -624,7 +698,7 @@ wheat$vcf_archived("~/Desktop/my_data.vcf", genotyping_protocol_id=70, file_name
 The genotype projects have been imputed using the Practical Haplotype Graph (PHG). The imputed marker density
 is 2.9M markers for assembly RefSeq v2.1. For quick access the imputed genotypes can be downloaded from a prepared file.
 A description of the imputation process can be found in About PHG imputation (https://wheat.triticeaetoolbox.org/static_content/files/imputation.html).</p><div class="section">
-<h4 id="usage-11">Usage<a class="anchor" aria-label="anchor" href="#usage-11"></a></h4>
+<h4 id="usage-13">Usage<a class="anchor" aria-label="anchor" href="#usage-13"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BrAPIConnection</span><span class="op">$</span><span class="fu">vcf_imputed</span><span class="op">(</span></span>
 <span>  <span class="va">output</span>,</span>
 <span>  genotyping_project_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -633,7 +707,7 @@ A description of the imputation process can be found in About PHG imputation (ht
 </div>
 
 <div class="section">
-<h4 id="arguments-10">Arguments<a class="anchor" aria-label="anchor" href="#arguments-10"></a></h4>
+<h4 id="arguments-12">Arguments<a class="anchor" aria-label="anchor" href="#arguments-12"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>output</code></dt>
 <dd><p>The path to the output VCF file</p></dd>
 
@@ -649,12 +723,12 @@ A description of the imputation process can be found in About PHG imputation (ht
 </dl><p></p></div>
 </div>
 <div class="section">
-<h4 id="returns-10">Returns<a class="anchor" aria-label="anchor" href="#returns-10"></a></h4>
+<h4 id="returns-12">Returns<a class="anchor" aria-label="anchor" href="#returns-12"></a></h4>
 <p>Status information about the request. If the download of an available imputed VCF file is
 successful, the genotype data will be downloaded to the VCF file specified by the output argument.</p>
 </div>
 <div class="section">
-<h4 id="examples-6">Examples<a class="anchor" aria-label="anchor" href="#examples-6"></a></h4>
+<h4 id="examples-8">Examples<a class="anchor" aria-label="anchor" href="#examples-8"></a></h4>
 <p></p><div class="r example copy"><div class="sourceCode"><pre><code>\dontrun{
 wheat &lt;- getBrAPIConnection("T3/WheatCAP")
 wheat$vcf_imputed("~/Desktop/my_data.vcf", genotyping_project_id=10371)
@@ -666,12 +740,12 @@ wheat$vcf_imputed("~/Desktop/my_data.vcf", genotyping_project_id=10371)
 </div><p></p><hr><a id="method-BrAPIConnection-clone"></a><div class="section">
 <h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
 <p>The objects of this class are cloneable with this method.</p><div class="section">
-<h4 id="usage-12">Usage<a class="anchor" aria-label="anchor" href="#usage-12"></a></h4>
+<h4 id="usage-14">Usage<a class="anchor" aria-label="anchor" href="#usage-14"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BrAPIConnection</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
-<h4 id="arguments-11">Arguments<a class="anchor" aria-label="anchor" href="#arguments-11"></a></h4>
+<h4 id="arguments-13">Arguments<a class="anchor" aria-label="anchor" href="#arguments-13"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>deep</code></dt>
 <dd><p>Whether to make a deep clone.</p></dd>
 
@@ -722,7 +796,7 @@ wheat$vcf_imputed("~/Desktop/my_data.vcf", genotyping_project_id=10371)
 <span class="r-in"><span><span class="co">## Method `BrAPIConnection$wizard`</span></span></span>
 <span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">wheat</span> <span class="op">&lt;-</span> <span class="fu"><a href="createBrAPIConnection.html">createBrAPIConnection</a></span><span class="op">(</span><span class="st">"wheat.triticeaetoolbox.org"</span>, is_breedbase <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">wheat</span> <span class="op">&lt;-</span> <span class="fu"><a href="getBrAPIConnection.html">getBrAPIConnection</a></span><span class="op">(</span><span class="st">"T3/Wheat"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># find matching trials, filtered by two breeding programs (identified by ids) and one year</span></span></span>
 <span class="r-in"><span><span class="va">trials</span> <span class="op">&lt;-</span> <span class="va">wheat</span><span class="op">$</span><span class="fu">wizard</span><span class="op">(</span><span class="st">"trials"</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>breeding_programs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">327</span>,<span class="fl">367</span><span class="op">)</span>, years <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2023</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
@@ -733,6 +807,34 @@ wheat$vcf_imputed("~/Desktop/my_data.vcf", genotyping_project_id=10371)
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># find genotyping protocols that have data for the above set of accessions</span></span></span>
 <span class="r-in"><span><span class="va">geno_protocols</span> <span class="op">&lt;-</span> <span class="va">wheat</span><span class="op">$</span><span class="fu">wizard</span><span class="op">(</span><span class="st">"genotyping_protocols"</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>accessions <span class="op">=</span> <span class="va">accessions</span><span class="op">$</span><span class="va">data</span><span class="op">$</span><span class="va">ids</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="co">## Method `BrAPIConnection$filter_geno_protocols`</span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">wheat</span> <span class="op">&lt;-</span> <span class="fu"><a href="getBrAPIConnection.html">getBrAPIConnection</a></span><span class="op">(</span><span class="st">"T3/Wheat"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">resp</span> <span class="op">&lt;-</span> <span class="va">wheat</span><span class="op">$</span><span class="fu">filter_geno_protocols</span><span class="op">(</span>accessions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">234712</span>, <span class="fl">1544778</span>, <span class="fl">1478255</span>, <span class="fl">1550494</span>, <span class="fl">1544454</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Top genotyping protocols:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1. Allegro V1 [id=289] (3/5 accessions)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2. Wheat 3K [id=299] (2/5 accessions)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3. Allegro V2 [id=297] (1/5 accessions)</span>
+<span class="r-in"><span><span class="va">best_protocols</span> <span class="op">&lt;-</span> <span class="va">resp</span><span class="op">$</span><span class="va">data</span><span class="op">$</span><span class="va">top_matches</span></span></span>
+<span class="r-in"><span><span class="va">protocol_usage</span> <span class="op">&lt;-</span> <span class="va">resp</span><span class="op">$</span><span class="va">data</span><span class="op">$</span><span class="va">matches</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="co">## Method `BrAPIConnection$filter_geno_projects`</span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">wheat</span> <span class="op">&lt;-</span> <span class="fu"><a href="getBrAPIConnection.html">getBrAPIConnection</a></span><span class="op">(</span><span class="st">"T3/Wheat"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">resp</span> <span class="op">&lt;-</span> <span class="va">wheat</span><span class="op">$</span><span class="fu">filter_geno_projects</span><span class="op">(</span>accessions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">234712</span>, <span class="fl">1544778</span>, <span class="fl">1478255</span>, <span class="fl">1550494</span>, <span class="fl">1544454</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Top genotyping projects:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1. KSU_2023_Allegro [id=10655] (2/5 accessions)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2. UWM_2023_3K [id=11009] (2/5 accessions)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3. UCD_2020_Allegro_V2 [id=10727] (1/5 accessions)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4. UCD_2020_Allegro [id=10654] (1/5 accessions)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5. KSU_2023_Allegro_V2 [id=10683] (1/5 accessions)</span>
+<span class="r-in"><span><span class="va">best_projects</span> <span class="op">&lt;-</span> <span class="va">resp</span><span class="op">$</span><span class="va">data</span><span class="op">$</span><span class="va">top_matches</span></span></span>
+<span class="r-in"><span><span class="va">project_usage</span> <span class="op">&lt;-</span> <span class="va">resp</span><span class="op">$</span><span class="va">data</span><span class="op">$</span><span class="va">matches</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
 <span class="r-in"><span><span class="co">## Method `BrAPIConnection$vcf`</span></span></span>
@@ -785,7 +887,7 @@ wheat$vcf_imputed("~/Desktop/my_data.vcf", genotyping_project_id=10371)
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer></div>

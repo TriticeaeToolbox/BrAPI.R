@@ -247,9 +247,13 @@
 <li>
 <a href="https://triticeaetoolbox.github.io/BrAPI.R/reference/BrAPIConnection.html#method-BrAPIConnection-wizard">conn$wizard() function</a> - filter data using the breedbase Search Wizard</li>
 <li>
+<a href="https://triticeaetoolbox.github.io/BrAPI.R/reference/BrAPIConnection.html#method-BrAPIConnection-filter_geno_protocols">conn$filter_geno_protocols() function</a> - find the best genotyping protocols for a specific set of accessions</li>
+<li>
+<a href="https://triticeaetoolbox.github.io/BrAPI.R/reference/BrAPIConnection.html#method-BrAPIConnection-filter_geno_projects">conn$filter_geno_projects() function</a> - find the best genotyping projects for a specific set of accessions</li>
+<li>
 <a href="https://triticeaetoolbox.github.io/BrAPI.R/reference/BrAPIConnection.html#method-BrAPIConnection-vcf">conn$vcf() function</a> - download a breedbase-generated VCF file for a genotyping protocol, optionally filtered by accessions</li>
 <li>
-<a href="https://triticeaetoolbox.github.io/BrAPI.R/reference/BrAPIConnection.html#method-BrAPIConnection-vcf_archived">conn$vcf_archive() function</a> - download a static, archived VCF for an entire genotyping project</li>
+<a href="https://triticeaetoolbox.github.io/BrAPI.R/reference/BrAPIConnection.html#method-BrAPIConnection-vcf_archived">conn$vcf_archived() function</a> - download a static, archived VCF for an entire genotyping project</li>
 <li>
 <a href="https://triticeaetoolbox.github.io/BrAPI.R/reference/BrAPIConnection.html#method-BrAPIConnection-vcf_imputed">conn$vcf_imputed() function</a> - download a static VCF of imputed data for an imputed genotyping project (not all genotyping projects have been imputed)</li>
 </ul>
@@ -292,16 +296,56 @@
 <span><span class="va">trials</span> <span class="op">&lt;-</span> <span class="va">wheat</span><span class="op">$</span><span class="fu">wizard</span><span class="op">(</span><span class="st">"trials"</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>breeding_programs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">327</span>,<span class="fl">367</span><span class="op">)</span>, years <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2023</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
+<h3 id="filter-genotyping-protocolsprojects-connfilter_geno_protocolsaccessions-and-connfilter_geno_projectsaccessions">Filter Genotyping Protocols/Projects: <code>conn$filter_geno_protocols(accessions)</code> and <code>conn$filter_geno_projects(accessions)</code>
+<a class="anchor" aria-label="anchor" href="#filter-genotyping-protocolsprojects-connfilter_geno_protocolsaccessions-and-connfilter_geno_projectsaccessions"></a>
+</h3>
+<p>When you have a set of accessions (from a set of trials, breeding programs, etc), it can be difficult to determine which genotyping protocol and/or project best represents that set of accessions. Which protocol or project has the highest number of those accessions in the data?</p>
+<p>The <code>filter_geno_protocols()</code> and <code>filter_geno_projects()</code> functions take a vector of accession ids and finds the protocols or projects that contains those accessions and ranks them based on the number of your accessions that are in those protocols / projects.</p>
+<p>You can then use the top-ranking protocols / projects to download genotype data in VCF files using the various vcf functions (<code>vcf()</code> or <code>vcf_archived()</code>).</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="co"># You have a set of accessions that you are interested in, specified by their IDs</span></span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a><span class="sc">&gt;</span> my_accessions <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">234712</span>, <span class="dv">1544778</span>, <span class="dv">1478255</span>, <span class="dv">1550494</span>, <span class="dv">1544454</span>) </span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a><span class="sc">&gt;</span> db <span class="ot">&lt;-</span> <span class="fu">getBrAPIConnection</span>(<span class="st">"T3/Wheat"</span>)</span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a></span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a><span class="co"># Find which genotyping protocols are best</span></span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a><span class="sc">&gt;</span> resp <span class="ot">&lt;-</span> db<span class="sc">$</span><span class="fu">filter_geno_protocols</span>(my_accessions)</span>
+<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a>Top genotyping protocols<span class="sc">:</span></span>
+<span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a><span class="fl">1.</span> Allegro V1 [id<span class="ot">=</span><span class="dv">289</span>] (<span class="dv">3</span><span class="sc">/</span><span class="dv">5</span> accessions)</span>
+<span id="cb14-9"><a href="#cb14-9" tabindex="-1"></a><span class="fl">2.</span> Wheat <span class="dv">3</span>K [id<span class="ot">=</span><span class="dv">299</span>] (<span class="dv">2</span><span class="sc">/</span><span class="dv">5</span> accessions)</span>
+<span id="cb14-10"><a href="#cb14-10" tabindex="-1"></a><span class="fl">3.</span> Allegro V2 [id<span class="ot">=</span><span class="dv">297</span>] (<span class="dv">1</span><span class="sc">/</span><span class="dv">5</span> accessions)</span>
+<span id="cb14-11"><a href="#cb14-11" tabindex="-1"></a></span>
+<span id="cb14-12"><a href="#cb14-12" tabindex="-1"></a><span class="co"># Get the top matches, ordered by the number of my accessions in the protocol from highest to lowest</span></span>
+<span id="cb14-13"><a href="#cb14-13" tabindex="-1"></a><span class="sc">&gt;</span> resp<span class="sc">$</span>data<span class="sc">$</span>top_matches</span>
+<span id="cb14-14"><a href="#cb14-14" tabindex="-1"></a>[<span class="dv">1</span>] <span class="st">"Allegro V1"</span> <span class="st">"Wheat 3K"</span>   <span class="st">"Allegro V2"</span></span>
+<span id="cb14-15"><a href="#cb14-15" tabindex="-1"></a></span>
+<span id="cb14-16"><a href="#cb14-16" tabindex="-1"></a><span class="co"># Get a table indicating which accessions are in each protocol</span></span>
+<span id="cb14-17"><a href="#cb14-17" tabindex="-1"></a><span class="sc">&gt;</span> resp<span class="sc">$</span>data<span class="sc">$</span>matches</span>
+<span id="cb14-18"><a href="#cb14-18" tabindex="-1"></a>     accession Allegro V1 Allegro V2 Wheat <span class="dv">3</span>K</span>
+<span id="cb14-19"><a href="#cb14-19" tabindex="-1"></a><span class="dv">1</span>   BOB_DOLE10       <span class="cn">TRUE</span>      <span class="cn">FALSE</span>    <span class="cn">FALSE</span></span>
+<span id="cb14-20"><a href="#cb14-20" tabindex="-1"></a><span class="dv">2</span>   CA00BW6013       <span class="cn">TRUE</span>       <span class="cn">TRUE</span>    <span class="cn">FALSE</span></span>
+<span id="cb14-21"><a href="#cb14-21" tabindex="-1"></a><span class="dv">3</span>       ZENDA7       <span class="cn">TRUE</span>      <span class="cn">FALSE</span>    <span class="cn">FALSE</span></span>
+<span id="cb14-22"><a href="#cb14-22" tabindex="-1"></a><span class="dv">4</span>    <span class="dv">14</span>NORD<span class="dv">-01</span>      <span class="cn">FALSE</span>      <span class="cn">FALSE</span>     <span class="cn">TRUE</span></span>
+<span id="cb14-23"><a href="#cb14-23" tabindex="-1"></a><span class="dv">5</span> WI13OWW<span class="fl">-7.01</span>      <span class="cn">FALSE</span>      <span class="cn">FALSE</span>     <span class="cn">TRUE</span></span>
+<span id="cb14-24"><a href="#cb14-24" tabindex="-1"></a></span>
+<span id="cb14-25"><a href="#cb14-25" tabindex="-1"></a><span class="co"># You can do the same with genotyping projects...</span></span>
+<span id="cb14-26"><a href="#cb14-26" tabindex="-1"></a><span class="sc">&gt;</span> resp <span class="ot">&lt;-</span> db<span class="sc">$</span><span class="fu">filter_geno_projects</span>(my_accessions)</span>
+<span id="cb14-27"><a href="#cb14-27" tabindex="-1"></a>Top genotyping projects<span class="sc">:</span></span>
+<span id="cb14-28"><a href="#cb14-28" tabindex="-1"></a><span class="fl">1.</span> UWM_2023_3K [id<span class="ot">=</span><span class="dv">11009</span>] (<span class="dv">2</span><span class="sc">/</span><span class="dv">5</span> accessions)</span>
+<span id="cb14-29"><a href="#cb14-29" tabindex="-1"></a><span class="fl">2.</span> KSU_2023_Allegro [id<span class="ot">=</span><span class="dv">10655</span>] (<span class="dv">2</span><span class="sc">/</span><span class="dv">5</span> accessions)</span>
+<span id="cb14-30"><a href="#cb14-30" tabindex="-1"></a><span class="fl">3.</span> KSU_2023_Allegro_V2 [id<span class="ot">=</span><span class="dv">10683</span>] (<span class="dv">1</span><span class="sc">/</span><span class="dv">5</span> accessions)</span>
+<span id="cb14-31"><a href="#cb14-31" tabindex="-1"></a><span class="fl">4.</span> UCD_2020_Allegro [id<span class="ot">=</span><span class="dv">10654</span>] (<span class="dv">1</span><span class="sc">/</span><span class="dv">5</span> accessions)</span>
+<span id="cb14-32"><a href="#cb14-32" tabindex="-1"></a><span class="fl">5.</span> UCD_2020_Allegro_V2 [id<span class="ot">=</span><span class="dv">10727</span>] (<span class="dv">1</span><span class="sc">/</span><span class="dv">5</span> accessions)</span></code></pre></div>
+</div>
+<div class="section level3">
 <h3 id="downloading-vcf-files-connvcfoutput-genotyping_protocol_id-accessions">Downloading VCF Files: <code>conn$vcf(output, genotyping_protocol_id, accessions)</code>
 <a class="anchor" aria-label="anchor" href="#downloading-vcf-files-connvcfoutput-genotyping_protocol_id-accessions"></a>
 </h3>
 <p>If the BrAPI genotyping endpoints are too slow, you can try downloading VCF files of the genotyping data using the internal breedbase endpoints that are used to download genotyping data from the Search Wizard. To use the <code>conn$vcf()</code> function, you’ll need to provide the path to the output file where the VCF file will be saved on your computer, the database id of the genotyping protocol, and (optionally) a list of database ids of accessions to use as a filter on the genotype data.</p>
 <p>To download an entire genotyping protocol:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">wheat</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/getBrAPIConnection.html">getBrAPIConnection</a></span><span class="op">(</span><span class="st">"T3/WheatCAP"</span><span class="op">)</span></span>
 <span><span class="va">wheat</span><span class="op">$</span><span class="fu">vcf</span><span class="op">(</span><span class="st">"~/Desktop/my_data.vcf"</span>, genotyping_protocol_id <span class="op">=</span> <span class="fl">249</span><span class="op">)</span></span></code></pre></div>
 <p>To download a subset of accessions from a genotyping protocol:</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">wheat</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/getBrAPIConnection.html">getBrAPIConnection</a></span><span class="op">(</span><span class="st">"T3/WheatCAP"</span><span class="op">)</span></span>
 <span><span class="va">wheat</span><span class="op">$</span><span class="fu">vcf</span><span class="op">(</span><span class="st">"~/Desktop/my_data.vcf"</span>, genotyping_protocol_id <span class="op">=</span> <span class="fl">249</span>, accessions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">228677</span>, <span class="fl">1666408</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>Depending on the size of the genotyping protocol (number of markers) and the number of accessions to download, <strong>this download function may still take a long time to download</strong>. If the function times out, you may want to try to download an archived VCF file of the data.</p>
@@ -312,47 +356,47 @@
 </h3>
 <p>This function will allow you to download a static, archived VCF file for a specific genotyping project, when available. These files are the original VCF files that were used to upload the data to the database.</p>
 <p>The archived files are saved at the project level. So, if you specify a protocol, you’ll get a list of all of the available files for each project in that protocol and you can select which one to download. If you’re performing analysis at the protocol level, you’ll need to manually merge the VCF files from each project in that protocol.</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="sc">&gt;</span> wheat <span class="ot">&lt;-</span> <span class="fu">getBrAPIConnection</span>(<span class="st">"T3/Wheat"</span>)</span>
-<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a><span class="sc">&gt;</span> resp <span class="ot">&lt;-</span> wheat<span class="sc">$</span><span class="fu">vcf_archived</span>(<span class="st">"~/Desktop/my_data.vcf"</span>, <span class="at">genotyping_protocol_id=</span><span class="dv">297</span>)</span>
-<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a>Finding archived VCF files...</span>
-<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a>  Genotyping Protocol<span class="sc">:</span> <span class="dv">297</span></span>
-<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a>Found <span class="dv">4</span> files...</span>
-<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a><span class="sc">-</span><span class="ot">-&gt;</span> Select a file to download<span class="sc">:</span></span>
-<span id="cb16-7"><a href="#cb16-7" tabindex="-1"></a>[<span class="co">#] Project Name (Protocol Name) [File Name]</span></span>
-<span id="cb16-8"><a href="#cb16-8" tabindex="-1"></a><span class="sc">--------------------------------------------</span></span>
-<span id="cb16-9"><a href="#cb16-9" tabindex="-1"></a>[<span class="dv">1</span>] Allegro V1 <span class="fu">tempate</span> (Allegro V1) [<span class="dv">2025-09-03</span>_18<span class="sc">:</span><span class="dv">51</span><span class="sc">:</span><span class="dv">07</span>_fileuEjk]</span>
-<span id="cb16-10"><a href="#cb16-10" tabindex="-1"></a>[<span class="dv">2</span>] <span class="fu">KSU_2023_Allegro</span> (Allegro V1) [<span class="dv">2025-09-03</span>_19<span class="sc">:</span><span class="dv">07</span><span class="sc">:</span><span class="dv">44</span>_fileFJaf]</span>
-<span id="cb16-11"><a href="#cb16-11" tabindex="-1"></a>[<span class="dv">3</span>] <span class="fu">KSU_2023_Allegro_AeTa</span> (Allegro V1) [<span class="dv">2025-09-03</span>_19<span class="sc">:</span><span class="dv">28</span><span class="sc">:</span><span class="dv">16</span>_filee3Si]</span>
-<span id="cb16-12"><a href="#cb16-12" tabindex="-1"></a>[<span class="dv">4</span>] <span class="fu">UCD_2020_Allegro</span> (Allegro V1) [<span class="dv">2025-09-03</span>_18<span class="sc">:</span><span class="dv">53</span><span class="sc">:</span><span class="dv">02</span>_filepq5P]</span>
-<span id="cb16-13"><a href="#cb16-13" tabindex="-1"></a><span class="sc">-</span><span class="ot">-&gt;</span> Enter file number<span class="sc">:</span> <span class="dv">4</span></span>
-<span id="cb16-14"><a href="#cb16-14" tabindex="-1"></a>Response [GET] <span class="sc">&lt;</span>https<span class="sc">:</span><span class="er">//</span>wheatcap.triticeaetoolbox.org<span class="sc">/</span>ajax<span class="sc">/</span>genotyping_project<span class="sc">/</span>download_archived_vcf?genotyping_project_id<span class="ot">=</span><span class="dv">10371</span><span class="sc">&amp;</span>basename<span class="ot">=</span><span class="dv">2025-09-03</span>_18<span class="sc">:</span><span class="dv">53</span><span class="sc">:</span><span class="dv">02</span>_filepq5P<span class="sc">&gt;</span></span>
-<span id="cb16-15"><a href="#cb16-15" tabindex="-1"></a>  Success<span class="sc">:</span> (<span class="dv">200</span>) OK</span>
-<span id="cb16-16"><a href="#cb16-16" tabindex="-1"></a>  Protocol<span class="sc">:</span> Allegro <span class="fu">V1</span> (<span class="dv">297</span>)</span>
-<span id="cb16-17"><a href="#cb16-17" tabindex="-1"></a>  Project<span class="sc">:</span> <span class="fu">UCD_2020_Allegro</span> (<span class="dv">10371</span>)</span>
-<span id="cb16-18"><a href="#cb16-18" tabindex="-1"></a>  File Name<span class="sc">:</span> <span class="dv">2025-09-03</span>_18<span class="sc">:</span><span class="dv">53</span><span class="sc">:</span><span class="dv">02</span>_filepq5P</span>
-<span id="cb16-19"><a href="#cb16-19" tabindex="-1"></a>  Output File<span class="sc">:</span> <span class="er">~/</span>Desktop<span class="sc">/</span>my_data.vcf</span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a><span class="sc">&gt;</span> wheat <span class="ot">&lt;-</span> <span class="fu">getBrAPIConnection</span>(<span class="st">"T3/Wheat"</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a><span class="sc">&gt;</span> resp <span class="ot">&lt;-</span> wheat<span class="sc">$</span><span class="fu">vcf_archived</span>(<span class="st">"~/Desktop/my_data.vcf"</span>, <span class="at">genotyping_protocol_id=</span><span class="dv">297</span>)</span>
+<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a>Finding archived VCF files...</span>
+<span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a>  Genotyping Protocol<span class="sc">:</span> <span class="dv">297</span></span>
+<span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a>Found <span class="dv">4</span> files...</span>
+<span id="cb17-6"><a href="#cb17-6" tabindex="-1"></a><span class="sc">-</span><span class="ot">-&gt;</span> Select a file to download<span class="sc">:</span></span>
+<span id="cb17-7"><a href="#cb17-7" tabindex="-1"></a>[<span class="co">#] Project Name (Protocol Name) [File Name]</span></span>
+<span id="cb17-8"><a href="#cb17-8" tabindex="-1"></a><span class="sc">--------------------------------------------</span></span>
+<span id="cb17-9"><a href="#cb17-9" tabindex="-1"></a>[<span class="dv">1</span>] Allegro V1 <span class="fu">tempate</span> (Allegro V1) [<span class="dv">2025-09-03</span>_18<span class="sc">:</span><span class="dv">51</span><span class="sc">:</span><span class="dv">07</span>_fileuEjk]</span>
+<span id="cb17-10"><a href="#cb17-10" tabindex="-1"></a>[<span class="dv">2</span>] <span class="fu">KSU_2023_Allegro</span> (Allegro V1) [<span class="dv">2025-09-03</span>_19<span class="sc">:</span><span class="dv">07</span><span class="sc">:</span><span class="dv">44</span>_fileFJaf]</span>
+<span id="cb17-11"><a href="#cb17-11" tabindex="-1"></a>[<span class="dv">3</span>] <span class="fu">KSU_2023_Allegro_AeTa</span> (Allegro V1) [<span class="dv">2025-09-03</span>_19<span class="sc">:</span><span class="dv">28</span><span class="sc">:</span><span class="dv">16</span>_filee3Si]</span>
+<span id="cb17-12"><a href="#cb17-12" tabindex="-1"></a>[<span class="dv">4</span>] <span class="fu">UCD_2020_Allegro</span> (Allegro V1) [<span class="dv">2025-09-03</span>_18<span class="sc">:</span><span class="dv">53</span><span class="sc">:</span><span class="dv">02</span>_filepq5P]</span>
+<span id="cb17-13"><a href="#cb17-13" tabindex="-1"></a><span class="sc">-</span><span class="ot">-&gt;</span> Enter file number<span class="sc">:</span> <span class="dv">4</span></span>
+<span id="cb17-14"><a href="#cb17-14" tabindex="-1"></a>Response [GET] <span class="sc">&lt;</span>https<span class="sc">:</span><span class="er">//</span>wheatcap.triticeaetoolbox.org<span class="sc">/</span>ajax<span class="sc">/</span>genotyping_project<span class="sc">/</span>download_archived_vcf?genotyping_project_id<span class="ot">=</span><span class="dv">10371</span><span class="sc">&amp;</span>basename<span class="ot">=</span><span class="dv">2025-09-03</span>_18<span class="sc">:</span><span class="dv">53</span><span class="sc">:</span><span class="dv">02</span>_filepq5P<span class="sc">&gt;</span></span>
+<span id="cb17-15"><a href="#cb17-15" tabindex="-1"></a>  Success<span class="sc">:</span> (<span class="dv">200</span>) OK</span>
+<span id="cb17-16"><a href="#cb17-16" tabindex="-1"></a>  Protocol<span class="sc">:</span> Allegro <span class="fu">V1</span> (<span class="dv">297</span>)</span>
+<span id="cb17-17"><a href="#cb17-17" tabindex="-1"></a>  Project<span class="sc">:</span> <span class="fu">UCD_2020_Allegro</span> (<span class="dv">10371</span>)</span>
+<span id="cb17-18"><a href="#cb17-18" tabindex="-1"></a>  File Name<span class="sc">:</span> <span class="dv">2025-09-03</span>_18<span class="sc">:</span><span class="dv">53</span><span class="sc">:</span><span class="dv">02</span>_filepq5P</span>
+<span id="cb17-19"><a href="#cb17-19" tabindex="-1"></a>  Output File<span class="sc">:</span> <span class="er">~/</span>Desktop<span class="sc">/</span>my_data.vcf</span></code></pre></div>
 <p>If you know which file you want to download, you can add the archived file’s file name as the <code>file_name</code> argument to the <code>vcf_archived()</code> function. When there is only one matching file, that file will be automatically downloaded to the output file (you won’t be prompted to select a file).</p>
 <p>If you want to get a table of available files before requesting a download, you can do so with the <code>vcf_archived_list()</code> function, which also takes a <code>genotyping_protocol_id</code> and/or <code>genotyping_project_id</code> as arguments. This will return a data frame with the protocol id and name, project id and name, and file name of the available archived files for your request. You can then use one of the returned file names as the <code>file_name</code> argument in the <code>vcf_archived()</code> download function.</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a><span class="sc">&gt;</span> files <span class="ot">&lt;-</span> wheat<span class="sc">$</span><span class="fu">vcf_archived_list</span>(<span class="at">genotyping_protocol_id=</span><span class="dv">297</span>, <span class="at">verbose=</span>T)</span>
-<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a>Finding archived VCF files...</span>
-<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a>  Genotyping Protocol<span class="sc">:</span> <span class="dv">297</span></span>
-<span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a>Found <span class="dv">4</span> files...</span>
-<span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a><span class="sc">&gt;</span> files</span>
-<span id="cb17-6"><a href="#cb17-6" tabindex="-1"></a>  protocol_id protocol_name project_id          project_name                    file_name</span>
-<span id="cb17-7"><a href="#cb17-7" tabindex="-1"></a><span class="dv">1</span>         <span class="dv">297</span>    Allegro V1      <span class="dv">13533</span>    Allegro V1 tempate <span class="dv">2025-09-03</span>_18<span class="sc">:</span><span class="dv">51</span><span class="sc">:</span><span class="dv">07</span>_fileuEjk</span>
-<span id="cb17-8"><a href="#cb17-8" tabindex="-1"></a><span class="dv">3</span>         <span class="dv">297</span>    Allegro V1      <span class="dv">11359</span>      KSU_2023_Allegro <span class="dv">2025-09-03</span>_19<span class="sc">:</span><span class="dv">07</span><span class="sc">:</span><span class="dv">44</span>_fileFJaf</span>
-<span id="cb17-9"><a href="#cb17-9" tabindex="-1"></a><span class="dv">4</span>         <span class="dv">297</span>    Allegro V1      <span class="dv">13534</span> KSU_2023_Allegro_AeTa <span class="dv">2025-09-03</span>_19<span class="sc">:</span><span class="dv">28</span><span class="sc">:</span><span class="dv">16</span>_filee3Si</span>
-<span id="cb17-10"><a href="#cb17-10" tabindex="-1"></a><span class="dv">2</span>         <span class="dv">297</span>    Allegro V1      <span class="dv">10371</span>      UCD_2020_Allegro <span class="dv">2025-09-03</span>_18<span class="sc">:</span><span class="dv">53</span><span class="sc">:</span><span class="dv">02</span>_filepq5P</span>
-<span id="cb17-11"><a href="#cb17-11" tabindex="-1"></a><span class="sc">&gt;</span> resp <span class="ot">&lt;-</span> wheat<span class="sc">$</span><span class="fu">vcf_archived</span>(<span class="st">"~/Desktop/geno_data.vcf"</span>, <span class="at">genotyping_protocol_id=</span><span class="dv">297</span>, <span class="at">file_name=</span><span class="st">"2025-09-03_19:07:44_fileFJaf"</span>, <span class="at">verbose=</span>T)</span>
-<span id="cb17-12"><a href="#cb17-12" tabindex="-1"></a>Finding archived VCF files...</span>
-<span id="cb17-13"><a href="#cb17-13" tabindex="-1"></a>  Genotyping Protocol<span class="sc">:</span> <span class="dv">297</span></span>
-<span id="cb17-14"><a href="#cb17-14" tabindex="-1"></a>Found <span class="dv">4</span> files...</span>
-<span id="cb17-15"><a href="#cb17-15" tabindex="-1"></a>Response [GET] <span class="sc">&lt;</span>https<span class="sc">:</span><span class="er">//</span>wheatcap.triticeaetoolbox.org<span class="sc">/</span>ajax<span class="sc">/</span>genotyping_project<span class="sc">/</span>download_archived_vcf?genotyping_project_id<span class="ot">=</span><span class="dv">11359</span><span class="sc">&amp;</span>basename<span class="ot">=</span><span class="dv">2025-09-03</span>_19<span class="sc">:</span><span class="dv">07</span><span class="sc">:</span><span class="dv">44</span>_fileFJaf<span class="sc">&gt;</span></span>
-<span id="cb17-16"><a href="#cb17-16" tabindex="-1"></a>  Success<span class="sc">:</span> (<span class="dv">200</span>) OK</span>
-<span id="cb17-17"><a href="#cb17-17" tabindex="-1"></a>  Protocol<span class="sc">:</span> Allegro <span class="fu">V1</span> (<span class="dv">297</span>)</span>
-<span id="cb17-18"><a href="#cb17-18" tabindex="-1"></a>  Project<span class="sc">:</span> <span class="fu">KSU_2023_Allegro</span> (<span class="dv">11359</span>)</span>
-<span id="cb17-19"><a href="#cb17-19" tabindex="-1"></a>  File Name<span class="sc">:</span> <span class="dv">2025-09-03</span>_19<span class="sc">:</span><span class="dv">07</span><span class="sc">:</span><span class="dv">44</span>_fileFJaf</span>
-<span id="cb17-20"><a href="#cb17-20" tabindex="-1"></a>  Output File<span class="sc">:</span> <span class="er">~/</span>Desktop<span class="sc">/</span>geno_data.vcf</span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="sc">&gt;</span> files <span class="ot">&lt;-</span> wheat<span class="sc">$</span><span class="fu">vcf_archived_list</span>(<span class="at">genotyping_protocol_id=</span><span class="dv">297</span>, <span class="at">verbose=</span>T)</span>
+<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a>Finding archived VCF files...</span>
+<span id="cb18-3"><a href="#cb18-3" tabindex="-1"></a>  Genotyping Protocol<span class="sc">:</span> <span class="dv">297</span></span>
+<span id="cb18-4"><a href="#cb18-4" tabindex="-1"></a>Found <span class="dv">4</span> files...</span>
+<span id="cb18-5"><a href="#cb18-5" tabindex="-1"></a><span class="sc">&gt;</span> files</span>
+<span id="cb18-6"><a href="#cb18-6" tabindex="-1"></a>  protocol_id protocol_name project_id          project_name                    file_name</span>
+<span id="cb18-7"><a href="#cb18-7" tabindex="-1"></a><span class="dv">1</span>         <span class="dv">297</span>    Allegro V1      <span class="dv">13533</span>    Allegro V1 tempate <span class="dv">2025-09-03</span>_18<span class="sc">:</span><span class="dv">51</span><span class="sc">:</span><span class="dv">07</span>_fileuEjk</span>
+<span id="cb18-8"><a href="#cb18-8" tabindex="-1"></a><span class="dv">3</span>         <span class="dv">297</span>    Allegro V1      <span class="dv">11359</span>      KSU_2023_Allegro <span class="dv">2025-09-03</span>_19<span class="sc">:</span><span class="dv">07</span><span class="sc">:</span><span class="dv">44</span>_fileFJaf</span>
+<span id="cb18-9"><a href="#cb18-9" tabindex="-1"></a><span class="dv">4</span>         <span class="dv">297</span>    Allegro V1      <span class="dv">13534</span> KSU_2023_Allegro_AeTa <span class="dv">2025-09-03</span>_19<span class="sc">:</span><span class="dv">28</span><span class="sc">:</span><span class="dv">16</span>_filee3Si</span>
+<span id="cb18-10"><a href="#cb18-10" tabindex="-1"></a><span class="dv">2</span>         <span class="dv">297</span>    Allegro V1      <span class="dv">10371</span>      UCD_2020_Allegro <span class="dv">2025-09-03</span>_18<span class="sc">:</span><span class="dv">53</span><span class="sc">:</span><span class="dv">02</span>_filepq5P</span>
+<span id="cb18-11"><a href="#cb18-11" tabindex="-1"></a><span class="sc">&gt;</span> resp <span class="ot">&lt;-</span> wheat<span class="sc">$</span><span class="fu">vcf_archived</span>(<span class="st">"~/Desktop/geno_data.vcf"</span>, <span class="at">genotyping_protocol_id=</span><span class="dv">297</span>, <span class="at">file_name=</span><span class="st">"2025-09-03_19:07:44_fileFJaf"</span>, <span class="at">verbose=</span>T)</span>
+<span id="cb18-12"><a href="#cb18-12" tabindex="-1"></a>Finding archived VCF files...</span>
+<span id="cb18-13"><a href="#cb18-13" tabindex="-1"></a>  Genotyping Protocol<span class="sc">:</span> <span class="dv">297</span></span>
+<span id="cb18-14"><a href="#cb18-14" tabindex="-1"></a>Found <span class="dv">4</span> files...</span>
+<span id="cb18-15"><a href="#cb18-15" tabindex="-1"></a>Response [GET] <span class="sc">&lt;</span>https<span class="sc">:</span><span class="er">//</span>wheatcap.triticeaetoolbox.org<span class="sc">/</span>ajax<span class="sc">/</span>genotyping_project<span class="sc">/</span>download_archived_vcf?genotyping_project_id<span class="ot">=</span><span class="dv">11359</span><span class="sc">&amp;</span>basename<span class="ot">=</span><span class="dv">2025-09-03</span>_19<span class="sc">:</span><span class="dv">07</span><span class="sc">:</span><span class="dv">44</span>_fileFJaf<span class="sc">&gt;</span></span>
+<span id="cb18-16"><a href="#cb18-16" tabindex="-1"></a>  Success<span class="sc">:</span> (<span class="dv">200</span>) OK</span>
+<span id="cb18-17"><a href="#cb18-17" tabindex="-1"></a>  Protocol<span class="sc">:</span> Allegro <span class="fu">V1</span> (<span class="dv">297</span>)</span>
+<span id="cb18-18"><a href="#cb18-18" tabindex="-1"></a>  Project<span class="sc">:</span> <span class="fu">KSU_2023_Allegro</span> (<span class="dv">11359</span>)</span>
+<span id="cb18-19"><a href="#cb18-19" tabindex="-1"></a>  File Name<span class="sc">:</span> <span class="dv">2025-09-03</span>_19<span class="sc">:</span><span class="dv">07</span><span class="sc">:</span><span class="dv">44</span>_fileFJaf</span>
+<span id="cb18-20"><a href="#cb18-20" tabindex="-1"></a>  Output File<span class="sc">:</span> <span class="er">~/</span>Desktop<span class="sc">/</span>geno_data.vcf</span></code></pre></div>
 </div>
 </div>
 </div>
@@ -391,7 +435,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer>
