@@ -188,8 +188,10 @@ results <- wheat$search("/observations", body = list(studyDbIds = c(7459)))
 This package includes some breedbase-specific helper functions for performing some non-BrAPI compliant tasks that are available on breedbase.  The `BrAPIConnection` object needs to have the `is_breedbase` argument set to `TRUE` in order for these functions to be enabled.
 
 - [conn$wizard() function](https://triticeaetoolbox.github.io/BrAPI.R/reference/BrAPIConnection.html#method-BrAPIConnection-wizard) - filter data using the breedbase Search Wizard
+- [conn$filter_geno_protocols() function](https://triticeaetoolbox.github.io/BrAPI.R/reference/BrAPIConnection.html#method-BrAPIConnection-filter_geno_protocols) - find the best genotyping protocols for a specific set of accessions
+- [conn$filter_geno_projects() function](https://triticeaetoolbox.github.io/BrAPI.R/reference/BrAPIConnection.html#method-BrAPIConnection-filter_geno_projects) - find the best genotyping projects for a specific set of accessions
 - [conn$vcf() function](https://triticeaetoolbox.github.io/BrAPI.R/reference/BrAPIConnection.html#method-BrAPIConnection-vcf) - download a breedbase-generated VCF file for a genotyping protocol, optionally filtered by accessions
-- [conn$vcf_archive() function](https://triticeaetoolbox.github.io/BrAPI.R/reference/BrAPIConnection.html#method-BrAPIConnection-vcf_archived) - download a static, archived VCF for an entire genotyping project
+- [conn$vcf_archived() function](https://triticeaetoolbox.github.io/BrAPI.R/reference/BrAPIConnection.html#method-BrAPIConnection-vcf_archived) - download a static, archived VCF for an entire genotyping project
 - [conn$vcf_imputed() function](https://triticeaetoolbox.github.io/BrAPI.R/reference/BrAPIConnection.html#method-BrAPIConnection-vcf_imputed) - download a static VCF of imputed data for an imputed genotyping project (not all genotyping projects have been imputed)
 
 ### Search Wizard: `conn$wizard(data_type, filters, verbose)`
@@ -236,6 +238,50 @@ The `filters` argument can contain up to 3 different filters. The name of the li
 ```R
 # Find all trials from these two breeding programs from one year
 trials <- wheat$wizard("trials", list(breeding_programs = c(327,367), years = c(2023)))
+```
+
+
+### Filter Genotyping Protocols/Projects: `conn$filter_geno_protocols(accessions)` and `conn$filter_geno_projects(accessions)`
+
+When you have a set of accessions (from a set of trials, breeding programs, etc), it can be difficult to determine which genotyping protocol and/or project best represents that set of accessions.  Which protocol or project has the highest number of those accessions in the data?
+
+The `filter_geno_protocols()` and `filter_geno_projects()` functions take a vector of accession ids and finds the protocols or projects that contains those accessions and ranks them based on the number of your accessions that are in those protocols / projects.
+
+You can then use the top-ranking protocols / projects to download genotype data in VCF files using the various vcf functions (`vcf()` or `vcf_archived()`).
+
+```R
+# You have a set of accessions that you are interested in, specified by their IDs
+> my_accessions <- c(234712, 1544778, 1478255, 1550494, 1544454) 
+> db <- getBrAPIConnection("T3/Wheat")
+
+# Find which genotyping protocols are best
+> resp <- db$filter_geno_protocols(my_accessions)
+Top genotyping protocols:
+1. Allegro V1 [id=289] (3/5 accessions)
+2. Wheat 3K [id=299] (2/5 accessions)
+3. Allegro V2 [id=297] (1/5 accessions)
+
+# Get the top matches, ordered by the number of my accessions in the protocol from highest to lowest
+> resp$data$top_matches
+[1] "Allegro V1" "Wheat 3K"   "Allegro V2"
+
+# Get a table indicating which accessions are in each protocol
+> resp$data$matches
+     accession Allegro V1 Allegro V2 Wheat 3K
+1   BOB_DOLE10       TRUE      FALSE    FALSE
+2   CA00BW6013       TRUE       TRUE    FALSE
+3       ZENDA7       TRUE      FALSE    FALSE
+4    14NORD-01      FALSE      FALSE     TRUE
+5 WI13OWW-7.01      FALSE      FALSE     TRUE
+
+# You can do the same with genotyping projects...
+> resp <- db$filter_geno_projects(my_accessions)
+Top genotyping projects:
+1. UWM_2023_3K [id=11009] (2/5 accessions)
+2. KSU_2023_Allegro [id=10655] (2/5 accessions)
+3. KSU_2023_Allegro_V2 [id=10683] (1/5 accessions)
+4. UCD_2020_Allegro [id=10654] (1/5 accessions)
+5. UCD_2020_Allegro_V2 [id=10727] (1/5 accessions)
 ```
 
 ### Downloading VCF Files: `conn$vcf(output, genotyping_protocol_id, accessions)`
