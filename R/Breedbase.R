@@ -154,6 +154,83 @@ BreedbaseRequestWizard <- function(conn, data_type, filters = list(), verbose = 
 }
 
 
+# 
+# Filter Genotyping Data by Accession
+#
+# The user provides a list of accession ids and this function will return the top
+# genotyping data for that set of accessions.
+#
+# The data$top_matches key is a vector of the top genotyping protocol/project ma,es
+# The data$matches is a matrix of which accessions are found in which genotyping protocol/project
+# The content key is the raw response from the server
+#
+BreedbaseRequestFilterGeno <- function(conn, type, accessions = NULL, verbose = FALSE) {
+
+  # Check for accession list
+  if ( is.null(accessions) || length(accessions) == 0 ) {
+    stop("You must provide a list of accession ids")
+  }
+
+  # Check data type, must be project or protocol
+  if ( type != "project" && type != "protocol" ) {
+    stop("Can only filter genotyping projects or protocols")
+  }
+
+  # Make Request
+  url = sprintf("%s/ajax/genotyping_%s/search/accession_list", conn$base(), type)
+  resp = httr::POST(url, body = list(accession_ids = paste(accessions, collapse=",")), encode="form")
+  content = httr::content(resp)
+  httr::warn_for_status(resp)
+  if ( verbose ) {
+    cat(
+      sprintf("Response [POST] <%s>", resp$url),
+      sprintf("  %s", httr::http_status(resp)$message),
+      sprintf("  Accessions: %s", paste(accessions, collapse=", ")),
+      sep = "\n"
+    )
+  }
+
+  # Print Top Matches
+  cat(sprintf("Top genotyping %ss:\n", type))
+  top_matches = c()
+  for ( i in c(1:length(content$results$counts[[sprintf("ranked_genotyping_%ss", type)]])) ) {
+    gen_id = content$results$counts[[sprintf("ranked_genotyping_%ss", type)]][[i]]
+    gen_name = content$results$lookups[[sprintf("genotyping_%ss", type)]][[gen_id]]
+    accession_count = content$results$counts[[sprintf("accessions_by_genotyping_%s", type)]][[gen_id]]
+    accession_total = content$results$counts$accessions_total
+    top_matches = c(top_matches, gen_name)
+    cat(sprintf("%i. %s [id=%s] (%i/%i accessions)\n", i, gen_name, gen_id, accession_count, accession_total))
+  }
+
+  # Build matrix of geno data and accessions
+  # protocols/projects as columns and accessions as rows
+  accession_names = c()
+  for ( aid in names(content$results$lookups$accessions) ) {
+    accession_names = c(accession_names, content$results$lookups$accessions[[aid]])
+  }
+  matches = data.frame(accession = accession_names)
+  for ( gid in names(content$results$lookups[[sprintf("genotyping_%ss", type)]]) ) {
+    geno_name = content$results$lookups[[sprintf("genotyping_%ss", type)]][[gid]]
+    accs_in_geno = content$results$matches[[sprintf("accessions_by_genotyping_%s", type)]][[gid]]
+    m = c()
+    for ( aid in names(content$results$lookups$accessions) ) {
+      m = c(m, aid %in% accs_in_geno)
+    }
+    matches[[geno_name]] = m
+  }
+
+  return(list(
+    response = resp,
+    status = httr::http_status(resp),
+    content = content,
+    data = list(
+      top_matches = top_matches,
+      matches = matches
+    )
+  ))
+}
+
+
 #
 # Get Breedbase VCF File
 #

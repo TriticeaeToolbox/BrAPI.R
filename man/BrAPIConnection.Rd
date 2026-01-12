@@ -77,7 +77,7 @@ resp <- sandbox$post("/observations", body=data)
 ## Method `BrAPIConnection$wizard`
 ## ------------------------------------------------
 
-wheat <- createBrAPIConnection("wheat.triticeaetoolbox.org", is_breedbase = TRUE)
+wheat <- getBrAPIConnection("T3/Wheat")
 
 # find matching trials, filtered by two breeding programs (identified by ids) and one year
 trials <- wheat$wizard("trials", list(breeding_programs = c(327,367), years = c(2023)))
@@ -87,6 +87,24 @@ accessions <- wheat$wizard("accessions", list(trials = c("CornellMaster_2024_Hel
 
 # find genotyping protocols that have data for the above set of accessions
 geno_protocols <- wheat$wizard("genotyping_protocols", list(accessions = accessions$data$ids))
+
+## ------------------------------------------------
+## Method `BrAPIConnection$filter_geno_protocols`
+## ------------------------------------------------
+
+wheat <- getBrAPIConnection("T3/Wheat")
+resp <- wheat$filter_geno_protocols(accessions = c(234712, 1544778, 1478255, 1550494, 1544454))
+best_protocols <- resp$data$top_matches
+protocol_usage <- resp$data$matches
+
+## ------------------------------------------------
+## Method `BrAPIConnection$filter_geno_projects`
+## ------------------------------------------------
+
+wheat <- getBrAPIConnection("T3/Wheat")
+resp <- wheat$filter_geno_projects(accessions = c(234712, 1544778, 1478255, 1550494, 1544454))
+best_projects <- resp$data$top_matches
+project_usage <- resp$data$matches
 
 ## ------------------------------------------------
 ## Method `BrAPIConnection$vcf`
@@ -158,6 +176,8 @@ adds additional support for breedbase-specific functionality. (Default: \code{FA
 \item \href{#method-BrAPIConnection-put}{\code{BrAPIConnection$put()}}
 \item \href{#method-BrAPIConnection-search}{\code{BrAPIConnection$search()}}
 \item \href{#method-BrAPIConnection-wizard}{\code{BrAPIConnection$wizard()}}
+\item \href{#method-BrAPIConnection-filter_geno_protocols}{\code{BrAPIConnection$filter_geno_protocols()}}
+\item \href{#method-BrAPIConnection-filter_geno_projects}{\code{BrAPIConnection$filter_geno_projects()}}
 \item \href{#method-BrAPIConnection-vcf}{\code{BrAPIConnection$vcf()}}
 \item \href{#method-BrAPIConnection-vcf_archived_list}{\code{BrAPIConnection$vcf_archived_list()}}
 \item \href{#method-BrAPIConnection-vcf_archived}{\code{BrAPIConnection$vcf_archived()}}
@@ -451,7 +471,7 @@ The $data key contains parsed data: a list parsed into \code{ids}, \code{names} 
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
-\preformatted{wheat <- createBrAPIConnection("wheat.triticeaetoolbox.org", is_breedbase = TRUE)
+\preformatted{wheat <- getBrAPIConnection("T3/Wheat")
 
 # find matching trials, filtered by two breeding programs (identified by ids) and one year
 trials <- wheat$wizard("trials", list(breeding_programs = c(327,367), years = c(2023)))
@@ -461,6 +481,82 @@ accessions <- wheat$wizard("accessions", list(trials = c("CornellMaster_2024_Hel
 
 # find genotyping protocols that have data for the above set of accessions
 geno_protocols <- wheat$wizard("genotyping_protocols", list(accessions = accessions$data$ids))
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-BrAPIConnection-filter_geno_protocols"></a>}}
+\if{latex}{\out{\hypertarget{method-BrAPIConnection-filter_geno_protocols}{}}}
+\subsection{Method \code{filter_geno_protocols()}}{
+Find the best Genotyping Protocols for a set of accessions
+
+This function will return the top 3 genotyping protocols for a set of accessions along with
+a matrix defining which accessions are in which protocol.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BrAPIConnection$filter_geno_protocols(accessions = NULL, verbose = FALSE)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{accessions}}{A vector of accession ids}
+
+\item{\code{verbose}}{Set to TRUE to inclue logging information}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A response with the matching data
+The $content key contains the raw breedbase response.
+The $data key contains parsed data: \code{top_matches} = names of ranked genotyping protocols, \code{matches} = a matrix of accessions and protocols
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{wheat <- getBrAPIConnection("T3/Wheat")
+resp <- wheat$filter_geno_protocols(accessions = c(234712, 1544778, 1478255, 1550494, 1544454))
+best_protocols <- resp$data$top_matches
+protocol_usage <- resp$data$matches
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-BrAPIConnection-filter_geno_projects"></a>}}
+\if{latex}{\out{\hypertarget{method-BrAPIConnection-filter_geno_projects}{}}}
+\subsection{Method \code{filter_geno_projects()}}{
+Find the best Genotyping Projects for a set of accessions
+
+This function will return the top 3 genotyping projects for a set of accessions along with
+a matrix defining which accessions are in which project.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BrAPIConnection$filter_geno_projects(accessions = NULL, verbose = FALSE)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{accessions}}{A vector of accession ids}
+
+\item{\code{verbose}}{Set to TRUE to inclue logging information}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A response with the matching data
+The $content key contains the raw breedbase response.
+The $data key contains parsed data: \code{top_matches} = names of ranked genotyping projects, \code{matches} = a matrix of accessions and projects
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{wheat <- getBrAPIConnection("T3/Wheat")
+resp <- wheat$filter_geno_projects(accessions = c(234712, 1544778, 1478255, 1550494, 1544454))
+best_projects <- resp$data$top_matches
+project_usage <- resp$data$matches
 }
 \if{html}{\out{</div>}}
 

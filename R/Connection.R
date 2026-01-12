@@ -257,7 +257,7 @@ BrAPIConnection <- R6::R6Class("BrAPIConnection",
     #' The $data key contains parsed data: a list parsed into `ids`, `names` and `map` (a named list of item names -> ids)
     #'
     #' @examples
-    #' wheat <- createBrAPIConnection("wheat.triticeaetoolbox.org", is_breedbase = TRUE)
+    #' wheat <- getBrAPIConnection("T3/Wheat")
     #'
     #' # find matching trials, filtered by two breeding programs (identified by ids) and one year
     #' trials <- wheat$wizard("trials", list(breeding_programs = c(327,367), years = c(2023)))
@@ -272,6 +272,51 @@ BrAPIConnection <- R6::R6Class("BrAPIConnection",
       BreedbaseRequestWizard(self, data_type, filters, verbose)
     },
 
+
+    #' @description Find the best Genotyping Protocols for a set of accessions
+    #'
+    #' This function will return the top 3 genotyping protocols for a set of accessions along with
+    #' a matrix defining which accessions are in which protocol.
+    #'
+    #' @param accessions A vector of accession ids
+    #' @param verbose Set to TRUE to inclue logging information
+    #'
+    #' @return A response with the matching data
+    #' The $content key contains the raw breedbase response.
+    #' The $data key contains parsed data: `top_matches` = names of ranked genotyping protocols, `matches` = a matrix of accessions and protocols
+    #'
+    #' @examples
+    #' wheat <- getBrAPIConnection("T3/Wheat")
+    #' resp <- wheat$filter_geno_protocols(accessions = c(234712, 1544778, 1478255, 1550494, 1544454))
+    #' best_protocols <- resp$data$top_matches
+    #' protocol_usage <- resp$data$matches
+    filter_geno_protocols = function(accessions = NULL, verbose = FALSE) {
+      private$check_if_breedbase()
+      BreedbaseRequestFilterGeno(self, "protocol", accessions, verbose)
+    },
+
+
+    #' @description Find the best Genotyping Projects for a set of accessions
+    #'
+    #' This function will return the top 3 genotyping projects for a set of accessions along with
+    #' a matrix defining which accessions are in which project.
+    #'
+    #' @param accessions A vector of accession ids
+    #' @param verbose Set to TRUE to inclue logging information
+    #'
+    #' @return A response with the matching data
+    #' The $content key contains the raw breedbase response.
+    #' The $data key contains parsed data: `top_matches` = names of ranked genotyping projects, `matches` = a matrix of accessions and projects
+    #'
+    #' @examples
+    #' wheat <- getBrAPIConnection("T3/Wheat")
+    #' resp <- wheat$filter_geno_projects(accessions = c(234712, 1544778, 1478255, 1550494, 1544454))
+    #' best_projects <- resp$data$top_matches
+    #' project_usage <- resp$data$matches
+    filter_geno_projects = function(accessions = NULL, verbose = FALSE) {
+      private$check_if_breedbase()
+      BreedbaseRequestFilterGeno(self, "project", accessions, verbose)
+    },
 
     #' @description Download a Breedbase VCF File
     #'
