@@ -9,7 +9,7 @@ BrAPI Connection Class"></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">BrAPI</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -828,11 +828,11 @@ wheat$vcf_imputed("~/Desktop/my_data.vcf", genotyping_project_id=10371)
 <span class="r-in"><span><span class="va">wheat</span> <span class="op">&lt;-</span> <span class="fu"><a href="getBrAPIConnection.html">getBrAPIConnection</a></span><span class="op">(</span><span class="st">"T3/Wheat"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">resp</span> <span class="op">&lt;-</span> <span class="va">wheat</span><span class="op">$</span><span class="fu">filter_geno_projects</span><span class="op">(</span>accessions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">234712</span>, <span class="fl">1544778</span>, <span class="fl">1478255</span>, <span class="fl">1550494</span>, <span class="fl">1544454</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Top genotyping projects:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1. KSU_2023_Allegro [id=10655] (2/5 accessions)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2. UWM_2023_3K [id=11009] (2/5 accessions)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3. UCD_2020_Allegro_V2 [id=10727] (1/5 accessions)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1. UWM_2023_3K [id=11009] (2/5 accessions)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2. KSU_2023_Allegro [id=10655] (2/5 accessions)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3. KSU_2023_Allegro_V2 [id=10683] (1/5 accessions)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 4. UCD_2020_Allegro [id=10654] (1/5 accessions)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5. KSU_2023_Allegro_V2 [id=10683] (1/5 accessions)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5. UCD_2020_Allegro_V2 [id=10727] (1/5 accessions)</span>
 <span class="r-in"><span><span class="va">best_projects</span> <span class="op">&lt;-</span> <span class="va">resp</span><span class="op">$</span><span class="va">data</span><span class="op">$</span><span class="va">top_matches</span></span></span>
 <span class="r-in"><span><span class="va">project_usage</span> <span class="op">&lt;-</span> <span class="va">resp</span><span class="op">$</span><span class="va">data</span><span class="op">$</span><span class="va">matches</span></span></span>
 <span class="r-in"><span></span></span>
