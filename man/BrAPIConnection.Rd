@@ -64,11 +64,11 @@ resp <- wheat$get("/studies", query=list(programName="Cornell University"), page
 
 # Make a POST request
 \dontrun{
-sandbox <- BrAPIConnection$new("wheat-sandbox.triticeaetoolbox.org")
+sandbox <- createBrAPIConnection("wheat-sandbox.triticeaetoolbox.org")
+sandbox$login(username = "testing", password = "testing123")
 d1 <- list(observationUnitDbId="ou1", observationVariableDbId="ov1", value=50)
 d2 <- list(observationUnitDbId="ou2", observationVariableDbId="ov1", value=40)
 data <- list(d1, d2)
-sandbox$login(username = "testing", password = "testing123")
 resp <- sandbox$post("/observations", body=data)
 }
 
@@ -158,6 +158,8 @@ wheat$vcf_imputed("~/Desktop/my_data.vcf", genotyping_project_id=10371)
 
 \item{\code{version}}{The BrAPI version (such as 'v1' or 'v2') (Default: \code{v2})}
 
+\item{\code{params}}{Additional query params added to each request (a named list) (Default: \code{list()})}
+
 \item{\code{is_breedbase}}{A flag to indicate this BrAPI connection is to a breedbase instance.  This
 adds additional support for breedbase-specific functionality. (Default: \code{FALSE})}
 
@@ -196,6 +198,7 @@ Create a new \code{BrAPIConnection} object
   protocol = "https",
   path = "/brapi/",
   version = "v2",
+  params = list(),
   is_breedbase = FALSE,
   auth_token = NULL
 )}\if{html}{\out{</div>}}
@@ -211,6 +214,8 @@ Create a new \code{BrAPIConnection} object
 \item{\code{path}}{(optional) The base path of the BrAPI endpoints}
 
 \item{\code{version}}{(optional) The BrAPI version}
+
+\item{\code{params}}{(optional) Additional query params added to each request}
 
 \item{\code{is_breedbase}}{(optional) set to TRUE if the connection is to a breedbase instance}
 
@@ -339,11 +344,11 @@ A named list of Response properties
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{# Make a POST request
 \dontrun{
-sandbox <- BrAPIConnection$new("wheat-sandbox.triticeaetoolbox.org")
+sandbox <- createBrAPIConnection("wheat-sandbox.triticeaetoolbox.org")
+sandbox$login(username = "testing", password = "testing123")
 d1 <- list(observationUnitDbId="ou1", observationVariableDbId="ov1", value=50)
 d2 <- list(observationUnitDbId="ou2", observationVariableDbId="ov1", value=40)
 data <- list(d1, d2)
-sandbox$login(username = "testing", password = "testing123")
 resp <- sandbox$post("/observations", body=data)
 }
 

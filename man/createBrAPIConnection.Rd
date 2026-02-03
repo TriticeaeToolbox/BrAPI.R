@@ -2,13 +2,14 @@
 % Please edit documentation in R/utils.R
 \name{createBrAPIConnection}
 \alias{createBrAPIConnection}
-\title{Create BrAPI Connection}
+\title{Create BrAPI Connection (with database URL)}
 \usage{
 createBrAPIConnection(
   host = NULL,
   protocol = "https",
   path = "/brapi/",
   version = "v2",
+  params = list(),
   is_breedbase = FALSE
 )
 }
@@ -21,16 +22,20 @@ createBrAPIConnection(
 
 \item{version}{(optional) the BrAPI version to use (DEFAULT: v2)}
 
+\item{params}{(optional) additional query params (added as a named list) that are added to each request (DEFAULT: none)}
+
 \item{is_breedbase}{(optional) set to TRUE if the connection is to a breedbase instance (DEFAULT: FALSE)}
 }
 \value{
 BrAPIConnection
 }
 \description{
-Create a BrAPI connection to the specified host
+Create a BrAPI connection to the specified host / URL of the database.  This can
+be used to create a BrAPI connection to any BrAPI-compliant database.
 }
 \examples{
 wheat <- createBrAPIConnection("wheat.triticeaetoolbox.org", is_breedbase=TRUE)
 oatv1 <- createBrAPIConnection("oat.triticeaetoolbox.org", version="v1", is_breedbase=TRUE)
+grin <- createBrAPIConnection("npgsweb.ars-grin.gov", path="/gringlobal/brapi/", params=list(commoncropname = "WHEAT"))
 
 }

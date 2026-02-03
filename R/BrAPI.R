@@ -13,6 +13,7 @@ library(httr)
 # @param method The HTTP Method to use
 # @param base The base URL of the BrAPI endpoints
 # @param call The BrAPI endpoint to request
+# @param params Additional params to include with every request
 # @param query A named list of query parameters
 # @param body A named list or vector of a POST request's body
 # @param page The page of results to return (Default: 0). When set to 'all', returns all pages
@@ -22,7 +23,7 @@ library(httr)
 # @param verbose When set to true, print some response metadata to the console
 # 
 # @return A named list containing the Response properties
-BrAPIRequest <- function(method, base, call, ..., query=list(), body=list(), encode="json", page=0, pageSize=10, token=NULL, verbose=FALSE) {
+BrAPIRequest <- function(method, base, call, params, ..., query=list(), body=list(), encode="json", page=0, pageSize=10, token=NULL, verbose=FALSE) {
 
   # Check for required arguments
   if ( !hasArg(method) ) stop("The HTTP method is required!")
@@ -50,7 +51,7 @@ BrAPIRequest <- function(method, base, call, ..., query=list(), body=list(), enc
   # Make the Request
   resp = httr::VERB(
     method, url, config,
-    query = query,
+    query = append(params, query),
     body = body,
     encode = encode,
     ...
@@ -107,17 +108,19 @@ BrAPIRequest <- function(method, base, call, ..., query=list(), body=list(), enc
     combined_data = content$result$data
 
     # Make a new request for each page
-    for ( nextPage in c(1:(totalPages-1)) ) {
+    for ( nextPage in c((currentPage+1):totalPages) ) {
       query$page = nextPage
       nextPageResp = BrAPIRequest(
         method=method,
         base=base,
         call=call,
+        params=params,
         query=query,
         body=body,
         page=nextPage,
         pageSize=pageSize,
         token=token,
+        verbose=verbose,
         ...
       )
       key = paste0("page", nextPage)

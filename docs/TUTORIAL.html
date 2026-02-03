@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="index.html">BrAPI</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -87,7 +87,8 @@
 <div class="section level2">
 <h2 id="traits-accessions-and-trait-observations">Traits, Accessions, and Trait Observations<a class="anchor" aria-label="anchor" href="#traits-accessions-and-trait-observations"></a></h2>
 <p>The recorded trait observations are accessible from the <code>/observations</code> BrAPI endpoint. In the response, each object in the data represents one observation (one value for a recorded trait / plot pair). The observation contains information about the plot, accession, and trait that was observed. The observations can be fetched for an entire trial by specifying the trial id:</p>
-<p>```R # Get all of the observations for a single trial selected_trial_id &lt;- “6104” resp &lt;- wheat<span class="math inline">$get("/observations", query=list(studyDbId=selected_trial_id), page="all", pageSize=500) observations &lt;- resp$</span>combined_data</p>
+<p>```R # Get all of the observations for a single trial selected_trial_id &lt;- “6104” resp &lt;- wheat<span class="math inline">$get("/observations", query=list(studyDbId=selected_trial_id), page="all", pageSize=500)
+observations &lt;- resp$</span>combined_data</p>
 </div>
 </div>
 <div class="section level1">
@@ -101,7 +102,9 @@
 <div class="section level1">
 <h1 id="build-a-long-format-table-of-trait-observations">Build a long-format table of trait observations<a class="anchor" aria-label="anchor" href="#build-a-long-format-table-of-trait-observations"></a></h1>
 <p>data &lt;- tibble( plot_id = numeric(), plot_name = character(), accession_name = character(), trait_name = character(), value = numeric() )</p>
-<p>for ( observation in observations ) { data &lt;- rbind(data, tibble( plot_id = as.numeric(observation<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>o</mi><mi>b</mi><mi>s</mi><mi>e</mi><mi>r</mi><mi>v</mi><mi>a</mi><mi>t</mi><mi>i</mi><mi>o</mi><mi>n</mi><mi>U</mi><mi>n</mi><mi>i</mi><mi>t</mi><mi>D</mi><mi>b</mi><mi>I</mi><mi>d</mi><mo stretchy="false" form="postfix">)</mo><mo>,</mo><mi>p</mi><mi>l</mi><mi>o</mi><msub><mi>t</mi><mi>n</mi></msub><mi>a</mi><mi>m</mi><mi>e</mi><mo>=</mo><mi>o</mi><mi>b</mi><mi>s</mi><mi>e</mi><mi>r</mi><mi>v</mi><mi>a</mi><mi>t</mi><mi>i</mi><mi>o</mi><mi>n</mi></mrow><annotation encoding="application/x-tex">observationUnitDbId),  plot_name = observation</annotation></semantics></math>observationUnitName, accession_name = observation<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>g</mi><mi>e</mi><mi>r</mi><mi>m</mi><mi>p</mi><mi>l</mi><mi>a</mi><mi>s</mi><mi>m</mi><mi>N</mi><mi>a</mi><mi>m</mi><mi>e</mi><mo>,</mo><mi>t</mi><mi>r</mi><mi>a</mi><mi>i</mi><msub><mi>t</mi><mi>n</mi></msub><mi>a</mi><mi>m</mi><mi>e</mi><mo>=</mo><mi>o</mi><mi>b</mi><mi>s</mi><mi>e</mi><mi>r</mi><mi>v</mi><mi>a</mi><mi>t</mi><mi>i</mi><mi>o</mi><mi>n</mi></mrow><annotation encoding="application/x-tex">germplasmName,  trait_name = observation</annotation></semantics></math>observationVariableName, value = as.numeric(observation$value) )) }</p>
+<p>for ( observation in observations ) { data &lt;- rbind(data, tibble( plot_id = as.numeric(observation<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>o</mi><mi>b</mi><mi>s</mi><mi>e</mi><mi>r</mi><mi>v</mi><mi>a</mi><mi>t</mi><mi>i</mi><mi>o</mi><mi>n</mi><mi>U</mi><mi>n</mi><mi>i</mi><mi>t</mi><mi>D</mi><mi>b</mi><mi>I</mi><mi>d</mi><mo stretchy="false" form="postfix">)</mo><mo>,</mo><mi>p</mi><mi>l</mi><mi>o</mi><msub><mi>t</mi><mi>n</mi></msub><mi>a</mi><mi>m</mi><mi>e</mi><mo>=</mo><mi>o</mi><mi>b</mi><mi>s</mi><mi>e</mi><mi>r</mi><mi>v</mi><mi>a</mi><mi>t</mi><mi>i</mi><mi>o</mi><mi>n</mi></mrow><annotation encoding="application/x-tex">observationUnitDbId),
+    plot_name = observation</annotation></semantics></math>observationUnitName, accession_name = observation<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>g</mi><mi>e</mi><mi>r</mi><mi>m</mi><mi>p</mi><mi>l</mi><mi>a</mi><mi>s</mi><mi>m</mi><mi>N</mi><mi>a</mi><mi>m</mi><mi>e</mi><mo>,</mo><mi>t</mi><mi>r</mi><mi>a</mi><mi>i</mi><msub><mi>t</mi><mi>n</mi></msub><mi>a</mi><mi>m</mi><mi>e</mi><mo>=</mo><mi>o</mi><mi>b</mi><mi>s</mi><mi>e</mi><mi>r</mi><mi>v</mi><mi>a</mi><mi>t</mi><mi>i</mi><mi>o</mi><mi>n</mi></mrow><annotation encoding="application/x-tex">germplasmName,
+    trait_name = observation</annotation></semantics></math>observationVariableName, value = as.numeric(observation$value) )) }</p>
 </div>
 <div class="section level1">
 <h1 id="data">data:<a class="anchor" aria-label="anchor" href="#data"></a></h1>

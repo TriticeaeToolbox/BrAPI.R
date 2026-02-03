@@ -56,6 +56,9 @@ BrAPIConnection <- R6::R6Class("BrAPIConnection",
     #' @field version The BrAPI version (such as 'v1' or 'v2') (Default: `v2`)
     version = "character",
 
+    #' @field params Additional query params added to each request (a named list) (Default: `list()`)
+    params = list(),
+
     #' @field is_breedbase A flag to indicate this BrAPI connection is to a breedbase instance.  This 
     #' adds additional support for breedbase-specific functionality. (Default: `FALSE`)
     is_breedbase = "boolean",
@@ -69,15 +72,17 @@ BrAPIConnection <- R6::R6Class("BrAPIConnection",
     #' @param protocol (optional) The HTTP protocol - either 'http' or 'https'
     #' @param path (optional) The base path of the BrAPI endpoints
     #' @param version (optional) The BrAPI version
+    #' @param params (optional) Additional query params added to each request
     #' @param is_breedbase (optional) set to TRUE if the connection is to a breedbase instance
     #' @param auth_token (optional) set the Auth Token when creating the connection
     #' 
     #' @return `BrAPIConnection` object
-    initialize = function(host, protocol='https', path='/brapi/', version='v2', is_breedbase = FALSE, auth_token = NULL) {
+    initialize = function(host, protocol='https', path='/brapi/', version='v2', params = list(), is_breedbase = FALSE, auth_token = NULL) {
       self$host <- host
       self$protocol <- protocol
       self$path <- path
       self$version <- version
+      self$params <- params
       self$is_breedbase <- is_breedbase
       self$auth_token <- auth_token
     },
@@ -134,7 +139,7 @@ BrAPIConnection <- R6::R6Class("BrAPIConnection",
     #' resp <- wheat$get("/studies", pageSize=1000, page="all")
     #' resp <- wheat$get("/studies", query=list(programName="Cornell University"), pageSize=1000)
     get = function(call, ...) {
-      BrAPIRequest("GET", private$url(), call, token = self$auth_token, ...)
+      BrAPIRequest("GET", private$url(), call, self$params, token = self$auth_token, ...)
     },
 
     #' @description Make a POST request
@@ -149,16 +154,16 @@ BrAPIConnection <- R6::R6Class("BrAPIConnection",
     #' @examples
     #' # Make a POST request
     #'\dontrun{
-    #' sandbox <- BrAPIConnection$new("wheat-sandbox.triticeaetoolbox.org")
+    #' sandbox <- createBrAPIConnection("wheat-sandbox.triticeaetoolbox.org")
+    #' sandbox$login(username = "testing", password = "testing123")
     #' d1 <- list(observationUnitDbId="ou1", observationVariableDbId="ov1", value=50)
     #' d2 <- list(observationUnitDbId="ou2", observationVariableDbId="ov1", value=40)
     #' data <- list(d1, d2)
-    #' sandbox$login(username = "testing", password = "testing123")
     #' resp <- sandbox$post("/observations", body=data)
     #'}
     #'
     post = function(call, ...) {
-      BrAPIRequest("POST", private$url(), call, token = self$auth_token, ...)
+      BrAPIRequest("POST", private$url(), call, self$params, token = self$auth_token, ...)
     },
 
     #' @description Make a PUT request
@@ -171,7 +176,7 @@ BrAPIConnection <- R6::R6Class("BrAPIConnection",
     #' @param ... (optional) Additional arguments passed to `httr`
     #' @return A named list of Response properties
     put = function(call, ...) {
-      BrAPIRequest("PUT", private$url(), call, token = self$auth_token, ...)
+      BrAPIRequest("PUT", private$url(), call, self$params, token = self$auth_token, ...)
     },
 
     #' @description Make a BrAPI Search request.
@@ -206,7 +211,7 @@ BrAPIConnection <- R6::R6Class("BrAPIConnection",
       call <- gsub("/+", "/", call)
 
       # start the search
-      start <- BrAPIRequest("POST", private$url(), call, token = self$auth_token, ...)
+      start <- self$post(call, ...)
 
       # Get the results, if search started successfully
       if ( start$response$status_code >= 200 && start$response$status_code <= 299 ) {
@@ -215,7 +220,7 @@ BrAPIConnection <- R6::R6Class("BrAPIConnection",
         srid = start$content$result$searchResultsDbId
         if ( !is.null(srid) && srid != "" ) {
           call <- paste(call, srid, sep="/")
-          results <- BrAPIRequest("GET", private$url(), call, token = self$auth_token, page = "all")
+          results <- self$get(call, ..., page="all")
           return(results)
         }
 

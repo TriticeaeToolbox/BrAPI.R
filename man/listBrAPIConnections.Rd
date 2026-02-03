@@ -11,5 +11,17 @@ List the known BrAPI connections that can be used in \code{getBrAPIConnection(na
 }
 \examples{
 listBrAPIConnections()
+#Known BrAPI Connections:
+#  T3/Wheat = wheat.triticeaetoolbox.org [v2]
+#  T3/Wheat Sandbox = wheat-sandbox.triticeaetoolbox.org [v2]
+#  T3/WheatCAP = wheatcap.triticeaetoolbox.org [v2]
+#  T3/Oat = oat.triticeaetoolbox.org [v2]
+#  T3/Oat Sandbox = oat-sandbox.triticeaetoolbox.org [v2]
+#  T3/Barley = barley.triticeaetoolbox.org [v2]
+#  T3/Barley Sandbox = barley-sandbox.triticeaetoolbox.org [v2]
+#  Cassavabase = cassavabase.org [v2]
+#  USDA-GRIN Wheat = npgsweb.ars-grin.gov [v2]
+#  USDA-GRIN Oat = npgsweb.ars-grin.gov [v2]
+#  USDA-GRIN Barley = npgsweb.ars-grin.gov [v2]
 
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{getBrAPIConnection}
 \alias{getBrAPIConnection}
-\title{Get Known BrAPI Connection}
+\title{Get Known BrAPI Connection (by database name)}
 \usage{
 getBrAPIConnection(name = NULL)
 }
@@ -13,10 +13,14 @@ getBrAPIConnection(name = NULL)
 BrAPIConnection
 }
 \description{
-Get the connection details for a known BrAPI server
+Get a BrAPI Connection for a pre-defined database by name.  Use the
+\code{listBrAPIConnections()} function to get a list of all pre-defined
+databases.  This function will return the connection, with all of
+its properties set, for the named database.
 }
 \examples{
 wheat <- getBrAPIConnection("T3/Wheat")
 cassava <- getBrAPIConnection("Cassavabase")
+grin <- getBrAPIConnection("USDA-GRIN Wheat")
 
 }

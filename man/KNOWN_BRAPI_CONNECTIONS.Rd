@@ -3,14 +3,15 @@
 \docType{data}
 \name{KNOWN_BRAPI_CONNECTIONS}
 \alias{KNOWN_BRAPI_CONNECTIONS}
-\title{Known BrAPI Connections}
+\title{Known BrAPI Connections
+A list of pre-configured BrAPIConnections to known BrAPI servers}
 \format{
-An object of class \code{list} of length 8.
+An object of class \code{list} of length 11.
 }
 \usage{
 KNOWN_BRAPI_CONNECTIONS
 }
 \description{
-A list of pre-configured BrAPIConnections to known BrAPI servers
+These are used in the getBrapiConnection() function when a user requests a connection by name
 }
-\keyword{datasets}
+\keyword{internal}
