@@ -1,6 +1,6 @@
 Package: BrAPI
-Version: 0.8.2
-Date: 2026-02-03
+Version: 0.8.3
+Date: 2026-02-20
 Title: BrAPI
 Description: Simple wrapper functions for httr that make it easier to make manual HTTP calls to a BrAPI server
 URL: https://triticeaetoolbox.github.io/BrAPI.R/
