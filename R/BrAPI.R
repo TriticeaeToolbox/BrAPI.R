@@ -54,6 +54,7 @@ BrAPIRequest <- function(method, base, call, params, ..., query=list(), body=lis
     query = append(params, query),
     body = body,
     encode = encode,
+    timeout(3600),
     ...
   )
   content = httr::content(resp)

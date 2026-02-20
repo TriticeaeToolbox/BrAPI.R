@@ -107,7 +107,7 @@ BreedbaseRequestWizard <- function(conn, data_type, filters = list(), verbose = 
   body = append(body, list("categories[]" = data_type))
 
   # Make the HTTP request
-  resp = httr::POST(paste(conn$base(), "ajax", "breeder", "search", sep="/"), body = body, encode = "multipart")
+  resp = httr::POST(paste(conn$base(), "ajax", "breeder", "search", sep="/"), body = body, encode = "multipart", timeout(3600))
   content = httr::content(resp)
   httr::warn_for_status(resp)
 
@@ -178,7 +178,7 @@ BreedbaseRequestFilterGeno <- function(conn, type, accessions = NULL, verbose = 
 
   # Make Request
   url = sprintf("%s/ajax/genotyping_%s/search/accession_list", conn$base(), type)
-  resp = httr::POST(url, body = list(accession_ids = paste(accessions, collapse=",")), encode="form")
+  resp = httr::POST(url, body = list(accession_ids = paste(accessions, collapse=",")), encode="form", timeout(3600))
   content = httr::content(resp)
   httr::warn_for_status(resp)
   if ( verbose ) {
@@ -312,7 +312,7 @@ BreedbaseRequestListArchivedVCF <- function(conn, genotyping_protocol_id = NULL,
     }
   }
   url = sprintf("%s/ajax/genotyping_project/has_archived_vcf", conn$base())
-  resp = httr::GET(url, query=list(genotyping_protocol_id=genotyping_protocol_id, genotyping_project_id=genotyping_project_id))
+  resp = httr::GET(url, query=list(genotyping_protocol_id=genotyping_protocol_id, genotyping_project_id=genotyping_project_id), timeout(3600))
   content = httr::content(resp)
   httr::warn_for_status(resp)
 
