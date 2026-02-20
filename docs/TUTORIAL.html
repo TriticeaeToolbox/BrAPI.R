@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="index.html">BrAPI</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -30,10 +30,9 @@
 
     </div>
 
-
 <div id="t3wheat-tutorial" class="section level1">
 
-<p>This Tutorial uses the <code>BrAPI</code> R package to query the T3/Wheat Breedbase database for trials, phenotype data, and genotype data. The same functions should work the same for any BrAPI-compliant database (using v2 of the BrAPI specification).</p>
+<p>This Tutorial uses the <code>BrAPI</code> R package to query the T3/Wheat Breedbase database for trials, phenotype data, and genotype data. The same functions should work the same for any BrAPI-compliant database (using v2 of the BrAPI specification), <em>with the exception of the genotype-data related queries, which use breedbase-specific query functions</em>.</p>
 <div class="section level2">
 <h2 id="setup">Setup<a class="anchor" aria-label="anchor" href="#setup"></a></h2>
 <p>With the <code>BrAPI</code> R packages installed, create a connection to the database.</p>
@@ -43,85 +42,149 @@
 <div class="section level2">
 <h2 id="breeding-programs">Breeding Programs<a class="anchor" aria-label="anchor" href="#breeding-programs"></a></h2>
 <p>If you’re guiding a user to select specific Trials, you might want to allow them to select a Breeding Program first to filter the number of trials they can select from.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">resp</span> <span class="op">&lt;-</span> <span class="va">wheat</span><span class="op">$</span><span class="fu">get</span><span class="op">(</span><span class="st">"/programs"</span>, page<span class="op">=</span><span class="st">"all"</span><span class="op">)</span></span>
-<span><span class="va">programs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">resp</span><span class="op">$</span><span class="va">combined_data</span>, \<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span> <span class="va">x</span><span class="op">$</span><span class="va">programName</span> <span class="op">}</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>resp <span class="ot">&lt;-</span> wheat<span class="sc">$</span><span class="fu">get</span>(<span class="st">"/programs"</span>, <span class="at">page=</span><span class="st">"all"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>programs <span class="ot">&lt;-</span> <span class="fu">sort</span>(<span class="fu">sapply</span>(resp<span class="sc">$</span>combined_data, \(x) { x<span class="sc">$</span>programName }))</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>programs</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a> [<span class="dv">1</span>] <span class="st">"Agharkar Research Institute Wheat Program"</span></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a> [<span class="dv">2</span>] <span class="st">"Agricultural Biotechnology Research Institute, Faisalabad"</span></span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a> [<span class="dv">3</span>] <span class="st">"Agriculture and Agri-Food Canada"</span></span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a> [<span class="dv">4</span>] <span class="st">"Agriculture and Agri-Food Canada Alberta"</span></span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a> [<span class="dv">5</span>] <span class="st">"Agriculture and Agri-Food Canada Manitoba"</span></span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a> [<span class="dv">6</span>] <span class="st">"Agriculture and Agri-Food Canada Saskatchewan"</span></span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a> [<span class="dv">7</span>] <span class="st">"AgriPro-Syngenta"</span></span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a> [<span class="dv">8</span>] <span class="st">"Allele Based Breeding Cooperative"</span></span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a> [<span class="dv">9</span>] <span class="st">"Cereal Research Institute Non-Profit Ltd."</span></span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a>[<span class="dv">10</span>] <span class="st">"CIMMYT"</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="trials">Trials<a class="anchor" aria-label="anchor" href="#trials"></a></h2>
 <p>If you want to give the user a list of trials to choose from, you can get a list of trial names and ids filtered by a selected breeding program:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">selected_breeding_program</span> <span class="op">&lt;-</span> <span class="st">"University of Nebraska"</span></span>
-<span><span class="va">resp</span> <span class="op">&lt;-</span> <span class="va">wheat</span><span class="op">$</span><span class="fu">get</span><span class="op">(</span><span class="st">"/studies"</span>, query<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>programName<span class="op">=</span><span class="va">selected_breeding_program</span><span class="op">)</span>, page<span class="op">=</span><span class="st">"all"</span><span class="op">)</span></span>
-<span><span class="va">trials</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">resp</span><span class="op">$</span><span class="va">combined_data</span>, \<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>id<span class="op">=</span><span class="va">x</span><span class="op">$</span><span class="va">studyDbId</span>, name<span class="op">=</span><span class="va">x</span><span class="op">$</span><span class="va">studyName</span><span class="op">)</span> <span class="op">}</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>selected_breeding_program <span class="ot">&lt;-</span> <span class="st">"University of Nebraska"</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>resp <span class="ot">&lt;-</span> wheat<span class="sc">$</span><span class="fu">get</span>(<span class="st">"/studies"</span>, <span class="at">query=</span><span class="fu">list</span>(<span class="at">programName=</span>selected_breeding_program), <span class="at">page=</span><span class="st">"all"</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>trials <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>    <span class="at">id =</span> <span class="fu">sapply</span>(resp<span class="sc">$</span>combined_data, \(x) { <span class="fu">as.numeric</span>(x<span class="sc">$</span>studyDbId) }),</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>    <span class="at">name =</span> <span class="fu">sapply</span>(resp<span class="sc">$</span>combined_data, \(x) { x<span class="sc">$</span>studyName })</span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>)</span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>trials</span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a><span class="co"># A tibble: 42 × 2</span></span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>      id name</span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>   <span class="sc">&lt;</span>dbl<span class="sc">&gt;</span> <span class="er">&lt;</span>chr<span class="sc">&gt;</span></span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a> <span class="dv">1</span>  <span class="dv">5710</span> CSR<span class="sc">-</span>Val_2015_Mead</span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a> <span class="dv">2</span>  <span class="dv">7438</span> NEBDUP_2010_Alliance</span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a> <span class="dv">3</span>  <span class="dv">6598</span> NEBDUP_2010_ClayCenter</span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a> <span class="dv">4</span>  <span class="dv">6802</span> NEBDUP_2010_Lincoln</span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="trial-metadata">Trial Metadata<a class="anchor" aria-label="anchor" href="#trial-metadata"></a></h2>
 <p>Once you have the trials you are interested in, you can get the trial metadata (such as trial location, design type, planting/harvest dates, year, etc):</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">selected_trials</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"YldQtl-Val_2014_ClayCenter"</span>, <span class="st">"YldQtl-Val_2014_Lincoln"</span>, <span class="st">"YldQtl-Val_2014_Mead"</span>, <span class="st">"YldQtl-Val_2014_Sidney"</span><span class="op">)</span></span>
-<span><span class="kw">for</span> <span class="op">(</span> <span class="va">trial_name</span> <span class="kw">in</span> <span class="va">selected_trials</span> <span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="va">resp</span> <span class="op">&lt;-</span> <span class="va">wheat</span><span class="op">$</span><span class="fu">get</span><span class="op">(</span><span class="st">"/studies"</span>, query<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>studyName<span class="op">=</span><span class="va">trial_name</span><span class="op">)</span><span class="op">)</span></span>
-<span>  <span class="va">trial_metadata</span> <span class="op">&lt;-</span> <span class="va">resp</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
-<span>  <span class="va">trial_id</span> <span class="op">&lt;-</span> <span class="va">trial_metadata</span><span class="op">$</span><span class="va">studyDbId</span></span>
-<span>  <span class="va">location</span> <span class="op">&lt;-</span> <span class="va">trial_metadata</span><span class="op">$</span><span class="va">locationName</span></span>
-<span>  <span class="va">planting_date</span> <span class="op">&lt;-</span> <span class="va">trial_metadata</span><span class="op">$</span><span class="va">startDate</span></span>
-<span>  <span class="va">harvest_date</span> <span class="op">&lt;-</span> <span class="va">trial_metadata</span><span class="op">$</span><span class="va">endDate</span></span>
-<span>  <span class="va">design</span> <span class="op">&lt;-</span> <span class="va">trial_metadata</span><span class="op">$</span><span class="va">experimentalDesign</span><span class="op">$</span><span class="va">PUI</span></span>
-<span><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>selected_trials <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"YldQtl-Val_2014_ClayCenter"</span>, <span class="st">"YldQtl-Val_2014_Lincoln"</span>, <span class="st">"YldQtl-Val_2014_Mead"</span>, <span class="st">"YldQtl-Val_2014_Sidney"</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>resp <span class="ot">&lt;-</span> wheat<span class="sc">$</span><span class="fu">search</span>(<span class="st">"/studies"</span>, <span class="at">body=</span><span class="fu">list</span>(<span class="at">studyNames=</span>selected_trials))</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>trial_metadata <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>    <span class="at">id =</span> <span class="fu">sapply</span>(resp<span class="sc">$</span>combined_data, \(x) { <span class="fu">as.numeric</span>(x<span class="sc">$</span>studyDbId) }),</span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>    <span class="at">name =</span> <span class="fu">sapply</span>(resp<span class="sc">$</span>combined_data, \(x) { x<span class="sc">$</span>studyName }),</span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>    <span class="at">location =</span> <span class="fu">sapply</span>(resp<span class="sc">$</span>combined_data, \(x) { x<span class="sc">$</span>locationName }),</span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>    <span class="at">year =</span> <span class="fu">sapply</span>(resp<span class="sc">$</span>combined_data, \(x) { <span class="fu">as.numeric</span>(x<span class="sc">$</span>seasons[[<span class="dv">1</span>]]) }),</span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>    <span class="at">planting_date =</span> <span class="fu">sapply</span>(resp<span class="sc">$</span>combined_data, \(x) { x<span class="sc">$</span>startDate }),</span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a>    <span class="at">harvest_date =</span> <span class="fu">sapply</span>(resp<span class="sc">$</span>combined_data, \(x) { x<span class="sc">$</span>endDate }),</span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a>    <span class="at">design =</span> <span class="fu">sapply</span>(resp<span class="sc">$</span>combined_data, \(x) { x<span class="sc">$</span>experimentalDesign<span class="sc">$</span>PUI })</span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a>)</span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a>trial_metadata</span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a><span class="co"># A tibble: 4 × 7</span></span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a>     id name                    location year  planting_date harvest_date design</span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a>  <span class="sc">&lt;</span>dbl<span class="sc">&gt;</span> <span class="er">&lt;</span>chr<span class="sc">&gt;</span>                   <span class="er">&lt;</span>chr<span class="sc">&gt;</span>    <span class="er">&lt;</span>dbl<span class="sc">&gt;</span> <span class="er">&lt;</span>chr<span class="sc">&gt;</span>         <span class="er">&lt;</span>list<span class="sc">&gt;</span>       <span class="er">&lt;</span>chr<span class="sc">&gt;</span></span>
+<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a><span class="dv">1</span>  <span class="dv">6104</span> YldQtl<span class="sc">-</span>Val_2014_ClayCe… Clay Ce… <span class="dv">2014</span>  <span class="dv">2013-09-23</span>T0… <span class="sc">&lt;</span><span class="cn">NULL</span><span class="sc">&gt;</span>       CRD</span>
+<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a><span class="dv">2</span>  <span class="dv">5988</span> YldQtl<span class="sc">-</span>Val_2014_Lincoln Lincoln… <span class="dv">2014</span>  <span class="dv">2013-10-01</span>T0… <span class="sc">&lt;</span><span class="cn">NULL</span><span class="sc">&gt;</span>       CRD</span>
+<span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a><span class="dv">3</span>  <span class="dv">5656</span> YldQtl<span class="sc">-</span>Val_2014_Mead    Ithaca,… <span class="dv">2014</span>  <span class="dv">2013-09-25</span>T0… <span class="sc">&lt;</span><span class="cn">NULL</span><span class="sc">&gt;</span>       CRD</span>
+<span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a><span class="dv">4</span>  <span class="dv">5839</span> YldQtl<span class="sc">-</span>Val_2014_Sidney  Sidney,… <span class="dv">2014</span>  <span class="dv">2013-09-18</span>T0… <span class="sc">&lt;</span><span class="cn">NULL</span><span class="sc">&gt;</span>       CRD</span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="trial-layout">Trial Layout<a class="anchor" aria-label="anchor" href="#trial-layout"></a></h2>
 <p>The plot layout for a trial is defined by getting the relative plot positions. Each plot will have a row and column position if they were assigned when the trial was added to the database. To get the layout, you’ll need to get all of the plots (observation units) from the trial and extract the row and column information:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">selected_trial_id</span> <span class="op">&lt;-</span> <span class="st">"6104"</span></span>
-<span><span class="va">resp</span> <span class="op">&lt;-</span> <span class="va">wheat</span><span class="op">$</span><span class="fu">get</span><span class="op">(</span><span class="st">"/observationunits"</span>, query<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>studyDbId<span class="op">=</span><span class="va">selected_trial_id</span><span class="op">)</span>, page<span class="op">=</span><span class="st">"all"</span>, pageSize<span class="op">=</span><span class="fl">100</span><span class="op">)</span></span>
-<span><span class="kw">for</span> <span class="op">(</span> <span class="va">plot</span> <span class="kw">in</span> <span class="va">resp</span><span class="op">$</span><span class="va">combined_data</span> <span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="va">plot_id</span> <span class="op">&lt;-</span> <span class="va">plot</span><span class="op">$</span><span class="va">observationUnitDbId</span></span>
-<span>  <span class="va">plot_name</span> <span class="op">&lt;-</span> <span class="va">plot</span><span class="op">$</span><span class="va">observationUnitName</span></span>
-<span>  <span class="va">row</span> <span class="op">&lt;-</span> <span class="va">plot</span><span class="op">$</span><span class="va">observationUnitPosition</span><span class="op">$</span><span class="va">positionCoordinateY</span></span>
-<span>  <span class="va">col</span> <span class="op">&lt;-</span> <span class="va">plot</span><span class="op">$</span><span class="va">observationUnitPosition</span><span class="op">$</span><span class="va">positionCoordinateX</span></span>
-<span>  <span class="va">accession</span> <span class="op">&lt;-</span> <span class="va">plot</span><span class="op">$</span><span class="va">germplasmName</span></span>
-<span><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>selected_trial_id <span class="ot">&lt;-</span> <span class="st">"6104"</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>resp <span class="ot">&lt;-</span> wheat<span class="sc">$</span><span class="fu">get</span>(<span class="st">"/observationunits"</span>, <span class="at">query=</span><span class="fu">list</span>(<span class="at">studyDbId=</span>selected_trial_id), <span class="at">page=</span><span class="st">"all"</span>, <span class="at">pageSize=</span><span class="dv">100</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>trial_layout <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>    <span class="at">trial_id =</span> <span class="fu">sapply</span>(resp<span class="sc">$</span>combined_data, \(x) { <span class="fu">as.numeric</span>(x<span class="sc">$</span>studyDbId) }),</span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>    <span class="at">trial_name =</span> <span class="fu">sapply</span>(resp<span class="sc">$</span>combined_data, \(x) { x<span class="sc">$</span>studyName }),</span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>    <span class="at">plot_id =</span> <span class="fu">sapply</span>(resp<span class="sc">$</span>combined_data, \(x) { <span class="fu">as.numeric</span>(x<span class="sc">$</span>observationUnitDbId) }),</span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>    <span class="at">plot_name =</span> <span class="fu">sapply</span>(resp<span class="sc">$</span>combined_data, \(x) { x<span class="sc">$</span>observationUnitName }),</span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>    <span class="at">row =</span> <span class="fu">sapply</span>(resp<span class="sc">$</span>combined_data, \(x) { <span class="fu">as.numeric</span>(x<span class="sc">$</span>observationUnitPosition<span class="sc">$</span>positionCoordinateY) }),</span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>    <span class="at">col =</span> <span class="fu">sapply</span>(resp<span class="sc">$</span>combined_data, \(x) { <span class="fu">as.numeric</span>(x<span class="sc">$</span>observationUnitPosition<span class="sc">$</span>positionCoordinateX) }),</span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>    <span class="at">accession_id =</span> <span class="fu">sapply</span>(resp<span class="sc">$</span>combined_data, \(x) { <span class="fu">as.numeric</span>(x<span class="sc">$</span>germplasmDbId) }),</span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a>    <span class="at">accession_name =</span> <span class="fu">sapply</span>(resp<span class="sc">$</span>combined_data, \(x) { x<span class="sc">$</span>germplasmName }),</span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a>)</span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a>trial_layout</span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a><span class="co"># A tibble: 440 × 8</span></span>
+<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a>   trial_id trial_name plot_id plot_name   row   col accession_id accession_name</span>
+<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a>      <span class="sc">&lt;</span>dbl<span class="sc">&gt;</span> <span class="er">&lt;</span>chr<span class="sc">&gt;</span>        <span class="er">&lt;</span>dbl<span class="sc">&gt;</span> <span class="er">&lt;</span>chr<span class="sc">&gt;</span>     <span class="er">&lt;</span>dbl<span class="sc">&gt;</span> <span class="er">&lt;</span>dbl<span class="sc">&gt;</span>        <span class="er">&lt;</span>dbl<span class="sc">&gt;</span> <span class="er">&lt;</span>chr<span class="sc">&gt;</span></span>
+<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a> <span class="dv">1</span>     <span class="dv">6104</span> YldQtl<span class="sc">-</span>Va… <span class="dv">1039408</span> YldQtl<span class="sc">-</span>V…    <span class="dv">10</span>    <span class="dv">40</span>       <span class="dv">222467</span> <span class="dv">11</span>_26</span>
+<span id="cb5-18"><a href="#cb5-18" tabindex="-1"></a> <span class="dv">2</span>     <span class="dv">6104</span> YldQtl<span class="sc">-</span>Va… <span class="dv">1039387</span> YldQtl<span class="sc">-</span>V…    <span class="dv">17</span>    <span class="dv">48</span>       <span class="dv">222467</span> <span class="dv">11</span>_26</span>
+<span id="cb5-19"><a href="#cb5-19" tabindex="-1"></a> <span class="dv">3</span>     <span class="dv">6104</span> YldQtl<span class="sc">-</span>Va… <span class="dv">1039591</span> YldQtl<span class="sc">-</span>V…    <span class="dv">10</span>    <span class="dv">41</span>       <span class="dv">221091</span> <span class="dv">11</span>_73</span>
+<span id="cb5-20"><a href="#cb5-20" tabindex="-1"></a> <span class="dv">4</span>     <span class="dv">6104</span> YldQtl<span class="sc">-</span>Va… <span class="dv">1039559</span> YldQtl<span class="sc">-</span>V…    <span class="dv">17</span>    <span class="dv">49</span>       <span class="dv">221091</span> <span class="dv">11</span>_73</span>
+<span id="cb5-21"><a href="#cb5-21" tabindex="-1"></a> <span class="dv">5</span>     <span class="dv">6104</span> YldQtl<span class="sc">-</span>Va… <span class="dv">1039549</span> YldQtl<span class="sc">-</span>V…    <span class="dv">20</span>    <span class="dv">34</span>       <span class="dv">219436</span> <span class="dv">13</span>_13</span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="traits-accessions-and-trait-observations">Traits, Accessions, and Trait Observations<a class="anchor" aria-label="anchor" href="#traits-accessions-and-trait-observations"></a></h2>
 <p>The recorded trait observations are accessible from the <code>/observations</code> BrAPI endpoint. In the response, each object in the data represents one observation (one value for a recorded trait / plot pair). The observation contains information about the plot, accession, and trait that was observed. The observations can be fetched for an entire trial by specifying the trial id:</p>
-<p>```R # Get all of the observations for a single trial selected_trial_id &lt;- “6104” resp &lt;- wheat<span class="math inline">$get("/observations", query=list(studyDbId=selected_trial_id), page="all", pageSize=500)
-observations &lt;- resp$</span>combined_data</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co"># Get all of the observations for a single trial</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>selected_trial_id <span class="ot">&lt;-</span> <span class="st">"6104"</span></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>resp <span class="ot">&lt;-</span> wheat<span class="sc">$</span><span class="fu">get</span>(<span class="st">"/observations"</span>, <span class="at">query=</span><span class="fu">list</span>(<span class="at">studyDbId=</span>selected_trial_id), <span class="at">page=</span><span class="st">"all"</span>, <span class="at">pageSize=</span><span class="dv">500</span>)</span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>observations <span class="ot">&lt;-</span> resp<span class="sc">$</span>combined_data</span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a><span class="co"># Get the unique set of trait names observed in this trial</span></span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>trait_names <span class="ot">&lt;-</span> <span class="fu">sort</span>(<span class="fu">unique</span>(<span class="fu">sapply</span>(observations, \(x) { x<span class="sc">$</span>observationVariableName } )))</span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a><span class="co"># Get the unique set of accession names in this trial</span></span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a>accession_names <span class="ot">&lt;-</span> <span class="fu">sort</span>(<span class="fu">unique</span>(<span class="fu">sapply</span>(observations, \(x) { x<span class="sc">$</span>germplasmName } )))</span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a></span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a><span class="co"># Build a long-format table of trait observations</span></span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a>  <span class="at">plot_id =</span> <span class="fu">sapply</span>(observations, \(x) { <span class="fu">as.numeric</span>(x<span class="sc">$</span>observationUnitDbId) }),</span>
+<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a>  <span class="at">plot_name =</span> <span class="fu">sapply</span>(observations, \(x) { x<span class="sc">$</span>observationUnitName }),</span>
+<span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a>  <span class="at">accession_name =</span> <span class="fu">sapply</span>(observations, \(x) { x<span class="sc">$</span>germplasmName }),</span>
+<span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a>  <span class="at">trait_name =</span> <span class="fu">sapply</span>(observations, \(x) { x<span class="sc">$</span>observationVariableName }),</span>
+<span id="cb6-18"><a href="#cb6-18" tabindex="-1"></a>  <span class="at">value =</span> <span class="fu">sapply</span>(observations, \(x) { <span class="fu">as.numeric</span>(x<span class="sc">$</span>value) })</span>
+<span id="cb6-19"><a href="#cb6-19" tabindex="-1"></a>)</span>
+<span id="cb6-20"><a href="#cb6-20" tabindex="-1"></a>data</span>
+<span id="cb6-21"><a href="#cb6-21" tabindex="-1"></a><span class="co"># A tibble: 1,759 × 5</span></span>
+<span id="cb6-22"><a href="#cb6-22" tabindex="-1"></a>   plot_id plot_name                            accession_name trait_name  value</span>
+<span id="cb6-23"><a href="#cb6-23" tabindex="-1"></a>     <span class="sc">&lt;</span>dbl<span class="sc">&gt;</span> <span class="er">&lt;</span>chr<span class="sc">&gt;</span>                                <span class="er">&lt;</span>chr<span class="sc">&gt;</span>          <span class="er">&lt;</span>chr<span class="sc">&gt;</span>       <span class="er">&lt;</span>dbl<span class="sc">&gt;</span></span>
+<span id="cb6-24"><a href="#cb6-24" tabindex="-1"></a> <span class="dv">1</span> <span class="dv">1039408</span> YldQtl<span class="sc">-</span>Val_2014_ClayCenter_11_26_20… <span class="dv">11</span>_26          Bacterial…    <span class="dv">3</span></span>
+<span id="cb6-25"><a href="#cb6-25" tabindex="-1"></a> <span class="dv">2</span> <span class="dv">1039408</span> YldQtl<span class="sc">-</span>Val_2014_ClayCenter_11_26_20… <span class="dv">11</span>_26          Grain yie… <span class="dv">3773</span></span>
+<span id="cb6-26"><a href="#cb6-26" tabindex="-1"></a> <span class="dv">3</span> <span class="dv">1039408</span> YldQtl<span class="sc">-</span>Val_2014_ClayCenter_11_26_20… <span class="dv">11</span>_26          Plant hei…   <span class="dv">84</span></span>
+<span id="cb6-27"><a href="#cb6-27" tabindex="-1"></a> <span class="dv">4</span> <span class="dv">1039408</span> YldQtl<span class="sc">-</span>Val_2014_ClayCenter_11_26_20… <span class="dv">11</span>_26          Grain pro…   <span class="fl">15.0</span></span>
+<span id="cb6-28"><a href="#cb6-28" tabindex="-1"></a> <span class="dv">5</span> <span class="dv">1039387</span> YldQtl<span class="sc">-</span>Val_2014_ClayCenter_11_26_23… <span class="dv">11</span>_26          Bacterial…    <span class="dv">3</span></span>
+<span id="cb6-29"><a href="#cb6-29" tabindex="-1"></a> <span class="dv">6</span> <span class="dv">1039387</span> YldQtl<span class="sc">-</span>Val_2014_ClayCenter_11_26_23… <span class="dv">11</span>_26          Grain yie… <span class="dv">2360</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="genotype-data">Genotype Data<a class="anchor" aria-label="anchor" href="#genotype-data"></a></h2>
+<blockquote>
+<p>[!WARNING]<br>
+The following examples for fetching genotype data use the breedbase-specific functions for finding appropriate genotype projects and downloading archived VCF files. These functions only work with breedbase databases and do not use functions defined in the BrAPI specification.</p>
+</blockquote>
+<div class="section level3">
+<h3 id="finding-an-appropriate-genotyping-project">Finding an appropriate Genotyping Project<a class="anchor" aria-label="anchor" href="#finding-an-appropriate-genotyping-project"></a></h3>
+<p>Since there is generally not a 1:1 association between a phenotyping field trial and a genotyping project, some work has to be done to find which genotyping project on the database best represents the accessions in the trial. To do this, you can use the breedbase-specific function <code>filter_geno_projects()</code> which will return a list of the genotyping projects which have the highest number of accessions sampled from the list of accessions you provide.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="co"># Set your list of accessions that you're interested in (by id)</span></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>my_accessions <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">234712</span>, <span class="dv">1544778</span>, <span class="dv">1478255</span>, <span class="dv">1550494</span>, <span class="dv">1544454</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="co"># Find the best project for these accessions</span></span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>resp <span class="ot">&lt;-</span> wheat<span class="sc">$</span><span class="fu">filter_geno_projects</span>(<span class="at">accessions =</span> my_accessions)</span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>Top genotyping projects<span class="sc">:</span></span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a><span class="fl">1.</span> UWM_2023_3K [id<span class="ot">=</span><span class="dv">11009</span>] (<span class="dv">2</span><span class="sc">/</span><span class="dv">5</span> accessions)</span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a><span class="fl">2.</span> KSU_2023_Allegro [id<span class="ot">=</span><span class="dv">10655</span>] (<span class="dv">2</span><span class="sc">/</span><span class="dv">5</span> accessions)</span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a><span class="fl">3.</span> UCD_2020_Allegro_V2 [id<span class="ot">=</span><span class="dv">10727</span>] (<span class="dv">1</span><span class="sc">/</span><span class="dv">5</span> accessions)</span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a><span class="fl">4.</span> KSU_2023_Allegro_V2 [id<span class="ot">=</span><span class="dv">10683</span>] (<span class="dv">1</span><span class="sc">/</span><span class="dv">5</span> accessions)</span>
+<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a><span class="fl">5.</span> UCD_2020_Allegro [id<span class="ot">=</span><span class="dv">10654</span>] (<span class="dv">1</span><span class="sc">/</span><span class="dv">5</span> accessions)</span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="downloading-vcf-data">Downloading VCF Data<a class="anchor" aria-label="anchor" href="#downloading-vcf-data"></a></h3>
+<p>Once you know which genotyping project best represents your set of accessions, the most efficient way to download the genotype data is to download the archived VCF file for that project. This will return the original VCF file that was used to upload the genotype data to the database. <em>NOTE: this VCF file will include all of the accessions sampled in the project. If you want to subset the samples to include only your set of accessions, you’ll need to do that after you download the file.</em></p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Download a genotyping project to your computer</span></span>
+<span><span class="va">wheat</span><span class="op">$</span><span class="fu">vcf_archived</span><span class="op">(</span><span class="st">"~/Desktop/data.vcf"</span>, genotyping_project_id<span class="op">=</span><span class="fl">11009</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
-<div class="section level1">
-<h1 id="get-the-unique-set-of-trait-names-observed-in-this-trial">Get the unique set of trait names observed in this trial<a class="anchor" aria-label="anchor" href="#get-the-unique-set-of-trait-names-observed-in-this-trial"></a></h1>
-<p>trait_names &lt;- sort(unique(sapply(observations, (x) { x$observationVariableName } )))</p>
 </div>
-<div class="section level1">
-<h1 id="get-the-unique-set-of-accession-names-in-this-trial">Get the unique set of accession names in this trial<a class="anchor" aria-label="anchor" href="#get-the-unique-set-of-accession-names-in-this-trial"></a></h1>
-<p>accession_names &lt;- sort(unique(sapply(observations, (x) { x$germplasmName } )))</p>
-</div>
-<div class="section level1">
-<h1 id="build-a-long-format-table-of-trait-observations">Build a long-format table of trait observations<a class="anchor" aria-label="anchor" href="#build-a-long-format-table-of-trait-observations"></a></h1>
-<p>data &lt;- tibble( plot_id = numeric(), plot_name = character(), accession_name = character(), trait_name = character(), value = numeric() )</p>
-<p>for ( observation in observations ) { data &lt;- rbind(data, tibble( plot_id = as.numeric(observation<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>o</mi><mi>b</mi><mi>s</mi><mi>e</mi><mi>r</mi><mi>v</mi><mi>a</mi><mi>t</mi><mi>i</mi><mi>o</mi><mi>n</mi><mi>U</mi><mi>n</mi><mi>i</mi><mi>t</mi><mi>D</mi><mi>b</mi><mi>I</mi><mi>d</mi><mo stretchy="false" form="postfix">)</mo><mo>,</mo><mi>p</mi><mi>l</mi><mi>o</mi><msub><mi>t</mi><mi>n</mi></msub><mi>a</mi><mi>m</mi><mi>e</mi><mo>=</mo><mi>o</mi><mi>b</mi><mi>s</mi><mi>e</mi><mi>r</mi><mi>v</mi><mi>a</mi><mi>t</mi><mi>i</mi><mi>o</mi><mi>n</mi></mrow><annotation encoding="application/x-tex">observationUnitDbId),
-    plot_name = observation</annotation></semantics></math>observationUnitName, accession_name = observation<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>g</mi><mi>e</mi><mi>r</mi><mi>m</mi><mi>p</mi><mi>l</mi><mi>a</mi><mi>s</mi><mi>m</mi><mi>N</mi><mi>a</mi><mi>m</mi><mi>e</mi><mo>,</mo><mi>t</mi><mi>r</mi><mi>a</mi><mi>i</mi><msub><mi>t</mi><mi>n</mi></msub><mi>a</mi><mi>m</mi><mi>e</mi><mo>=</mo><mi>o</mi><mi>b</mi><mi>s</mi><mi>e</mi><mi>r</mi><mi>v</mi><mi>a</mi><mi>t</mi><mi>i</mi><mi>o</mi><mi>n</mi></mrow><annotation encoding="application/x-tex">germplasmName,
-    trait_name = observation</annotation></semantics></math>observationVariableName, value = as.numeric(observation$value) )) }</p>
-</div>
-<div class="section level1">
-<h1 id="data">data:<a class="anchor" aria-label="anchor" href="#data"></a></h1>
-</div>
-<div class="section level1">
-<h1 id="a-tibble-1759--5">A tibble: 1,759 × 5<a class="anchor" aria-label="anchor" href="#a-tibble-1759--5"></a></h1>
-<p>plot_id plot_name accession_name trait_name value <dbl><chr><chr><chr><dbl> 1 1039253 YldQtl-Val_2014_ClayCenter_CT213_2127 CT213 Bacterial leaf streak severity - 0-9 percentage scale|CO_321:0501004 5<br>
-2 1039253 YldQtl-Val_2014_ClayCenter_CT213_2127 CT213 Grain yield - kg/ha|CO_321:0001218 3410<br>
-3 1039253 YldQtl-Val_2014_ClayCenter_CT213_2127 CT213 Plant height - cm|CO_321:0001301 82<br>
-4 1039253 YldQtl-Val_2014_ClayCenter_CT213_2127 CT213 Grain protein content - %|CO_321:0001205 15.2 5 1039254 YldQtl-Val_2014_ClayCenter_NE13593_2297 NE13593 Bacterial leaf streak severity - 0-9 percentage scale|CO_321:0501004 2<br>
-6 1039254 YldQtl-Val_2014_ClayCenter_NE13593_2297 NE13593 Grain yield - kg/ha|CO_321:0001218 3416<br>
-7 1039254 YldQtl-Val_2014_ClayCenter_NE13593_2297 NE13593 Plant height - cm|CO_321:0001301 90<br>
-8 1039254 YldQtl-Val_2014_ClayCenter_NE13593_2297 NE13593 Grain protein content - %|CO_321:0001205 16.4 9 1039255 YldQtl-Val_2014_ClayCenter_HW_98_2360 HW_98 Bacterial leaf streak severity - 0-9 percentage scale|CO_321:0501004 2<br>
-10 1039255 YldQtl-Val_2014_ClayCenter_HW_98_2360 HW_98 Grain yield - kg/ha|CO_321:0001218 2993<br>
-# ℹ 1,749 more rows # ℹ Use <code>print(n = ...)</code> to see more rows</dbl></chr></chr></chr></dbl></p>
-</div>
-
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
