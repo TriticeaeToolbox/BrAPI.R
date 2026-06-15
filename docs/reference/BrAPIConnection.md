@@ -1,11 +1,5 @@
 # BrAPI Connection Class
 
-BrAPI Connection Class
-
-BrAPI Connection Class
-
-## Details
-
 An R6 Class representing a connection to a BrAPI server.
 
 This Class provides all of the information needed for connecting to a
@@ -70,6 +64,11 @@ For a multi-page request (when `page="all"`):
 
   The BrAPI version (such as 'v1' or 'v2') (Default: `v2`)
 
+- `params`:
+
+  Additional query params added to each request (a named list) (Default:
+  [`list()`](https://rdrr.io/r/base/list.html))
+
 - `is_breedbase`:
 
   A flag to indicate this BrAPI connection is to a breedbase instance.
@@ -85,7 +84,7 @@ For a multi-page request (when `page="all"`):
 
 ### Public methods
 
-- [`BrAPIConnection$new()`](#method-BrAPIConnection-new)
+- [`BrAPIConnection$new()`](#method-BrAPIConnection-initialize)
 
 - [`BrAPIConnection$base()`](#method-BrAPIConnection-base)
 
@@ -101,6 +100,10 @@ For a multi-page request (when `page="all"`):
 
 - [`BrAPIConnection$wizard()`](#method-BrAPIConnection-wizard)
 
+- [`BrAPIConnection$filter_geno_protocols()`](#method-BrAPIConnection-filter_geno_protocols)
+
+- [`BrAPIConnection$filter_geno_projects()`](#method-BrAPIConnection-filter_geno_projects)
+
 - [`BrAPIConnection$vcf()`](#method-BrAPIConnection-vcf)
 
 - [`BrAPIConnection$vcf_archived_list()`](#method-BrAPIConnection-vcf_archived_list)
@@ -113,7 +116,7 @@ For a multi-page request (when `page="all"`):
 
 ------------------------------------------------------------------------
 
-### Method `new()`
+### `BrAPIConnection$new()`
 
 Create a new `BrAPIConnection` object
 
@@ -124,6 +127,7 @@ Create a new `BrAPIConnection` object
       protocol = "https",
       path = "/brapi/",
       version = "v2",
+      params = list(),
       is_breedbase = FALSE,
       auth_token = NULL
     )
@@ -146,6 +150,10 @@ Create a new `BrAPIConnection` object
 
   (optional) The BrAPI version
 
+- `params`:
+
+  (optional) Additional query params added to each request
+
 - `is_breedbase`:
 
   (optional) set to TRUE if the connection is to a breedbase instance
@@ -160,7 +168,7 @@ Create a new `BrAPIConnection` object
 
 ------------------------------------------------------------------------
 
-### Method `base()`
+### `BrAPIConnection$base()`
 
 Generate the base URL of the connection
 
@@ -174,7 +182,7 @@ A String in the format `$protocol://$host`
 
 ------------------------------------------------------------------------
 
-### Method `login()`
+### `BrAPIConnection$login()`
 
 Login to the server to set an auth token for all future requests.
 
@@ -205,7 +213,7 @@ prompted for their username and password
 
 ------------------------------------------------------------------------
 
-### Method [`get()`](https://rdrr.io/r/base/get.html)
+### `BrAPIConnection$get()`
 
 Make a GET request
 
@@ -258,7 +266,7 @@ A named list of Response properties
 
 ------------------------------------------------------------------------
 
-### Method `post()`
+### `BrAPIConnection$post()`
 
 Make a POST request
 
@@ -306,18 +314,16 @@ A named list of Response properties
 #### Examples
 
     # Make a POST request
-    \dontrun{
-    sandbox <- BrAPIConnection$new("wheat-sandbox.triticeaetoolbox.org")
+    sandbox <- createBrAPIConnection("wheat-sandbox.triticeaetoolbox.org")
+    sandbox$login(username = "testing", password = "testing123")
     d1 <- list(observationUnitDbId="ou1", observationVariableDbId="ov1", value=50)
     d2 <- list(observationUnitDbId="ou2", observationVariableDbId="ov1", value=40)
     data <- list(d1, d2)
-    sandbox$login(username = "testing", password = "testing123")
     resp <- sandbox$post("/observations", body=data)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `put()`
+### `BrAPIConnection$put()`
 
 Make a PUT request
 
@@ -364,7 +370,7 @@ A named list of Response properties
 
 ------------------------------------------------------------------------
 
-### Method [`search()`](https://rdrr.io/r/base/search.html)
+### `BrAPIConnection$search()`
 
 Make a BrAPI Search request.
 
@@ -428,7 +434,7 @@ A named list of Response properties
 
 ------------------------------------------------------------------------
 
-### Method `wizard()`
+### `BrAPIConnection$wizard()`
 
 Make a Breedbase Search Wizard request.
 
@@ -478,7 +484,7 @@ into `ids`, `names` and `map` (a named list of item names -\> ids)
 
 #### Examples
 
-    wheat <- createBrAPIConnection("wheat.triticeaetoolbox.org", is_breedbase = TRUE)
+    wheat <- getBrAPIConnection("T3/Wheat")
 
     # find matching trials, filtered by two breeding programs (identified by ids) and one year
     trials <- wheat$wizard("trials", list(breeding_programs = c(327,367), years = c(2023)))
@@ -491,7 +497,83 @@ into `ids`, `names` and `map` (a named list of item names -\> ids)
 
 ------------------------------------------------------------------------
 
-### Method `vcf()`
+### `BrAPIConnection$filter_geno_protocols()`
+
+Find the best Genotyping Protocols for a set of accessions
+
+This function will return the top 3 genotyping protocols for a set of
+accessions along with a matrix defining which accessions are in which
+protocol.
+
+#### Usage
+
+    BrAPIConnection$filter_geno_protocols(accessions = NULL, verbose = FALSE)
+
+#### Arguments
+
+- `accessions`:
+
+  A vector of accession ids
+
+- `verbose`:
+
+  Set to TRUE to inclue logging information
+
+#### Returns
+
+A response with the matching data The \$content key contains the raw
+breedbase response. The \$data key contains parsed data: `top_matches` =
+names of ranked genotyping protocols, `matches` = a matrix of accessions
+and protocols
+
+#### Examples
+
+    wheat <- getBrAPIConnection("T3/Wheat")
+    resp <- wheat$filter_geno_protocols(accessions = c(234712, 1544778, 1478255, 1550494, 1544454))
+    best_protocols <- resp$data$top_matches
+    protocol_usage <- resp$data$matches
+
+------------------------------------------------------------------------
+
+### `BrAPIConnection$filter_geno_projects()`
+
+Find the best Genotyping Projects for a set of accessions
+
+This function will return the top 3 genotyping projects for a set of
+accessions along with a matrix defining which accessions are in which
+project.
+
+#### Usage
+
+    BrAPIConnection$filter_geno_projects(accessions = NULL, verbose = FALSE)
+
+#### Arguments
+
+- `accessions`:
+
+  A vector of accession ids
+
+- `verbose`:
+
+  Set to TRUE to inclue logging information
+
+#### Returns
+
+A response with the matching data The \$content key contains the raw
+breedbase response. The \$data key contains parsed data: `top_matches` =
+names of ranked genotyping projects, `matches` = a matrix of accessions
+and projects
+
+#### Examples
+
+    wheat <- getBrAPIConnection("T3/Wheat")
+    resp <- wheat$filter_geno_projects(accessions = c(234712, 1544778, 1478255, 1550494, 1544454))
+    best_projects <- resp$data$top_matches
+    project_usage <- resp$data$matches
+
+------------------------------------------------------------------------
+
+### `BrAPIConnection$vcf()`
 
 Download a Breedbase VCF File
 
@@ -535,15 +617,13 @@ will be downloaded to the VCF file specified by the output argument.
 
 #### Examples
 
-    \dontrun{
     wheat <- getBrAPIConnection("T3/Wheat")
     wheat$vcf("~/Desktop/my_data.vcf", genotyping_protocol_id = 249)
     wheat$vcf("~/Desktop/my_data.vcf", genotyping_protocol_id = 249, accessions = c(228677, 1666408))
-    }
 
 ------------------------------------------------------------------------
 
-### Method `vcf_archived_list()`
+### `BrAPIConnection$vcf_archived_list()`
 
 List all of the available Archived Breedbase VCF Files
 
@@ -587,15 +667,13 @@ available archived file
 
 #### Examples
 
-    \dontrun{
     wheat <- getBrAPIConnection("T3/Wheat")
     files <- wheat$vcf_archived_list(genotyping_protocol_id=70)
     files <- wheat$vcf_archived_list(gentyping_project_id=2761)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `vcf_archived()`
+### `BrAPIConnection$vcf_archived()`
 
 Download an Archived Breedbase VCF File
 
@@ -648,17 +726,14 @@ the VCF file specified by the output argument.
 
 #### Examples
 
-    \dontrun{
     wheat <- getBrAPIConnection("T3/Wheat")
     wheat$vcf_archived("~/Desktop/my_data.vcf", genotyping_protocol_id=70)
     wheat$vcf_archived("~/Desktop/my_data.vcf", genotyping_project_id=2761)
     wheat$vcf_archived("~/Desktop/my_data.vcf", genotyping_protocol_id=70, file_name="2019-12-30_16:33:07_TCAP90K_HWWAMP.vcf")
 
-    }
-
 ------------------------------------------------------------------------
 
-### Method `vcf_imputed()`
+### `BrAPIConnection$vcf_imputed()`
 
 Download an Imputed VCF File
 
@@ -700,14 +775,12 @@ the VCF file specified by the output argument.
 
 #### Examples
 
-    \dontrun{
     wheat <- getBrAPIConnection("T3/WheatCAP")
     wheat$vcf_imputed("~/Desktop/my_data.vcf", genotyping_project_id=10371)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `clone()`
+### `BrAPIConnection$clone()`
 
 The objects of this class are cloneable with this method.
 
@@ -734,7 +807,7 @@ barleyv1 <- createBrAPIConnection("barley.triticeaetoolbox.org", version="v1")
 
 
 ## ------------------------------------------------
-## Method `BrAPIConnection$get`
+## Method `BrAPIConnection$get()`
 ## ------------------------------------------------
 
 # Making a GET request
@@ -743,25 +816,25 @@ resp <- wheat$get("/studies", pageSize=1000, page="all")
 resp <- wheat$get("/studies", query=list(programName="Cornell University"), pageSize=1000)
 
 ## ------------------------------------------------
-## Method `BrAPIConnection$post`
+## Method `BrAPIConnection$post()`
 ## ------------------------------------------------
 
 # Make a POST request
 if (FALSE) { # \dontrun{
-sandbox <- BrAPIConnection$new("wheat-sandbox.triticeaetoolbox.org")
+sandbox <- createBrAPIConnection("wheat-sandbox.triticeaetoolbox.org")
+sandbox$login(username = "testing", password = "testing123")
 d1 <- list(observationUnitDbId="ou1", observationVariableDbId="ov1", value=50)
 d2 <- list(observationUnitDbId="ou2", observationVariableDbId="ov1", value=40)
 data <- list(d1, d2)
-sandbox$login(username = "testing", password = "testing123")
 resp <- sandbox$post("/observations", body=data)
 } # }
 
 
 ## ------------------------------------------------
-## Method `BrAPIConnection$wizard`
+## Method `BrAPIConnection$wizard()`
 ## ------------------------------------------------
 
-wheat <- createBrAPIConnection("wheat.triticeaetoolbox.org", is_breedbase = TRUE)
+wheat <- getBrAPIConnection("T3/Wheat")
 
 # find matching trials, filtered by two breeding programs (identified by ids) and one year
 trials <- wheat$wizard("trials", list(breeding_programs = c(327,367), years = c(2023)))
@@ -774,7 +847,35 @@ accessions <- wheat$wizard("accessions", list(trials = c("CornellMaster_2024_Hel
 geno_protocols <- wheat$wizard("genotyping_protocols", list(accessions = accessions$data$ids))
 
 ## ------------------------------------------------
-## Method `BrAPIConnection$vcf`
+## Method `BrAPIConnection$filter_geno_protocols()`
+## ------------------------------------------------
+
+wheat <- getBrAPIConnection("T3/Wheat")
+resp <- wheat$filter_geno_protocols(accessions = c(234712, 1544778, 1478255, 1550494, 1544454))
+#> Top genotyping protocols:
+#> 1. Allegro V1 [id=289] (3/5 accessions)
+#> 2. Wheat 3K [id=299] (2/5 accessions)
+#> 3. Allegro V2 [id=297] (1/5 accessions)
+best_protocols <- resp$data$top_matches
+protocol_usage <- resp$data$matches
+
+## ------------------------------------------------
+## Method `BrAPIConnection$filter_geno_projects()`
+## ------------------------------------------------
+
+wheat <- getBrAPIConnection("T3/Wheat")
+resp <- wheat$filter_geno_projects(accessions = c(234712, 1544778, 1478255, 1550494, 1544454))
+#> Top genotyping projects:
+#> 1. UWM_2023_3K [id=11009] (2/5 accessions)
+#> 2. KSU_2023_Allegro [id=10655] (2/5 accessions)
+#> 3. KSU_2023_Allegro_V2 [id=10683] (1/5 accessions)
+#> 4. UCD_2020_Allegro [id=10654] (1/5 accessions)
+#> 5. UCD_2020_Allegro_V2 [id=10727] (1/5 accessions)
+best_projects <- resp$data$top_matches
+project_usage <- resp$data$matches
+
+## ------------------------------------------------
+## Method `BrAPIConnection$vcf()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -784,7 +885,7 @@ wheat$vcf("~/Desktop/my_data.vcf", genotyping_protocol_id = 249, accessions = c(
 } # }
 
 ## ------------------------------------------------
-## Method `BrAPIConnection$vcf_archived_list`
+## Method `BrAPIConnection$vcf_archived_list()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -794,7 +895,7 @@ files <- wheat$vcf_archived_list(gentyping_project_id=2761)
 } # }
 
 ## ------------------------------------------------
-## Method `BrAPIConnection$vcf_archived`
+## Method `BrAPIConnection$vcf_archived()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -806,7 +907,7 @@ wheat$vcf_archived("~/Desktop/my_data.vcf", genotyping_protocol_id=70, file_name
 } # }
 
 ## ------------------------------------------------
-## Method `BrAPIConnection$vcf_imputed`
+## Method `BrAPIConnection$vcf_imputed()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{

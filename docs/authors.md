@@ -7,13 +7,13 @@
 
 ## Citation
 
-Waring D (2026). *BrAPI: BrAPI*. R package version 0.7.2,
+Waring D (2026). *BrAPI: BrAPI*. R package version 0.8.4,
 <https://triticeaetoolbox.github.io/BrAPI.R/>.
 
     @Manual{,
       title = {BrAPI: BrAPI},
       author = {David Waring},
       year = {2026},
-      note = {R package version 0.7.2},
+      note = {R package version 0.8.4},
       url = {https://triticeaetoolbox.github.io/BrAPI.R/},
     }

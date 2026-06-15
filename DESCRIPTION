@@ -1,6 +1,6 @@
 Package: BrAPI
-Version: 0.8.3
-Date: 2026-02-20
+Version: 0.8.4
+Date: 2026-06-15
 Title: BrAPI
 Description: Simple wrapper functions for httr that make it easier to make manual HTTP calls to a BrAPI server
 URL: https://triticeaetoolbox.github.io/BrAPI.R/
@@ -13,10 +13,10 @@ Depends:
     httr,
     askpass
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
 Collate: 
     'BrAPI.R'
     'Breedbase.R'
     'Connection.R'
     'utils.R'
     'known_connections.R'
+Config/roxygen2/version: 8.0.0

@@ -1,6 +1,10 @@
-# Get Known BrAPI Connection
+# Get Known BrAPI Connection (by database name)
 
-Get the connection details for a known BrAPI server
+Get a BrAPI Connection for a pre-defined database by name. Use the
+[`listBrAPIConnections()`](https://triticeaetoolbox.github.io/BrAPI.R/reference/listBrAPIConnections.md)
+function to get a list of all pre-defined databases. This function will
+return the connection, with all of its properties set, for the named
+database.
 
 ## Usage
 
@@ -23,4 +27,5 @@ BrAPIConnection
 ``` r
 wheat <- getBrAPIConnection("T3/Wheat")
 cassava <- getBrAPIConnection("Cassavabase")
+grin <- getBrAPIConnection("USDA-GRIN Wheat")
 ```

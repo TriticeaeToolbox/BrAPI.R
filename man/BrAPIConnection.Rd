@@ -4,11 +4,6 @@
 \alias{BrAPIConnection}
 \title{BrAPI Connection Class}
 \description{
-BrAPI Connection Class
-
-BrAPI Connection Class
-}
-\details{
 An R6 Class representing a connection to a BrAPI server.
 
 This Class provides all of the information needed for connecting to a BrAPI server.
@@ -50,7 +45,7 @@ barleyv1 <- createBrAPIConnection("barley.triticeaetoolbox.org", version="v1")
 
 
 ## ------------------------------------------------
-## Method `BrAPIConnection$get`
+## Method `BrAPIConnection$get()`
 ## ------------------------------------------------
 
 # Making a GET request
@@ -59,7 +54,7 @@ resp <- wheat$get("/studies", pageSize=1000, page="all")
 resp <- wheat$get("/studies", query=list(programName="Cornell University"), pageSize=1000)
 
 ## ------------------------------------------------
-## Method `BrAPIConnection$post`
+## Method `BrAPIConnection$post()`
 ## ------------------------------------------------
 
 # Make a POST request
@@ -74,7 +69,7 @@ resp <- sandbox$post("/observations", body=data)
 
 
 ## ------------------------------------------------
-## Method `BrAPIConnection$wizard`
+## Method `BrAPIConnection$wizard()`
 ## ------------------------------------------------
 
 wheat <- getBrAPIConnection("T3/Wheat")
@@ -89,7 +84,7 @@ accessions <- wheat$wizard("accessions", list(trials = c("CornellMaster_2024_Hel
 geno_protocols <- wheat$wizard("genotyping_protocols", list(accessions = accessions$data$ids))
 
 ## ------------------------------------------------
-## Method `BrAPIConnection$filter_geno_protocols`
+## Method `BrAPIConnection$filter_geno_protocols()`
 ## ------------------------------------------------
 
 wheat <- getBrAPIConnection("T3/Wheat")
@@ -98,7 +93,7 @@ best_protocols <- resp$data$top_matches
 protocol_usage <- resp$data$matches
 
 ## ------------------------------------------------
-## Method `BrAPIConnection$filter_geno_projects`
+## Method `BrAPIConnection$filter_geno_projects()`
 ## ------------------------------------------------
 
 wheat <- getBrAPIConnection("T3/Wheat")
@@ -107,7 +102,7 @@ best_projects <- resp$data$top_matches
 project_usage <- resp$data$matches
 
 ## ------------------------------------------------
-## Method `BrAPIConnection$vcf`
+## Method `BrAPIConnection$vcf()`
 ## ------------------------------------------------
 
 \dontrun{
@@ -117,7 +112,7 @@ wheat$vcf("~/Desktop/my_data.vcf", genotyping_protocol_id = 249, accessions = c(
 }
 
 ## ------------------------------------------------
-## Method `BrAPIConnection$vcf_archived_list`
+## Method `BrAPIConnection$vcf_archived_list()`
 ## ------------------------------------------------
 
 \dontrun{
@@ -127,7 +122,7 @@ files <- wheat$vcf_archived_list(gentyping_project_id=2761)
 }
 
 ## ------------------------------------------------
-## Method `BrAPIConnection$vcf_archived`
+## Method `BrAPIConnection$vcf_archived()`
 ## ------------------------------------------------
 
 \dontrun{
@@ -139,7 +134,7 @@ wheat$vcf_archived("~/Desktop/my_data.vcf", genotyping_protocol_id=70, file_name
 }
 
 ## ------------------------------------------------
-## Method `BrAPIConnection$vcf_imputed`
+## Method `BrAPIConnection$vcf_imputed()`
 ## ------------------------------------------------
 
 \dontrun{
@@ -148,52 +143,53 @@ wheat$vcf_imputed("~/Desktop/my_data.vcf", genotyping_project_id=10371)
 }
 }
 \section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{protocol}}{The HTTP protocol - either 'http' or 'https' (Default: \code{https})}
+  \if{html}{\out{<div class="r6-fields">}}
+  \describe{
+    \item{\code{protocol}}{The HTTP protocol - either 'http' or 'https' (Default: \code{https})}
 
-\item{\code{host}}{The hostname of the BrAPI server}
+    \item{\code{host}}{The hostname of the BrAPI server}
 
-\item{\code{path}}{The base bath of the BrAPI endpoints (not including the version) (Default: \verb{/brapi/})}
+    \item{\code{path}}{The base bath of the BrAPI endpoints (not including the version) (Default: \verb{/brapi/})}
 
-\item{\code{version}}{The BrAPI version (such as 'v1' or 'v2') (Default: \code{v2})}
+    \item{\code{version}}{The BrAPI version (such as 'v1' or 'v2') (Default: \code{v2})}
 
-\item{\code{params}}{Additional query params added to each request (a named list) (Default: \code{list()})}
+    \item{\code{params}}{Additional query params added to each request (a named list) (Default: \code{list()})}
 
-\item{\code{is_breedbase}}{A flag to indicate this BrAPI connection is to a breedbase instance.  This
+    \item{\code{is_breedbase}}{A flag to indicate this BrAPI connection is to a breedbase instance.  This
 adds additional support for breedbase-specific functionality. (Default: \code{FALSE})}
 
-\item{\code{auth_token}}{An auth token that will be passed as a Bearer Token in the the Authorization header to all requests}
-}
-\if{html}{\out{</div>}}
+    \item{\code{auth_token}}{An auth token that will be passed as a Bearer Token in the the Authorization header to all requests}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-BrAPIConnection-new}{\code{BrAPIConnection$new()}}
-\item \href{#method-BrAPIConnection-base}{\code{BrAPIConnection$base()}}
-\item \href{#method-BrAPIConnection-login}{\code{BrAPIConnection$login()}}
-\item \href{#method-BrAPIConnection-get}{\code{BrAPIConnection$get()}}
-\item \href{#method-BrAPIConnection-post}{\code{BrAPIConnection$post()}}
-\item \href{#method-BrAPIConnection-put}{\code{BrAPIConnection$put()}}
-\item \href{#method-BrAPIConnection-search}{\code{BrAPIConnection$search()}}
-\item \href{#method-BrAPIConnection-wizard}{\code{BrAPIConnection$wizard()}}
-\item \href{#method-BrAPIConnection-filter_geno_protocols}{\code{BrAPIConnection$filter_geno_protocols()}}
-\item \href{#method-BrAPIConnection-filter_geno_projects}{\code{BrAPIConnection$filter_geno_projects()}}
-\item \href{#method-BrAPIConnection-vcf}{\code{BrAPIConnection$vcf()}}
-\item \href{#method-BrAPIConnection-vcf_archived_list}{\code{BrAPIConnection$vcf_archived_list()}}
-\item \href{#method-BrAPIConnection-vcf_archived}{\code{BrAPIConnection$vcf_archived()}}
-\item \href{#method-BrAPIConnection-vcf_imputed}{\code{BrAPIConnection$vcf_imputed()}}
-\item \href{#method-BrAPIConnection-clone}{\code{BrAPIConnection$clone()}}
-}
+  \itemize{
+    \item \href{#method-BrAPIConnection-initialize}{\code{BrAPIConnection$new()}}
+    \item \href{#method-BrAPIConnection-base}{\code{BrAPIConnection$base()}}
+    \item \href{#method-BrAPIConnection-login}{\code{BrAPIConnection$login()}}
+    \item \href{#method-BrAPIConnection-get}{\code{BrAPIConnection$get()}}
+    \item \href{#method-BrAPIConnection-post}{\code{BrAPIConnection$post()}}
+    \item \href{#method-BrAPIConnection-put}{\code{BrAPIConnection$put()}}
+    \item \href{#method-BrAPIConnection-search}{\code{BrAPIConnection$search()}}
+    \item \href{#method-BrAPIConnection-wizard}{\code{BrAPIConnection$wizard()}}
+    \item \href{#method-BrAPIConnection-filter_geno_protocols}{\code{BrAPIConnection$filter_geno_protocols()}}
+    \item \href{#method-BrAPIConnection-filter_geno_projects}{\code{BrAPIConnection$filter_geno_projects()}}
+    \item \href{#method-BrAPIConnection-vcf}{\code{BrAPIConnection$vcf()}}
+    \item \href{#method-BrAPIConnection-vcf_archived_list}{\code{BrAPIConnection$vcf_archived_list()}}
+    \item \href{#method-BrAPIConnection-vcf_archived}{\code{BrAPIConnection$vcf_archived()}}
+    \item \href{#method-BrAPIConnection-vcf_imputed}{\code{BrAPIConnection$vcf_imputed()}}
+    \item \href{#method-BrAPIConnection-clone}{\code{BrAPIConnection$clone()}}
+  }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-BrAPIConnection-new"></a>}}
-\if{latex}{\out{\hypertarget{method-BrAPIConnection-new}{}}}
-\subsection{Method \code{new()}}{
-Create a new \code{BrAPIConnection} object
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BrAPIConnection$new(
+\if{html}{\out{<a id="method-BrAPIConnection-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-BrAPIConnection-initialize}{}}}
+\subsection{\code{BrAPIConnection$new()}}{
+  Create a new \code{BrAPIConnection} object
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BrAPIConnection$new(
   host,
   protocol = "https",
   path = "/brapi/",
@@ -201,149 +197,134 @@ Create a new \code{BrAPIConnection} object
   params = list(),
   is_breedbase = FALSE,
   auth_token = NULL
-)}\if{html}{\out{</div>}}
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{host}}{(required) The hostname of the BrAPI server}
+      \item{\code{protocol}}{(optional) The HTTP protocol - either 'http' or 'https'}
+      \item{\code{path}}{(optional) The base path of the BrAPI endpoints}
+      \item{\code{version}}{(optional) The BrAPI version}
+      \item{\code{params}}{(optional) Additional query params added to each request}
+      \item{\code{is_breedbase}}{(optional) set to TRUE if the connection is to a breedbase instance}
+      \item{\code{auth_token}}{(optional) set the Auth Token when creating the connection}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{BrAPIConnection} object
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{host}}{(required) The hostname of the BrAPI server}
-
-\item{\code{protocol}}{(optional) The HTTP protocol - either 'http' or 'https'}
-
-\item{\code{path}}{(optional) The base path of the BrAPI endpoints}
-
-\item{\code{version}}{(optional) The BrAPI version}
-
-\item{\code{params}}{(optional) Additional query params added to each request}
-
-\item{\code{is_breedbase}}{(optional) set to TRUE if the connection is to a breedbase instance}
-
-\item{\code{auth_token}}{(optional) set the Auth Token when creating the connection}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-\code{BrAPIConnection} object
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BrAPIConnection-base"></a>}}
 \if{latex}{\out{\hypertarget{method-BrAPIConnection-base}{}}}
-\subsection{Method \code{base()}}{
-Generate the base URL of the connection
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BrAPIConnection$base()}\if{html}{\out{</div>}}
+\subsection{\code{BrAPIConnection$base()}}{
+  Generate the base URL of the connection
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BrAPIConnection$base()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A String in the format \verb{$protocol://$host}
+  }
 }
 
-\subsection{Returns}{
-A String in the format \verb{$protocol://$host}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BrAPIConnection-login"></a>}}
 \if{latex}{\out{\hypertarget{method-BrAPIConnection-login}{}}}
-\subsection{Method \code{login()}}{
-Login to the server to set an auth token for all future requests.
+\subsection{\code{BrAPIConnection$login()}}{
+  Login to the server to set an auth token for all future requests.
 
 If a username and password are provided, a POST request will be made to the /token endpoint
 with your username and password to request a new auth token. If a token is provided, then that
 will be saved and used as-is in future requests. If none are provided, the user will be
 prompted for their username and password
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BrAPIConnection$login(username = NULL, password = NULL, token = NULL)}\if{html}{\out{</div>}}
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BrAPIConnection$login(username = NULL, password = NULL, token = NULL)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{username}}{(optional) Your account username for the database}
+      \item{\code{password}}{(optional) Your account password for the database}
+      \item{\code{token}}{(optional) An auth token to use in all future requests to this database}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{username}}{(optional) Your account username for the database}
-
-\item{\code{password}}{(optional) Your account password for the database}
-
-\item{\code{token}}{(optional) An auth token to use in all future requests to this database}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BrAPIConnection-get"></a>}}
 \if{latex}{\out{\hypertarget{method-BrAPIConnection-get}{}}}
-\subsection{Method \code{get()}}{
-Make a GET request
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BrAPIConnection$get(call, ...)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{call}}{The BrAPI endpoint to request}
-
-\item{\code{...}}{(optional) Additional arguments passed to \code{httr}}
-
-\item{\code{query}}{(optional) A named list of query parameters}
-
-\item{\code{page}}{(optional) The index of the page of results (use 'all' to get all pages) (Default: 0)}
-
-\item{\code{pageSize}}{(optional) The max size of the result pages (Default: 10)}
-
-\item{\code{token}}{(optional) An Authorization token to add to the request}
-
-\item{\code{verbose}}{(optional) Set to true to include additional output to the console about the Response}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A named list of Response properties
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{# Making a GET request
+\subsection{\code{BrAPIConnection$get()}}{
+  Make a GET request
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BrAPIConnection$get(call, ...)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{call}}{The BrAPI endpoint to request}
+      \item{\code{...}}{(optional) Additional arguments passed to \code{httr}}
+      \item{\code{query}}{(optional) A named list of query parameters}
+      \item{\code{page}}{(optional) The index of the page of results (use 'all' to get all pages) (Default: 0)}
+      \item{\code{pageSize}}{(optional) The max size of the result pages (Default: 10)}
+      \item{\code{token}}{(optional) An Authorization token to add to the request}
+      \item{\code{verbose}}{(optional) Set to true to include additional output to the console about the Response}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A named list of Response properties
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{# Making a GET request
 resp <- wheat$get("/germplasm", pageSize=100)
 resp <- wheat$get("/studies", pageSize=1000, page="all")
 resp <- wheat$get("/studies", query=list(programName="Cornell University"), pageSize=1000)
 }
-\if{html}{\out{</div>}}
-
+    \if{html}{\out{</div>}}
+  }
 }
 
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BrAPIConnection-post"></a>}}
 \if{latex}{\out{\hypertarget{method-BrAPIConnection-post}{}}}
-\subsection{Method \code{post()}}{
-Make a POST request
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BrAPIConnection$post(call, ...)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{call}}{The BrAPI endpoint to request}
-
-\item{\code{...}}{(optional) Additional arguments passed to \code{httr}}
-
-\item{\code{query}}{(optional) A named list of query parameters}
-
-\item{\code{body}}{(optional) A named list or vector of the request body (will be converted to JSON)}
-
-\item{\code{page}}{(optional) The index of the page of results (use 'all' to get all pages) (Default: 0)}
-
-\item{\code{pageSize}}{(optional) The max size of the result pages (Default: 10)}
-
-\item{\code{verbose}}{(optional) Set to true to include additional output to the console about the Response}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A named list of Response properties
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{# Make a POST request
-\dontrun{
+\subsection{\code{BrAPIConnection$post()}}{
+  Make a POST request
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BrAPIConnection$post(call, ...)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{call}}{The BrAPI endpoint to request}
+      \item{\code{...}}{(optional) Additional arguments passed to \code{httr}}
+      \item{\code{query}}{(optional) A named list of query parameters}
+      \item{\code{body}}{(optional) A named list or vector of the request body (will be converted to JSON)}
+      \item{\code{page}}{(optional) The index of the page of results (use 'all' to get all pages) (Default: 0)}
+      \item{\code{pageSize}}{(optional) The max size of the result pages (Default: 10)}
+      \item{\code{verbose}}{(optional) Set to true to include additional output to the console about the Response}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A named list of Response properties
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{# Make a POST request
 sandbox <- createBrAPIConnection("wheat-sandbox.triticeaetoolbox.org")
 sandbox$login(username = "testing", password = "testing123")
 d1 <- list(observationUnitDbId="ou1", observationVariableDbId="ov1", value=50)
@@ -351,50 +332,43 @@ d2 <- list(observationUnitDbId="ou2", observationVariableDbId="ov1", value=40)
 data <- list(d1, d2)
 resp <- sandbox$post("/observations", body=data)
 }
-
-}
-\if{html}{\out{</div>}}
-
+    \if{html}{\out{</div>}}
+  }
 }
 
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BrAPIConnection-put"></a>}}
 \if{latex}{\out{\hypertarget{method-BrAPIConnection-put}{}}}
-\subsection{Method \code{put()}}{
-Make a PUT request
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BrAPIConnection$put(call, ...)}\if{html}{\out{</div>}}
+\subsection{\code{BrAPIConnection$put()}}{
+  Make a PUT request
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BrAPIConnection$put(call, ...)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{call}}{The BrAPI endpoint to request}
+      \item{\code{...}}{(optional) Additional arguments passed to \code{httr}}
+      \item{\code{query}}{(optional) A named list of query parameters}
+      \item{\code{body}}{(optional) A named list or vector of the request body (will be converted to JSON)}
+      \item{\code{page}}{(optional) The index of the page of results (use 'all' to get all pages) (Default: 0)}
+      \item{\code{pageSize}}{(optional) The max size of the result pages (Default: 10)}
+      \item{\code{verbose}}{(optional) Set to true to include additional output to the console about the Response}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A named list of Response properties
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{call}}{The BrAPI endpoint to request}
-
-\item{\code{...}}{(optional) Additional arguments passed to \code{httr}}
-
-\item{\code{query}}{(optional) A named list of query parameters}
-
-\item{\code{body}}{(optional) A named list or vector of the request body (will be converted to JSON)}
-
-\item{\code{page}}{(optional) The index of the page of results (use 'all' to get all pages) (Default: 0)}
-
-\item{\code{pageSize}}{(optional) The max size of the result pages (Default: 10)}
-
-\item{\code{verbose}}{(optional) Set to true to include additional output to the console about the Response}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A named list of Response properties
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BrAPIConnection-search"></a>}}
 \if{latex}{\out{\hypertarget{method-BrAPIConnection-search}{}}}
-\subsection{Method \code{search()}}{
-Make a BrAPI Search request.
+\subsection{\code{BrAPIConnection$search()}}{
+  Make a BrAPI Search request.
 
 This function performs the two-step BrAPI search request, first making a POST request
 to the /search/{datatype} endpoint and then automatically fetches all of the search
@@ -408,38 +382,34 @@ You should include any of your search filters as the body to the request.
 If the initial /search/{datatype} is successful, this function will automatically request
 the /search/{datatype}/{searchResultDbId} with page = 'all' set to return all of the returned
 search results.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BrAPIConnection$search(call, ...)}\if{html}{\out{</div>}}
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BrAPIConnection$search(call, ...)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{call}}{The BrAPI search endpoint to request (such as /search/observations or just /observations)}
+      \item{\code{...}}{(optional) Additional arguments passed to \code{httr}}
+      \item{\code{query}}{(optional) A named list of query parameters}
+      \item{\code{body}}{(optional) A named list or vector of the request body (will be converted to JSON)}
+      \item{\code{page}}{(optional) The index of the page of results (use 'all' to get all pages) (Default: 0)}
+      \item{\code{pageSize}}{(optional) The max size of the result pages (Default: 10)}
+      \item{\code{verbose}}{(optional) Set to true to include additional output to the console about the Response}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A named list of Response properties
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{call}}{The BrAPI search endpoint to request (such as /search/observations or just /observations)}
-
-\item{\code{...}}{(optional) Additional arguments passed to \code{httr}}
-
-\item{\code{query}}{(optional) A named list of query parameters}
-
-\item{\code{body}}{(optional) A named list or vector of the request body (will be converted to JSON)}
-
-\item{\code{page}}{(optional) The index of the page of results (use 'all' to get all pages) (Default: 0)}
-
-\item{\code{pageSize}}{(optional) The max size of the result pages (Default: 10)}
-
-\item{\code{verbose}}{(optional) Set to true to include additional output to the console about the Response}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A named list of Response properties
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BrAPIConnection-wizard"></a>}}
 \if{latex}{\out{\hypertarget{method-BrAPIConnection-wizard}{}}}
-\subsection{Method \code{wizard()}}{
-Make a Breedbase Search Wizard request.
+\subsection{\code{BrAPIConnection$wizard()}}{
+  Make a Breedbase Search Wizard request.
 
 This function returns all of the items of the specified data type, filtered by the data types
 and items included in the filters argument.  For example, you can use this to find all field
@@ -447,16 +417,16 @@ trials from a set of breeding programs in a specific year.  If you don't provide
 the function will return the full set of all items in the database for the data type.  The results
 only include the database IDs and names of the matching items.  You can use the IDs in the general
 BrAPI endpoints to get additional data about the items.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BrAPIConnection$wizard(data_type, filters = list(), verbose = FALSE)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{data_type}}{The data type to return after filtering}
-
-\item{\code{filters}}{A list of the filters (up to 3) to apply to the search.  The key should be the
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BrAPIConnection$wizard(data_type, filters = list(), verbose = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{data_type}}{The data type to return after filtering}
+      \item{\code{filters}}{A list of the filters (up to 3) to apply to the search.  The key should be the
 name of the data type and the value should be a vector of database ids or names of the items
 to include in the filter.
 
@@ -464,19 +434,18 @@ It is better to use IDs if you have them - when you use names, the function will
 queries to lookup the IDs for the names you provide.
 
 Supported data types include: accessions, organisms, breeding_programs, genotyping_protocols, genotyping_projects, locations, plants, plots, tissue_sample, seedlots, trait_components, traits, trials, trial_designs, trial_types, years}
-
-\item{\code{verbose}}{Set to TRUE to include logging information}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A response with the matching data.
+      \item{\code{verbose}}{Set to TRUE to include logging information}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A response with the matching data.
 The $content key contains the raw breedbase response.
 The $data key contains parsed data: a list parsed into \code{ids}, \code{names} and \code{map} (a named list of item names -> ids)
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{wheat <- getBrAPIConnection("T3/Wheat")
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{wheat <- getBrAPIConnection("T3/Wheat")
 
 # find matching trials, filtered by two breeding programs (identified by ids) and one year
 trials <- wheat$wizard("trials", list(breeding_programs = c(327,367), years = c(2023)))
@@ -487,140 +456,132 @@ accessions <- wheat$wizard("accessions", list(trials = c("CornellMaster_2024_Hel
 # find genotyping protocols that have data for the above set of accessions
 geno_protocols <- wheat$wizard("genotyping_protocols", list(accessions = accessions$data$ids))
 }
-\if{html}{\out{</div>}}
-
+    \if{html}{\out{</div>}}
+  }
 }
 
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BrAPIConnection-filter_geno_protocols"></a>}}
 \if{latex}{\out{\hypertarget{method-BrAPIConnection-filter_geno_protocols}{}}}
-\subsection{Method \code{filter_geno_protocols()}}{
-Find the best Genotyping Protocols for a set of accessions
+\subsection{\code{BrAPIConnection$filter_geno_protocols()}}{
+  Find the best Genotyping Protocols for a set of accessions
 
 This function will return the top 3 genotyping protocols for a set of accessions along with
 a matrix defining which accessions are in which protocol.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BrAPIConnection$filter_geno_protocols(accessions = NULL, verbose = FALSE)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{accessions}}{A vector of accession ids}
-
-\item{\code{verbose}}{Set to TRUE to inclue logging information}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A response with the matching data
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BrAPIConnection$filter_geno_protocols(accessions = NULL, verbose = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{accessions}}{A vector of accession ids}
+      \item{\code{verbose}}{Set to TRUE to inclue logging information}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A response with the matching data
 The $content key contains the raw breedbase response.
 The $data key contains parsed data: \code{top_matches} = names of ranked genotyping protocols, \code{matches} = a matrix of accessions and protocols
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{wheat <- getBrAPIConnection("T3/Wheat")
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{wheat <- getBrAPIConnection("T3/Wheat")
 resp <- wheat$filter_geno_protocols(accessions = c(234712, 1544778, 1478255, 1550494, 1544454))
 best_protocols <- resp$data$top_matches
 protocol_usage <- resp$data$matches
 }
-\if{html}{\out{</div>}}
-
+    \if{html}{\out{</div>}}
+  }
 }
 
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BrAPIConnection-filter_geno_projects"></a>}}
 \if{latex}{\out{\hypertarget{method-BrAPIConnection-filter_geno_projects}{}}}
-\subsection{Method \code{filter_geno_projects()}}{
-Find the best Genotyping Projects for a set of accessions
+\subsection{\code{BrAPIConnection$filter_geno_projects()}}{
+  Find the best Genotyping Projects for a set of accessions
 
 This function will return the top 3 genotyping projects for a set of accessions along with
 a matrix defining which accessions are in which project.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BrAPIConnection$filter_geno_projects(accessions = NULL, verbose = FALSE)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{accessions}}{A vector of accession ids}
-
-\item{\code{verbose}}{Set to TRUE to inclue logging information}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A response with the matching data
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BrAPIConnection$filter_geno_projects(accessions = NULL, verbose = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{accessions}}{A vector of accession ids}
+      \item{\code{verbose}}{Set to TRUE to inclue logging information}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A response with the matching data
 The $content key contains the raw breedbase response.
 The $data key contains parsed data: \code{top_matches} = names of ranked genotyping projects, \code{matches} = a matrix of accessions and projects
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{wheat <- getBrAPIConnection("T3/Wheat")
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{wheat <- getBrAPIConnection("T3/Wheat")
 resp <- wheat$filter_geno_projects(accessions = c(234712, 1544778, 1478255, 1550494, 1544454))
 best_projects <- resp$data$top_matches
 project_usage <- resp$data$matches
 }
-\if{html}{\out{</div>}}
-
+    \if{html}{\out{</div>}}
+  }
 }
 
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BrAPIConnection-vcf"></a>}}
 \if{latex}{\out{\hypertarget{method-BrAPIConnection-vcf}{}}}
-\subsection{Method \code{vcf()}}{
-Download a Breedbase VCF File
+\subsection{\code{BrAPIConnection$vcf()}}{
+  Download a Breedbase VCF File
 
 NOTE: Depending on the number of markers and accessions, this download may take a
 very long time to complete.  You may want to use the conn$vcf_archived() function
 to download a static archived VCF file of a genotyping project, if one is available.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BrAPIConnection$vcf(
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BrAPIConnection$vcf(
   output,
   genotyping_protocol_id,
   accessions = NULL,
   verbose = FALSE
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{output}}{The path to the output VCF file}
-
-\item{\code{genotyping_protocol_id}}{The Database ID of the genotyping protocol to download}
-
-\item{\code{accessions}}{(optional) A list of Accession Database IDs to use as a filter for the VCF data}
-
-\item{\code{verbose}}{Set to TRUE to include logging information}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Status information about the request.  If successful, the genotype data will
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{output}}{The path to the output VCF file}
+      \item{\code{genotyping_protocol_id}}{The Database ID of the genotyping protocol to download}
+      \item{\code{accessions}}{(optional) A list of Accession Database IDs to use as a filter for the VCF data}
+      \item{\code{verbose}}{Set to TRUE to include logging information}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Status information about the request.  If successful, the genotype data will
 be downloaded to the VCF file specified by the output argument.
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-wheat <- getBrAPIConnection("T3/Wheat")
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{wheat <- getBrAPIConnection("T3/Wheat")
 wheat$vcf("~/Desktop/my_data.vcf", genotyping_protocol_id = 249)
 wheat$vcf("~/Desktop/my_data.vcf", genotyping_protocol_id = 249, accessions = c(228677, 1666408))
 }
+    \if{html}{\out{</div>}}
+  }
 }
-\if{html}{\out{</div>}}
 
-}
-
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BrAPIConnection-vcf_archived_list"></a>}}
 \if{latex}{\out{\hypertarget{method-BrAPIConnection-vcf_archived_list}{}}}
-\subsection{Method \code{vcf_archived_list()}}{
-List all of the available Archived Breedbase VCF Files
+\subsection{\code{BrAPIConnection$vcf_archived_list()}}{
+  List all of the available Archived Breedbase VCF Files
 
 This function will return a table with all of the archived VCF files available for the specified protocol
 and/or project.  The file_name can be used to specify the specific file to download when using the
@@ -629,156 +590,143 @@ and/or project.  The file_name can be used to specify the specific file to downl
 The archived files are saved at the project-level.  So, if you specify a protocol, you'll get a list
 of all of the available files for each project in that protocol.  If you're performing analysis at
 the protocol-level, you'll need to manually merge the VCF files from each project in that protocol.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BrAPIConnection$vcf_archived_list(
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BrAPIConnection$vcf_archived_list(
   genotyping_protocol_id = NULL,
   genotyping_project_id = NULL,
   verbose = FALSE
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{genotyping_protocol_id}}{The Database ID of the genotyping protocol}
-
-\item{\code{genotyping_project_id}}{The Database ID of the genotyping project}
-
-\item{\code{verbose}}{Set to TRUE to include logging information}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-a Data Frame with the protocol and project information for each available archived file
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-wheat <- getBrAPIConnection("T3/Wheat")
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{genotyping_protocol_id}}{The Database ID of the genotyping protocol}
+      \item{\code{genotyping_project_id}}{The Database ID of the genotyping project}
+      \item{\code{verbose}}{Set to TRUE to include logging information}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    a Data Frame with the protocol and project information for each available archived file
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{wheat <- getBrAPIConnection("T3/Wheat")
 files <- wheat$vcf_archived_list(genotyping_protocol_id=70)
 files <- wheat$vcf_archived_list(gentyping_project_id=2761)
 }
+    \if{html}{\out{</div>}}
+  }
 }
-\if{html}{\out{</div>}}
 
-}
-
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BrAPIConnection-vcf_archived"></a>}}
 \if{latex}{\out{\hypertarget{method-BrAPIConnection-vcf_archived}{}}}
-\subsection{Method \code{vcf_archived()}}{
-Download an Archived Breedbase VCF File
+\subsection{\code{BrAPIConnection$vcf_archived()}}{
+  Download an Archived Breedbase VCF File
 
 This function will download an archived VCF file from the server to the specified output file.  You must specify
 either a genotyping protocol and/or a genotyping project by id.  You may also specify the file name of the specific
 archived file you want to download.  If you don't specify the archived file's file_name, a list of all of the available
 files will be displayed for you to choose from.  You can also get a table of all of the available archived files from
 the \code{vcf_archived_list} function.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BrAPIConnection$vcf_archived(
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BrAPIConnection$vcf_archived(
   output,
   genotyping_protocol_id = NULL,
   genotyping_project_id = NULL,
   file_name = NULL,
   verbose = FALSE
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{output}}{The path to the output VCF file}
-
-\item{\code{genotyping_protocol_id}}{The Database ID of the genotyping protocol}
-
-\item{\code{genotyping_project_id}}{The Database ID of the genotyping project}
-
-\item{\code{file_name}}{The name of the specific archived file to download (if not provided, all of the available files will be listed for you to choose from)}
-
-\item{\code{verbose}}{Set to TRUE to include logging information}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Status information about the request. If the download of an available archived VCF file is
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{output}}{The path to the output VCF file}
+      \item{\code{genotyping_protocol_id}}{The Database ID of the genotyping protocol}
+      \item{\code{genotyping_project_id}}{The Database ID of the genotyping project}
+      \item{\code{file_name}}{The name of the specific archived file to download (if not provided, all of the available files will be listed for you to choose from)}
+      \item{\code{verbose}}{Set to TRUE to include logging information}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Status information about the request. If the download of an available archived VCF file is
 successful, the genotype data will be downloaded to the VCF file specified by the output argument.
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-wheat <- getBrAPIConnection("T3/Wheat")
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{wheat <- getBrAPIConnection("T3/Wheat")
 wheat$vcf_archived("~/Desktop/my_data.vcf", genotyping_protocol_id=70)
 wheat$vcf_archived("~/Desktop/my_data.vcf", genotyping_project_id=2761)
 wheat$vcf_archived("~/Desktop/my_data.vcf", genotyping_protocol_id=70, file_name="2019-12-30_16:33:07_TCAP90K_HWWAMP.vcf")
-
 }
-}
-\if{html}{\out{</div>}}
-
+    \if{html}{\out{</div>}}
+  }
 }
 
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BrAPIConnection-vcf_imputed"></a>}}
 \if{latex}{\out{\hypertarget{method-BrAPIConnection-vcf_imputed}{}}}
-\subsection{Method \code{vcf_imputed()}}{
-Download an Imputed VCF File
+\subsection{\code{BrAPIConnection$vcf_imputed()}}{
+  Download an Imputed VCF File
 
 This function will download an imputed dataset for the selected genotyping project (if available).
 The genotype projects have been imputed using the Practical Haplotype Graph (PHG). The imputed marker density
 is 2.9M markers for assembly RefSeq v2.1. For quick access the imputed genotypes can be downloaded from a prepared file.
 A description of the imputation process can be found in About PHG imputation (https://wheat.triticeaetoolbox.org/static_content/files/imputation.html).
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BrAPIConnection$vcf_imputed(
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BrAPIConnection$vcf_imputed(
   output,
   genotyping_project_id = NULL,
   verbose = FALSE
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{output}}{The path to the output VCF file}
-
-\item{\code{genotyping_project_id}}{The Database ID of the genotyping project}
-
-\item{\code{verbose}}{Set to TRUE to include logging information}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Status information about the request. If the download of an available imputed VCF file is
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{output}}{The path to the output VCF file}
+      \item{\code{genotyping_project_id}}{The Database ID of the genotyping project}
+      \item{\code{verbose}}{Set to TRUE to include logging information}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Status information about the request. If the download of an available imputed VCF file is
 successful, the genotype data will be downloaded to the VCF file specified by the output argument.
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-wheat <- getBrAPIConnection("T3/WheatCAP")
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{wheat <- getBrAPIConnection("T3/WheatCAP")
 wheat$vcf_imputed("~/Desktop/my_data.vcf", genotyping_project_id=10371)
 }
+    \if{html}{\out{</div>}}
+  }
 }
-\if{html}{\out{</div>}}
 
-}
-
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BrAPIConnection-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-BrAPIConnection-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BrAPIConnection$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{BrAPIConnection$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BrAPIConnection$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }
